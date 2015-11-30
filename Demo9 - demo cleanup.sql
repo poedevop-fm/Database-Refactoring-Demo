@@ -1,11 +1,9 @@
 --   Demo of incremental table change
 --   9. Cleanup
 --
-USE tempdb;
+USE master;
 GO
-IF OBJECT_ID('FK_ShippingAddress_Customer', 'F') IS NOT NULL
-   ALTER TABLE ShippingAddress DROP CONSTRAINT FK_ShippingAddress_Customer;
+DROP DATABASE Demo1;
 GO
-IF OBJECT_ID('ShippingAddress','U') IS NOT NULL DROP TABLE ShippingAddress;
-IF OBJECT_ID('Customer',       'U') IS NOT NULL DROP TABLE Customer;
-GO
+!! del C:\SQLServerData\MSSQL11.MSSQLSERVER\MSSQL\DATA\Demo1_log.ldf
+!! del C:\SQLServerData\MSSQL11.MSSQLSERVER\MSSQL\DATA\Demo1.mdf
