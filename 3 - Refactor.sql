@@ -12,6 +12,8 @@
 -- primary address line
 -- city-state-zip
 --
+ALTER DATABASE Demo1 SET RECURSIVE_TRIGGERS OFF;
+GO
 USE Demo1;
 GO
 --
@@ -34,11 +36,11 @@ GO
 --  Step 1: Expand.
 --  Using "Refactoring Databases", page 177, "Introduce Null Value"s
 --  so that revised code can ignore old columns.
-ALTER TABLE Customer  ALTER COLUMN Name             varchar(30) NOT NULL;
-ALTER TABLE Customer  ALTER COLUMN BillingAddress1  varchar(30) NOT NULL;
-ALTER TABLE Customer  ALTER COLUMN BillingAddress2  varchar(30) NOT NULL;
-ALTER TABLE Customer  ALTER COLUMN BillingCity      varchar(30) NOT NULL;
-ALTER TABLE Customer  ALTER COLUMN BillingState     char(2)     NOT NULL;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_Name            DEFAULT('') FOR Name;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress1 DEFAULT('') FOR BillingAddress1;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress2 DEFAULT('') FOR BillingAddress1;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingCity     DEFAULT('') FOR BillingCity;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingState    DEFAULT('') FOR BillingState;
 GO
 --  Using "Refactoring Databases", page 126, "Replace Column",
 --  first introduce new columns.
@@ -143,20 +145,21 @@ BEGIN
    BEGIN;
       -- old columns updated: update new columns
       UPDATE Customer
-         SET Postal2 = SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
+         SET BillingPostal2 = SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
       FROM inserted INNER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
       WHERE inserted.BillingZIP <> deleted.BillingZIP 
-        AND inserted.Postal2 <>
-            SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4);
+        AND inserted.BillingPostal2 <>
+            SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
+        AND inserted.BillingZIP >= '0';
       -- new columns updated: update old columns
       UPDATE Customer
          SET BillingZIP = SUBSTRING(inserted.BillingZIP,1,5) + SUBSTRING(inserted.BillingZIP,7,4)
       FROM inserted INNER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.Postal2 <> deleted.Postal2
+      WHERE inserted.BillingPostal2 <> deleted.BillingPostal2
         AND inserted.BillingCountryCode = 'us'
-        AND inserted.Postal2 <> 
+        AND inserted.BillingPostal2 <> 
             SUBSTRING(inserted.BillingZIP,1,5) + SUBSTRING(inserted.BillingZIP,7,4);
    END;
 END;
@@ -181,7 +184,7 @@ GO
 INSERT INTO Customer
 (Name,BillingAddress1,BillingAddress2,BillingCity,BillingState,BillingZIP)
 VALUES
-('Santa Claus','325 S. Santa Claus Lane','North Pole', 'AK','99705');
+('Santa Claus','325 S. Santa Claus Lane','','North Pole', 'AK','99705');
 GO
 SELECT * FROM Customer;
 GO
@@ -191,9 +194,9 @@ GO
 SELECT * FROM Customer;
 GO
 INSERT INTO Customer
-(Name1,BillingAddress1_a,BillingCity_a,BillingState,BillingPostal2)
+(Name1,BillingAddress1_a,BillingAddress2_a, BillingCity_a, BillingState,BillingPostal2)
 VALUES
-('Bullwinke J. Moose', '1 Veronica Lake', 'Frostbite Falls','MN','56649-1111');
+('Bullwinke J. Moose', '1 Veronica Lake', '', 'Frostbite Falls','MN','56649-1111');
 GO
 INSERT INTO Customer
 (Name1,Name2,BillingAddress1_a,BillingCity_a,BillingState,BillingPostal2,BillingCountry,BillingCountryCode)
@@ -221,6 +224,12 @@ GO
 --   Program conversion complete: drop trigger and old fields
 --
 DROP TRIGGER SynchronizeCustomerAddress;
+GO
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_Name;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingAddress1;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingAddress2;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingCity;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingState;
 GO
 ALTER TABLE Customer DROP COLUMN Name, BillingAddress1, BillingAddress2, BillingCity, BillingZIP;
 GO
@@ -251,3 +260,92 @@ GO
 --
 --DROP STATISTICS dbo.Customer.statisticsName
 --
+IF OBJECT_ID('ChangeLog','U') IS NOT NULL DROP TABLE ChangeLog;
+CREATE TABLE ChangeLog (
+   Changed  DATETIME2 NOT NULL DEFAULT(CURRENT_TIMESTAMP),
+   CustomerId int NOT NULL,
+   ins_Name      varchar(30) NOT NULL,
+   ins_BillingAddress1  varchar(30) NOT NULL,
+   ins_BillingAddress2  varchar(30) NOT NULL,
+   ins_BillingCity      varchar(30) NOT NULL,
+   ins_BillingState     char(2) NOT NULL,
+   ins_BillingZIP       char(9),
+   ins_Name1              nvarchar(64),
+   ins_Name2              nvarchar(64),
+   ins_BillingAddress1_a  nvarchar(64),
+   ins_BillingAddress2_a  nvarchar(64),
+   ins_BillingCity_a      nvarchar(50),
+   ins_BillingPostal1     nvarchar(11),
+   ins_BillingPostal2     nvarchar(11),
+   ins_BillingCountry     nvarchar(64),
+   ins_BillingCountryCode nchar(2),
+   del_Name             varchar(30) NOT NULL,
+   del_BillingAddress1  varchar(30) NOT NULL,
+   del_BillingAddress2  varchar(30) NOT NULL,
+   del_BillingCity      varchar(30) NOT NULL,
+   del_BillingState     char(2) NOT NULL,
+   del_BillingZIP       char(9),
+   del_Name1              nvarchar(64),
+   del_Name2              nvarchar(64),
+   del_BillingAddress1_a  nvarchar(64),
+   del_BillingAddress2_a  nvarchar(64),
+   del_BillingCity_a      nvarchar(50),
+   del_BillingPostal1     nvarchar(11),
+   del_BillingPostal2     nvarchar(11),
+   del_BillingCountry     nvarchar(64),
+   del_BillingCountryCode nchar(2),
+  CONSTRAINT PK_ChangeLog 
+    PRIMARY KEY (Changed, CustomerID)
+);
+GO
+--
+--   Debugging aids
+--
+IF OBJECT_ID ('Debug11','TR') IS NOT NULL
+      DROP TRIGGER Debug11;
+GO
+CREATE TRIGGER Debug11 ON Customer FOR INSERT, UPDATE
+AS BEGIN
+  INSERT INTO ChangeLog
+  (CustomerId, 
+   ins_Name, ins_BillingAddress1, ins_BillingAddress2, ins_BillingCity, ins_BillingState,
+   ins_BillingZIP, 
+   ins_Name1, ins_Name2, ins_BillingAddress1_a, ins_BillingAddress2_a,
+   ins_BillingCity_a, ins_BillingPostal1, ins_BillingPostal2, ins_BillingCountry, ins_BillingCountryCode,
+   del_Name, del_BillingAddress1, del_BillingAddress2, del_BillingCity, del_BillingState,
+   del_BillingZIP,
+   del_Name1, del_Name2, del_BillingAddress1_a, del_BillingAddress2_a,
+   del_BillingCity_a, del_BillingPostal1, del_BillingPostal2, del_BillingCountry, del_BillingCountryCode)
+  SELECT i.CustomerId, 
+         i.Name, i.BillingAddress1, i.BillingAddress2, i.BillingCity,
+         i.BillingState, i.BillingZIP,
+         i.Name1, i.Name2, i.BillingAddress1_a, i.BillingAddress2_a, i.BillingCity_a,
+         i.BillingPostal1, i.BillingPostal2, i.BillingCountry, i.BillingCountryCode,
+         d.Name, d.BillingAddress1, d.BillingAddress2, d.BillingCity,
+         d.BillingState, d.BillingZIP,
+         d.Name1, d.Name2, d.BillingAddress1_a, d.BillingAddress2_a, d.BillingCity_a,
+         d.BillingPostal1,d.BillingPostal2,d.BillingCountry,d.BillingCountryCode
+  FROM inserted i INNER JOIN deleted d ON i.CustomerId = d.CustomerId;
+END;
+GO
+SELECT * FROM ChangeLog;
+SELECT CustomerID, ins_Name, ins_Name1
+FROM ChangeLog
+--WHERE ins_Name <> del_Name
+--  AND ins_Name1 <> ins_Name;
+WHERE ins_Name1 <> del_Name1
+  AND ins_Name1 <> ins_Name;
+
+SELECT * FROM ChangeLog;
+SELECT CustomerID, ins_BillingZIP, ins_BillingPostal2, del_BillingZIP, del_BillingPostal2,
+SUBSTRING(ins_BillingZIP,1,5) + SUBSTRING(ins_BillingZIP,6,4) AS Expr1
+FROM ChangeLog
+--WHERE ins_BillingZIP <> del_BillingZIP 
+--        AND ins_BillingPostal2 <>
+--            SUBSTRING(ins_BillingZIP,1,5) + '-' + SUBSTRING(ins_BillingZIP,6,4);
+      WHERE ins_BillingPostal2 <> del_BillingPostal2
+        AND ins_BillingCountryCode = 'us'
+        AND ins_BillingPostal2 <> 
+            SUBSTRING(ins_BillingZIP,1,5) + SUBSTRING(ins_BillingZIP,7,4);
+   END;
+
