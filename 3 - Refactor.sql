@@ -69,6 +69,9 @@ GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
+   BEGIN;
    IF UPDATE(Name) OR UPDATE(Name1)
    BEGIN;
       -- old columns updated: update new columns
@@ -176,6 +179,7 @@ BEGIN
         AND inserted.BillingCountryCode = 'us'
         AND ISNULL(inserted.BillingZIP,'') <> 
             SUBSTRING(inserted.BillingPostal2,1,5) + SUBSTRING(inserted.BillingPostal2,7,4);
+   END;
    END;
 END;
 GO
@@ -375,7 +379,10 @@ FROM ChangeLog
 --   2. Because of lesson #1, version control is probably a good idea
 --   3. Changelog table was a good debugging tool
 --   4. Need "WHERE Customer.CustomerId = inserted.CustomerId" clause to keep from
---      from changing every row.  Tests probably need to verify that rows
+--      from changing every row.  Tests probably need to verify all rows.
 --   5. LEFT OUTER JOIN needed, so ISNULL(deleted.field,...) needed in WHERE clauses.
---   6. Recursive triggers will loop in this case, apparently an UPDATE that 
---      changes no rows still invokes the trigger.
+--      Both needed to handle INSERT situation.
+--   6. An UPDATE that changes no rows still invokes the trigger. Without an IF at the
+--      top, the trigger will go into infinite recursion.  Alternatively, setting the
+--      database "ALTER DATABASE Demo1 SET RECURSIVE_TRIGGERS OFF" also works.  (OFF
+--      is the default setting.)
