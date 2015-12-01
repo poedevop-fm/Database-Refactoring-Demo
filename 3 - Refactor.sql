@@ -38,7 +38,7 @@ GO
 --  so that revised code can ignore old columns.
 ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_Name            DEFAULT('') FOR Name;
 ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress1 DEFAULT('') FOR BillingAddress1;
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress2 DEFAULT('') FOR BillingAddress1;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress2 DEFAULT('') FOR BillingAddress2;
 ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingCity     DEFAULT('') FOR BillingCity;
 ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingState    DEFAULT('') FOR BillingState;
 GO
@@ -48,14 +48,14 @@ GO
 --  Default constraints are named so that we can drop them later.
 --
 ALTER TABLE Customer  ADD
-   Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1            DEFAULT(''),
-   Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2            DEFAULT(''),
-   BillingAddress1_a  nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingAddres1_a DEFAULT(''),
-   BillingAddress2_a  nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingAddres2_a DEFAULT(''),
-   BillingCity_a      nvarchar(50) NOT NULL CONSTRAINT DF_Customer_BillingCity_a    DEFAULT(''),
-   BillingPostal1     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal1   DEFAULT(''),
-   BillingPostal2     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal2   DEFAULT(''),
-   BillingCountry     nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingCountry   DEFAULT(''),
+   Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1             DEFAULT(''),
+   Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2             DEFAULT(''),
+   BillingAddress1_a  nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingAddress1_a DEFAULT(''),
+   BillingAddress2_a  nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingAddress2_a DEFAULT(''),
+   BillingCity_a      nvarchar(50) NOT NULL CONSTRAINT DF_Customer_BillingCity_a     DEFAULT(''),
+   BillingPostal1     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal1    DEFAULT(''),
+   BillingPostal2     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal2    DEFAULT(''),
+   BillingCountry     nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingCountry    DEFAULT(''),
                           -- 'United Kingdom of Great Britain and Northern Ireland' is 53 chars
    BillingCountryCode nchar(2)     NOT NULL  
        CONSTRAINT DF_Customer_BillingCountryCode DEFAULT('us'); -- ISO 3166
@@ -64,7 +64,7 @@ GO
 --   Step 2: notify everyone of changes coming: old columns will be deleted
 --   Step 3: create triggers to keep everything in sync.
 IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
-      DROP TRIGGER SynchronizeCustomerAddress;
+   DROP TRIGGER SynchronizeCustomerAddress;
 GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
@@ -74,16 +74,18 @@ BEGIN
       -- old columns updated: update new columns
       UPDATE Customer
          SET Name1 = inserted.Name
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.Name <> deleted.Name
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.Name <> ISNULL(deleted.Name,'')
         AND inserted.Name1 <> inserted.Name;
       -- new columns updated: update old columns
       UPDATE Customer
          SET Name = inserted.Name1
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.Name1 <> deleted.Name1
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.Name1 <> ISNULL(deleted.Name1,'')
         AND inserted.Name1 <> inserted.Name;
    END;
 
@@ -92,16 +94,18 @@ BEGIN
       -- old columns updated: update new columns
       UPDATE Customer
          SET BillingAddress1_a = inserted.BillingAddress1
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingAddress1 <> deleted.BillingAddress1
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingAddress1 <> ISNULL(deleted.BillingAddress1,'')
         AND inserted.BillingAddress1_a <> inserted.BillingAddress1;
       -- new columns updated: update old columns
       UPDATE Customer
          SET BillingAddress1 = inserted.BillingAddress1_a
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingAddress1_a <> deleted.BillingAddress1_a
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingAddress1_a <> ISNULL(deleted.BillingAddress1_a,'')
         AND inserted.BillingAddress1_a <> inserted.BillingAddress1;
    END;
    
@@ -110,16 +114,18 @@ BEGIN
       -- old columns updated: update new columns
       UPDATE Customer
          SET BillingAddress2_a = inserted.BillingAddress2
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingAddress2 <> deleted.BillingAddress2
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingAddress2 <> ISNULL(deleted.BillingAddress2,'')
         AND inserted.BillingAddress2_a <> inserted.BillingAddress2;
       -- new columns updated: update old columns
       UPDATE Customer
          SET BillingAddress2 = inserted.BillingAddress2_a
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingAddress2_a <> deleted.BillingAddress2_a
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingAddress2_a <> ISNULL(deleted.BillingAddress2_a,'')
         AND inserted.BillingAddress2_a <> inserted.BillingAddress2;
    END;
    
@@ -128,16 +134,18 @@ BEGIN
       -- old columns updated: update new columns
       UPDATE Customer
          SET BillingCity_a = inserted.BillingCity
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingCity <> deleted.BillingCity
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingCity <> ISNULL(deleted.BillingCity,'')
         AND inserted.BillingCity_a <> inserted.BillingCity;
       -- new columns updated: update old columns
       UPDATE Customer
          SET BillingCity = inserted.BillingCity_a
-      FROM inserted INNER JOIN deleted
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingCity_a <> deleted.BillingCity_a
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingCity_a <> ISNULL(deleted.BillingCity_a,'')
         AND inserted.BillingCity_a <> inserted.BillingCity;
    END;
    
@@ -145,36 +153,44 @@ BEGIN
    BEGIN;
       -- old columns updated: update new columns
       UPDATE Customer
-         SET BillingPostal2 = SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
-      FROM inserted INNER JOIN deleted
+         SET BillingPostal2 = 
+         CASE WHEN inserted.BillingZIP IS NULL THEN ''
+              WHEN SUBSTRING(inserted.BillingZIP,6,4) > '' THEN SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
+              ELSE inserted.BillingZIP END
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingZIP <> deleted.BillingZIP 
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingZIP <> ISNULL(deleted.BillingZIP, '')
         AND inserted.BillingPostal2 <>
-            SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
+              CASE WHEN inserted.BillingZIP IS NULL THEN ''
+                   WHEN LEN(inserted.BillingZIP) > 5 AND SUBSTRING(inserted.BillingZIP,6,4) > '' THEN SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
+                   ELSE inserted.BillingZIP END
         AND inserted.BillingZIP >= '0';
       -- new columns updated: update old columns
       UPDATE Customer
-         SET BillingZIP = SUBSTRING(inserted.BillingZIP,1,5) + SUBSTRING(inserted.BillingZIP,7,4)
-      FROM inserted INNER JOIN deleted
+         SET BillingZIP = SUBSTRING(inserted.BillingPostal2,1,5) + SUBSTRING(inserted.BillingPostal2,7,4)
+      FROM inserted LEFT OUTER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE inserted.BillingPostal2 <> deleted.BillingPostal2
+      WHERE Customer.CustomerId = inserted.CustomerId
+        AND inserted.BillingPostal2 <> ISNULL(deleted.BillingPostal2, '')
         AND inserted.BillingCountryCode = 'us'
-        AND inserted.BillingPostal2 <> 
-            SUBSTRING(inserted.BillingZIP,1,5) + SUBSTRING(inserted.BillingZIP,7,4);
+        AND ISNULL(inserted.BillingZIP,'') <> 
+            SUBSTRING(inserted.BillingPostal2,1,5) + SUBSTRING(inserted.BillingPostal2,7,4);
    END;
 END;
 GO
 --
---   Convert: That is, add data to new fields
+--   Step 4: Convert. That is, add data to new fields
 --   WHERE clauses cover case where updates occur before conversion finishes
 --
 UPDATE Customer  SET Name1 = Name                        WHERE Name1 = '' AND Name <> '';
 UPDATE Customer  SET BillingAddress1_a = BillingAddress1 WHERE BillingAddress1_a = '' AND BillingAddress1 <> '';
 UPDATE Customer  SET BillingAddress2_a = BillingAddress2 WHERE BillingAddress2_a = '' AND BillingAddress2 <> '';
 UPDATE Customer  SET BillingCity_a     = BillingCity     WHERE BillingCity_a = '' AND BillingCity <> '';
-UPDATE Customer  SET BillingPostal2    = BillingZIP
-WHERE BillingPostal2 IS NULL
-  AND BillingZIP     > '';
+UPDATE Customer  SET BillingPostal2    = CASE WHEN SUBSTRING(BillingZIP,6,4) <= '' THEN BillingZIP
+                                         ELSE SUBSTRING(BillingZIP,1,5) + '-' + SUBSTRING(BillingZIP,6,4)
+                                         END
+WHERE BillingPostal2 = ''  AND BillingZIP > '';
 GO
 --
 --  Add a customer using old fields
@@ -188,6 +204,7 @@ VALUES
 GO
 SELECT * FROM Customer;
 GO
+--   Step 5: developers / DBAs change programs and stored procedures
 --
 --  Add a customer using new fields
 --
@@ -214,6 +231,9 @@ WHERE Name = 'BigBusiness';
 GO
 SELECT * FROM Customer;
 GO
+--
+--   Update using new fields
+--
 UPDATE Customer
    SET BillingAddress1_a = '222 Veronica Lake'
 WHERE Name1 = 'Bullwinke J. Moose';
@@ -221,7 +241,7 @@ GO
 SELECT * FROM Customer;
 GO
 --
---   Program conversion complete: drop trigger and old fields
+--   Step 6: Program conversion complete: drop trigger and old fields
 --
 DROP TRIGGER SynchronizeCustomerAddress;
 GO
@@ -236,11 +256,11 @@ GO
 --
 --   Now remove the defaults (page 189)
 --
-SELECT CustomerID, Name1, BillingAddress1_a, BillingAddress2_a
+SELECT CustomerID, Name1, BillingAddress1_a, BillingCity_a
 FROM Customer 
 WHERE Name1 < '!'
    OR BillingAddress1_a  < '!'
-   OR BillingAddress2_a  < '!';
+   OR BillingCity_a      < '!';
 GO
 ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
 ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingAddress1_a;
@@ -325,7 +345,7 @@ AS BEGIN
          d.BillingState, d.BillingZIP,
          d.Name1, d.Name2, d.BillingAddress1_a, d.BillingAddress2_a, d.BillingCity_a,
          d.BillingPostal1,d.BillingPostal2,d.BillingCountry,d.BillingCountryCode
-  FROM inserted i INNER JOIN deleted d ON i.CustomerId = d.CustomerId;
+  FROM inserted i LEFT OUTER JOIN deleted d ON i.CustomerId = d.CustomerId;
 END;
 GO
 SELECT * FROM ChangeLog;
@@ -348,4 +368,14 @@ FROM ChangeLog
         AND ins_BillingPostal2 <> 
             SUBSTRING(ins_BillingZIP,1,5) + SUBSTRING(ins_BillingZIP,7,4);
    END;
-
+--
+--   Lessons learned:
+--   1. Automated unit tests is a good idea: you back up and start all over a lot
+--      You need to cover all cases: INSERT/UPDATE; old/new.
+--   2. Because of lesson #1, version control is probably a good idea
+--   3. Changelog table was a good debugging tool
+--   4. Need "WHERE Customer.CustomerId = inserted.CustomerId" clause to keep from
+--      from changing every row.  Tests probably need to verify that rows
+--   5. LEFT OUTER JOIN needed, so ISNULL(deleted.field,...) needed in WHERE clauses.
+--   6. Recursive triggers will loop in this case, apparently an UPDATE that 
+--      changes no rows still invokes the trigger.
