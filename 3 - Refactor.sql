@@ -33,14 +33,17 @@ GO
 --);
 --GO
 --
+--  Step 0: Makes changes that don't require a trigger or conversion.
+--
+ALTER TABLE Customer ALTER COLUMN BillingAddress1 nvarchar(64) NOT NULL;
+ALTER TABLE Customer ALTER COLUMN BillingAddress2 nvarchar(64) NOT NULL;
+ALTER TABLE Customer ALTER COLUMN BillingCity     nvarchar(64) NOT NULL;
+ALTER TABLE Customer ALTER COLUMN BillingState    nchar(2)     NOT NULL;
+--
 --  Step 1: Expand.
 --  Using "Refactoring Databases", page 177, "Introduce Null Value"s
 --  so that revised code can ignore old columns.
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_Name            DEFAULT('') FOR Name;
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress1 DEFAULT('') FOR BillingAddress1;
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingAddress2 DEFAULT('') FOR BillingAddress2;
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingCity     DEFAULT('') FOR BillingCity;
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_BillingState    DEFAULT('') FOR BillingState;
+ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_Name DEFAULT('') FOR Name;
 GO
 --  Using "Refactoring Databases", page 126, "Replace Column",
 --  first introduce new columns.
@@ -50,9 +53,6 @@ GO
 ALTER TABLE Customer  ADD
    Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1             DEFAULT(''),
    Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2             DEFAULT(''),
-   BillingAddress1_a  nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingAddress1_a DEFAULT(''),
-   BillingAddress2_a  nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingAddress2_a DEFAULT(''),
-   BillingCity_a      nvarchar(50) NOT NULL CONSTRAINT DF_Customer_BillingCity_a     DEFAULT(''),
    BillingPostal1     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal1    DEFAULT(''),
    BillingPostal2     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal2    DEFAULT(''),
    BillingCountry     nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingCountry    DEFAULT(''),
@@ -92,66 +92,6 @@ BEGIN
         AND inserted.Name1 <> inserted.Name;
    END;
 
-   IF UPDATE(BillingAddress1) OR UPDATE(BillingAddress1_a)
-   BEGIN;
-      -- old columns updated: update new columns
-      UPDATE Customer
-         SET BillingAddress1_a = inserted.BillingAddress1
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingAddress1 <> ISNULL(deleted.BillingAddress1,'')
-        AND inserted.BillingAddress1_a <> inserted.BillingAddress1;
-      -- new columns updated: update old columns
-      UPDATE Customer
-         SET BillingAddress1 = inserted.BillingAddress1_a
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingAddress1_a <> ISNULL(deleted.BillingAddress1_a,'')
-        AND inserted.BillingAddress1_a <> inserted.BillingAddress1;
-   END;
-   
-   IF UPDATE(BillingAddress2) OR UPDATE(BillingAddress2_a)
-   BEGIN;
-      -- old columns updated: update new columns
-      UPDATE Customer
-         SET BillingAddress2_a = inserted.BillingAddress2
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingAddress2 <> ISNULL(deleted.BillingAddress2,'')
-        AND inserted.BillingAddress2_a <> inserted.BillingAddress2;
-      -- new columns updated: update old columns
-      UPDATE Customer
-         SET BillingAddress2 = inserted.BillingAddress2_a
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingAddress2_a <> ISNULL(deleted.BillingAddress2_a,'')
-        AND inserted.BillingAddress2_a <> inserted.BillingAddress2;
-   END;
-   
-   IF UPDATE(BillingCity) OR UPDATE(BillingCity_a)
-   BEGIN;
-      -- old columns updated: update new columns
-      UPDATE Customer
-         SET BillingCity_a = inserted.BillingCity
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingCity <> ISNULL(deleted.BillingCity,'')
-        AND inserted.BillingCity_a <> inserted.BillingCity;
-      -- new columns updated: update old columns
-      UPDATE Customer
-         SET BillingCity = inserted.BillingCity_a
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingCity_a <> ISNULL(deleted.BillingCity_a,'')
-        AND inserted.BillingCity_a <> inserted.BillingCity;
-   END;
-   
    IF UPDATE(BillingZIP) OR UPDATE(BillingPostal2)
    BEGIN;
       -- old columns updated: update new columns
@@ -187,13 +127,14 @@ GO
 --   Step 4: Convert. That is, add data to new fields
 --   WHERE clauses cover case where updates occur before conversion finishes
 --
-UPDATE Customer  SET Name1 = Name                        WHERE Name1 = '' AND Name <> '';
-UPDATE Customer  SET BillingAddress1_a = BillingAddress1 WHERE BillingAddress1_a = '' AND BillingAddress1 <> '';
-UPDATE Customer  SET BillingAddress2_a = BillingAddress2 WHERE BillingAddress2_a = '' AND BillingAddress2 <> '';
-UPDATE Customer  SET BillingCity_a     = BillingCity     WHERE BillingCity_a = '' AND BillingCity <> '';
-UPDATE Customer  SET BillingPostal2    = CASE WHEN SUBSTRING(BillingZIP,6,4) <= '' THEN BillingZIP
-                                         ELSE SUBSTRING(BillingZIP,1,5) + '-' + SUBSTRING(BillingZIP,6,4)
-                                         END
+UPDATE Customer
+  SET Name1 = Name
+WHERE Name1 = '' AND Name <> '';
+--
+UPDATE Customer  
+  SET BillingPostal2 = CASE WHEN SUBSTRING(BillingZIP,6,4) <= '' THEN BillingZIP
+                            ELSE SUBSTRING(BillingZIP,1,5) + '-' + SUBSTRING(BillingZIP,6,4)
+                       END
 WHERE BillingPostal2 = ''  AND BillingZIP > '';
 GO
 --
@@ -215,14 +156,14 @@ GO
 SELECT * FROM Customer;
 GO
 INSERT INTO Customer
-(Name1,BillingAddress1_a,BillingAddress2_a, BillingCity_a, BillingState,BillingPostal2)
+(Name1,BillingAddress1,BillingAddress2, BillingCity, BillingState,BillingPostal2)
 VALUES
 ('Bullwinke J. Moose', '1 Veronica Lake', '', 'Frostbite Falls','MN','56649-1111');
 GO
 INSERT INTO Customer
-(Name1,Name2,BillingAddress1_a,BillingCity_a,BillingState,BillingPostal2,BillingCountry,BillingCountryCode)
+(Name1,Name2,BillingAddress1,BillingAddress2,BillingCity,BillingState,BillingPostal2,BillingCountry,BillingCountryCode)
 VALUES
-('Dudley Doright','RCMP', '1 Headquarters Road','Toronto','ON','M3C 0C1','CANADA','ca');
+('Dudley Doright','RCMP', '1 Headquarters Road','','Toronto','ON','M3C 0C1','CANADA','ca');
 GO
 SELECT * FROM Customer;
 GO
@@ -233,14 +174,22 @@ UPDATE Customer
    SET BillingAddress1 = '2 Second Street'
 WHERE Name = 'BigBusiness';
 GO
+UPDATE Customer
+   SET BillingZIP = '222223333'
+WHERE Name = 'Dr. John H. Watson'
+GO
 SELECT * FROM Customer;
 GO
 --
 --   Update using new fields
 --
 UPDATE Customer
-   SET BillingAddress1_a = '222 Veronica Lake'
+   SET BillingAddress1 = '222 Veronica Lake'
 WHERE Name1 = 'Bullwinke J. Moose';
+GO
+UPDATE Customer
+   SET BillingPostal2 = '12345-9876'
+WHERE Name1 = 'Fidgett, Panneck, and Runn'
 GO
 SELECT * FROM Customer;
 GO
@@ -250,25 +199,17 @@ GO
 DROP TRIGGER SynchronizeCustomerAddress;
 GO
 ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_Name;
-ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingAddress1;
-ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingAddress2;
-ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingCity;
-ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingState;
 GO
-ALTER TABLE Customer DROP COLUMN Name, BillingAddress1, BillingAddress2, BillingCity, BillingZIP;
+ALTER TABLE Customer DROP COLUMN Name, BillingZIP;
 GO
 --
 --   Now remove the defaults (page 189)
 --
-SELECT CustomerID, Name1, BillingAddress1_a, BillingCity_a
+SELECT CustomerID, Name1
 FROM Customer 
-WHERE Name1 < '!'
-   OR BillingAddress1_a  < '!'
-   OR BillingCity_a      < '!';
+WHERE Name1 < '!';
 GO
 ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
-ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingAddress1_a;
-ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingCity_a;
 GO
 -------------------------------------------------------------------------------
 -- Making a column longer is always allowed. Making it shorter requires you to
