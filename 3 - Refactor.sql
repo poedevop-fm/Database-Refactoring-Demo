@@ -2,15 +2,9 @@
 --   Change Initial table schema and contents
 --
 -- USPS Publication 28 - Postal Addressing Standards
--- Section 2.1.1
--- http://pe.usps.gov/text/pub28/28c2_001.htm
+-- Section 2.1.1   http://pe.usps.gov/text/pub28/28c2_001.htm
 -- minimum of 30. Optimal is 64.
-
--- attention line
--- company name
--- secondary address line
--- primary address line
--- city-state-zip
+--
 --
 ALTER DATABASE Demo1 SET RECURSIVE_TRIGGERS OFF;
 GO
@@ -31,17 +25,31 @@ GO
 --   BillingCountry   nvarchar(64),  -- 'United Kingdom of Great Britain and Northern Ireland' is 53
 --   BillingCountryCode nchar(2) NOT NULL DEFAULT('us'); -- ISO 3166
 --);
---GO
 --
---  Step 0: Makes changes that don't require a trigger or conversion.
+--
+--   Expand-migrate-contract pattern: see http://martinfowler.com/bliki/ParallelChange.html
+--
+--
+--  (Step 1): [Developers] create a feature flag
+--  A database table is one of several ways of implementing feature flags
+--
+IF OBJECT_ID('Features','U') IS NOT NULL DROP TABLE Customer;
+CREATE TABLE Features (
+    LongBillingAddress bit
+);
+GO
+INSERT INTO Features (LongBillingAddress) VALUES(0);
+GO
+--
+--  (Step 2): Makes changes that don't require a trigger or conversion.
 --
 ALTER TABLE Customer ALTER COLUMN BillingAddress1 nvarchar(64) NOT NULL;
 ALTER TABLE Customer ALTER COLUMN BillingAddress2 nvarchar(64) NOT NULL;
 ALTER TABLE Customer ALTER COLUMN BillingCity     nvarchar(64) NOT NULL;
 ALTER TABLE Customer ALTER COLUMN BillingState    nchar(2)     NOT NULL;
 --
---  Step 1: Expand.
---  Using "Refactoring Databases", page 177, "Introduce Null Value"s
+--  Step 3: Expand.
+--  Using "Refactoring Databases", page 186, "Introduce Default Value"
 --  so that revised code can ignore old columns.
 ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_Name DEFAULT('') FOR Name;
 GO
@@ -61,14 +69,15 @@ ALTER TABLE Customer  ADD
        CONSTRAINT DF_Customer_BillingCountryCode DEFAULT('us'); -- ISO 3166
 GO
 --
---   Step 2: notify everyone of changes coming: old columns will be deleted
---   Step 3: create triggers to keep everything in sync.
+--   Step 4: notify everyone of changes coming: old columns will be deleted
+--   Step 5: create triggers to keep everything in sync.
 IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
    DROP TRIGGER SynchronizeCustomerAddress;
 GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
@@ -124,7 +133,7 @@ BEGIN
 END;
 GO
 --
---   Step 4: Convert. That is, add data to new fields
+--   Step 6: Convert. That is, add data to new columns
 --   WHERE clauses cover case where updates occur before conversion finishes
 --
 UPDATE Customer
@@ -138,7 +147,7 @@ UPDATE Customer
 WHERE BillingPostal2 = ''  AND BillingZIP > '';
 GO
 --
---  Add a customer using old fields
+--  Add a customer using old columns
 --
 SELECT * FROM Customer;
 GO
@@ -149,9 +158,9 @@ VALUES
 GO
 SELECT * FROM Customer;
 GO
---   Step 5: developers / DBAs change programs and stored procedures
+--   Step 7: Migrate: developers / DBAs change programs and stored procedures
 --
---  Add a customer using new fields
+--  Add a customer using new columns
 --
 SELECT * FROM Customer;
 GO
@@ -168,7 +177,7 @@ GO
 SELECT * FROM Customer;
 GO
 --
---  Update using old fields
+--  Update using old columns
 --
 UPDATE Customer
    SET BillingAddress1 = '2 Second Street'
@@ -181,7 +190,7 @@ GO
 SELECT * FROM Customer;
 GO
 --
---   Update using new fields
+--   Update using new columns
 --
 UPDATE Customer
    SET BillingAddress1 = '222 Veronica Lake'
@@ -194,16 +203,22 @@ GO
 SELECT * FROM Customer;
 GO
 --
---   Step 6: Program conversion complete: drop trigger and old fields
+--   (Step 9): Program conversion complete: Activate feature flag
+--
+UPDATE Features
+  SET LongBillingAddress = 1;
+GO
+--
+--   Step 8: Drop trigger, old columns, and defaults
 --
 DROP TRIGGER SynchronizeCustomerAddress;
 GO
 ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_Name;
 GO
-ALTER TABLE Customer DROP COLUMN Name, BillingZIP;
+ALTER TABLE Customer  DROP COLUMN Name, BillingZIP;
 GO
 --
---   Now remove the defaults (page 189)
+--          Now remove the defaults (page 189)
 --
 SELECT CustomerID, Name1
 FROM Customer 
@@ -211,6 +226,10 @@ WHERE Name1 < '!';
 GO
 ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
 GO
+--
+--
+--
+--
 -------------------------------------------------------------------------------
 -- Making a column longer is always allowed. Making it shorter requires you to
 -- DROP STATISTICS for that column. Also there are problems if the column is
@@ -312,7 +331,7 @@ FROM ChangeLog
         AND ins_BillingCountryCode = 'us'
         AND ins_BillingPostal2 <> 
             SUBSTRING(ins_BillingZIP,1,5) + SUBSTRING(ins_BillingZIP,7,4);
-   END;
+--
 --
 --   Lessons learned:
 --   1. Automated unit tests is a good idea: you back up and start all over a lot
@@ -321,7 +340,7 @@ FROM ChangeLog
 --   3. Changelog table was a good debugging tool
 --   4. Need "WHERE Customer.CustomerId = inserted.CustomerId" clause to keep from
 --      from changing every row.  Tests probably need to verify all rows.
---   5. LEFT OUTER JOIN needed, so ISNULL(deleted.field,...) needed in WHERE clauses.
+--   5. LEFT OUTER JOIN needed, so ISNULL(deleted.column,...) needed in WHERE clauses.
 --      Both needed to handle INSERT situation.
 --   6. An UPDATE that changes no rows still invokes the trigger. Without an IF at the
 --      top, the trigger will go into infinite recursion.  Alternatively, setting the

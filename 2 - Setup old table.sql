@@ -6,7 +6,7 @@ GO
 --
 --   Create table
 --
-IF OBJECT_ID('Customer',       'U') IS NOT NULL DROP TABLE Customer;
+IF OBJECT_ID('Customer','U') IS NOT NULL DROP TABLE Customer;
 --
 CREATE TABLE Customer
 (
