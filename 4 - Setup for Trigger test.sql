@@ -28,14 +28,6 @@ VALUES
    ('BigBusiness',               '456 Second Street','',     'Metropolis','YY','987654321');
 GO
 --
---   Perform conversion steps that don't require a trigger
---
-ALTER TABLE Customer ALTER COLUMN BillingAddress1 nvarchar(64) NOT NULL;
-ALTER TABLE Customer ALTER COLUMN BillingAddress2 nvarchar(64) NOT NULL;
-ALTER TABLE Customer ALTER COLUMN BillingCity     nvarchar(64) NOT NULL;
-ALTER TABLE Customer ALTER COLUMN BillingState    nchar(2)     NOT NULL;
-GO
---
 --  Step 1: Expand: add columns and defaults to table
 --  Using "Refactoring Databases", page 186, "Introduce Default Value"
 --  so that revised code can ignore old columns.

@@ -1,58 +1,18 @@
 --   Demo of incremental table change
 --   Change Initial table schema and contents
 --
--- USPS Publication 28 - Postal Addressing Standards
--- Section 2.1.1   http://pe.usps.gov/text/pub28/28c2_001.htm
--- minimum of 30. Optimal is 64.
---
 --
 ALTER DATABASE Demo1 SET RECURSIVE_TRIGGERS OFF;
 GO
 USE Demo1;
 GO
 --
---   Eventually we want this:
---CREATE TABLE Customer
---(
---   CustomerId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
---   Name1            nvarchar(64) NOT NULL,
---   Name2            nvarchar(64) NOT NULL,
---   BillingAddress1  nvarchar(64) NOT NULL,
---   BillingAddress2  nvarchar(64) NOT NULL,
---   BillingCity      nvarchar(50) NOT NULL,
---   BillingPostal1   nvarchar(11),
---   BillingPostal2   nvarchar(11),
---   BillingCountry   nvarchar(64),  -- 'United Kingdom of Great Britain and Northern Ireland' is 53
---   BillingCountryCode nchar(2) NOT NULL DEFAULT('us'); -- ISO 3166
---);
+--   Goal: Replace Name with two columns: Name1 and Name2
+--         Replace ZIP with Postal1, Postal2
+--         Add BillingCountry and BillingCountryCode columns.
 --
+--  Step 1: Expand.
 --
---   Expand-migrate-contract pattern: see http://martinfowler.com/bliki/ParallelChange.html
---
---
---  (Step 1): [Developers] create a feature flag
---  A database table is one of several ways of implementing feature flags
---
-IF OBJECT_ID('Features','U') IS NOT NULL DROP TABLE Customer;
-CREATE TABLE Features (
-    LongBillingAddress bit
-);
-GO
-INSERT INTO Features (LongBillingAddress) VALUES(0);
-GO
---
---  (Step 2): Makes changes that don't require a trigger or conversion.
---
-ALTER TABLE Customer ALTER COLUMN BillingAddress1 nvarchar(64) NOT NULL;
-ALTER TABLE Customer ALTER COLUMN BillingAddress2 nvarchar(64) NOT NULL;
-ALTER TABLE Customer ALTER COLUMN BillingCity     nvarchar(64) NOT NULL;
-ALTER TABLE Customer ALTER COLUMN BillingState    nchar(2)     NOT NULL;
---
---  Step 3: Expand.
---  Using "Refactoring Databases", page 186, "Introduce Default Value"
---  so that revised code can ignore old columns.
-ALTER TABLE Customer  ADD CONSTRAINT DF_Customer_Name DEFAULT('') FOR Name;
-GO
 --  Using "Refactoring Databases", page 126, "Replace Column",
 --  first introduce new columns.
 --  defaults allowed only so that triggers can recognize what needs to be updated.

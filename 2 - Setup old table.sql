@@ -11,10 +11,10 @@ IF OBJECT_ID('Customer','U') IS NOT NULL DROP TABLE Customer;
 CREATE TABLE Customer
 (
    CustomerId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-   Name      varchar(30) NOT NULL,
-   BillingAddress1  varchar(30) NOT NULL,
-   BillingAddress2  varchar(30) NOT NULL,
-   BillingCity      varchar(30) NOT NULL,
+   Name             nvarchar(64) NOT NULL,
+   BillingAddress1  nvarchar(64) NOT NULL,
+   BillingAddress2  nvarchar(64) NOT NULL,
+   BillingCity      nvarchar(64) NOT NULL,
    BillingState     char(2) NOT NULL,
    BillingZIP       char(9)
 );
