@@ -13,10 +13,10 @@ GO
 --
 --   Define test scripts
 --
-IF OBJECT_ID(N'testCustomerTrigger.[Setup should load Customer table]','P') IS NOT NULL
-   DROP PROCEDURE testCustomerTrigger.[Setup should load Customer table];
+IF OBJECT_ID(N'testCustomerTrigger.[test that Setup loads Customer table]','P') IS NOT NULL
+   DROP PROCEDURE testCustomerTrigger.[test that Setup loads Customer table];
 GO
-CREATE PROCEDURE testCustomerTrigger.[Setup should load Customer table]
+CREATE PROCEDURE testCustomerTrigger.[test that Setup loads Customer table]
 AS
 BEGIN
     --Arrange

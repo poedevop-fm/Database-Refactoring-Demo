@@ -18,6 +18,7 @@ GO
 --  defaults allowed only so that triggers can recognize what needs to be updated.
 --  Default constraints are named so that we can drop them later.
 --
+--   Add new columns
 ALTER TABLE Customer  ADD
    Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1             DEFAULT(''),
    Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2             DEFAULT(''),
@@ -29,8 +30,15 @@ ALTER TABLE Customer  ADD
        CONSTRAINT DF_Customer_BillingCountryCode DEFAULT('us'); -- ISO 3166
 GO
 --
---   Step 4: notify everyone of changes coming: old columns will be deleted
---   Step 5: create triggers to keep everything in sync.
+--  Add DEFAULT constraint
+--  so that INSERTing new rows using only the new columns will not fail.
+--
+ALTER TABLE Customer ADD CONSTRAINT DF_Customer_Name DEFAULT '' FOR Name;
+GO
+SELECT * FROM Customer;
+GO
+--
+--   Step 2: create triggers to keep everything in sync.
 IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
    DROP TRIGGER SynchronizeCustomerAddress;
 GO
@@ -93,7 +101,7 @@ BEGIN
 END;
 GO
 --
---   Step 6: Convert. That is, add data to new columns
+--   Step 3: Convert. That is, add data to new columns
 --   WHERE clauses cover case where updates occur before conversion finishes
 --
 UPDATE Customer
@@ -106,11 +114,12 @@ UPDATE Customer
                        END
 WHERE BillingPostal2 = ''  AND BillingZIP > '';
 GO
+SELECT * FROM Customer;
+GO
+--   Step 4: notify everyone of changes coming: old columns will be deleted
 --
 --  Add a customer using old columns
 --
-SELECT * FROM Customer;
-GO
 INSERT INTO Customer
 (Name,BillingAddress1,BillingAddress2,BillingCity,BillingState,BillingZIP)
 VALUES
@@ -118,7 +127,7 @@ VALUES
 GO
 SELECT * FROM Customer;
 GO
---   Step 7: Migrate: developers / DBAs change programs and stored procedures
+--   Step 5: Migrate: developers / DBAs change programs and stored procedures
 --
 --  Add a customer using new columns
 --
@@ -163,17 +172,9 @@ GO
 SELECT * FROM Customer;
 GO
 --
---   (Step 9): Program conversion complete: Activate feature flag
---
-UPDATE Features
-  SET LongBillingAddress = 1;
-GO
---
---   Step 8: Drop trigger, old columns, and defaults
+--   Step 6: Drop trigger, old columns, and defaults
 --
 DROP TRIGGER SynchronizeCustomerAddress;
-GO
-ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_Name;
 GO
 ALTER TABLE Customer  DROP COLUMN Name, BillingZIP;
 GO
