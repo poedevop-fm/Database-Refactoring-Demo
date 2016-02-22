@@ -131,8 +131,6 @@ GO
 --
 --  Add a customer using new columns
 --
-SELECT * FROM Customer;
-GO
 INSERT INTO Customer
 (Name1,BillingAddress1,BillingAddress2, BillingCity, BillingState,BillingPostal2)
 VALUES
@@ -176,6 +174,8 @@ GO
 --
 DROP TRIGGER SynchronizeCustomerAddress;
 GO
+ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name;
+GO
 ALTER TABLE Customer  DROP COLUMN Name, BillingZIP;
 GO
 --
@@ -186,6 +186,8 @@ FROM Customer
 WHERE Name1 < '!';
 GO
 ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
+GO
+SELECT * FROM Customer;
 GO
 --
 --
