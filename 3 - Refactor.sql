@@ -117,6 +117,7 @@ GO
 SELECT * FROM Customer;
 GO
 --   Step 4: notify everyone of changes coming: old columns will be deleted
+--   Step 5: Migrate: developers / DBAs change programs and stored procedures
 --
 --  Add a customer using old columns
 --
@@ -127,7 +128,6 @@ VALUES
 GO
 SELECT * FROM Customer;
 GO
---   Step 5: Migrate: developers / DBAs change programs and stored procedures
 --
 --  Add a customer using new columns
 --
@@ -145,6 +145,8 @@ SELECT * FROM Customer;
 GO
 --
 --  Update using old columns
+--            (Old value of Address1 was "456 Second Street"
+--            (Old ZIP was 22222)
 --
 UPDATE Customer
    SET BillingAddress1 = '2 Second Street'
@@ -154,15 +156,19 @@ UPDATE Customer
    SET BillingZIP = '222223333'
 WHERE Name = 'Dr. John H. Watson'
 GO
+--
 SELECT * FROM Customer;
 GO
 --
 --   Update using new columns
+--                  (Old address was '1 Veronica Lake'
+--                  (Old PostalCode2 was 12345)
 --
 UPDATE Customer
    SET BillingAddress1 = '222 Veronica Lake'
 WHERE Name1 = 'Bullwinke J. Moose';
 GO
+--
 UPDATE Customer
    SET BillingPostal2 = '12345-9876'
 WHERE Name1 = 'Fidgett, Panneck, and Runn'
@@ -179,7 +185,7 @@ GO
 ALTER TABLE Customer  DROP COLUMN Name, BillingZIP;
 GO
 --
---          Now remove the defaults (page 189)
+--          Now remove the default for the new column (page 189)
 --
 SELECT CustomerID, Name1
 FROM Customer 
