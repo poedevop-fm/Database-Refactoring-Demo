@@ -20,14 +20,14 @@ GO
 --
 --   Add new columns
 ALTER TABLE Customer  ADD
-   Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1             DEFAULT(''),
-   Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2             DEFAULT(''),
-   BillingPostal1     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal1    DEFAULT(''),
-   BillingPostal2     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal2    DEFAULT(''),
-   BillingCountry     nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingCountry    DEFAULT(''),
+   Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1          DEFAULT '',
+   Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2          DEFAULT '',
+   BillingPostal1     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal1 DEFAULT '',
+   BillingPostal2     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal2 DEFAULT '',
+   BillingCountry     nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingCountry DEFAULT '',
                           -- 'United Kingdom of Great Britain and Northern Ireland' is 53 chars
    BillingCountryCode nchar(2)     NOT NULL  
-       CONSTRAINT DF_Customer_BillingCountryCode DEFAULT('us'); -- ISO 3166
+       CONSTRAINT DF_Customer_BillingCountryCode DEFAULT 'us'; -- ISO 3166
 GO
 --
 --  Add DEFAULT constraint
@@ -45,10 +45,12 @@ GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET NOCOUNT ON:    -- Normally present.
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
+   --
    IF UPDATE(Name) OR UPDATE(Name1)
    BEGIN;
       -- old columns updated: update new columns
@@ -119,7 +121,7 @@ GO
 --   Step 4: notify everyone of changes coming: old columns will be deleted
 --   Step 5: Migrate: developers / DBAs change programs and stored procedures
 --
---  Add a customer using old columns
+--   Add a customer using old columns
 --
 INSERT INTO Customer
 (Name,BillingAddress1,BillingAddress2,BillingCity,BillingState,BillingZIP)
@@ -145,7 +147,7 @@ SELECT * FROM Customer;
 GO
 --
 --  Update using old columns
---            (Old value of Address1 was "456 Second Street"
+--            (Old value of Address1 was "456 Second Street" - trigger does nothing)
 --            (Old ZIP was 22222)
 --
 UPDATE Customer
@@ -154,14 +156,14 @@ WHERE Name = 'BigBusiness';
 GO
 UPDATE Customer
    SET BillingZIP = '222223333'
-WHERE Name = 'Dr. John H. Watson'
+WHERE Name = 'Dr. John H. Watson';
 GO
 --
 SELECT * FROM Customer;
 GO
 --
 --   Update using new columns
---                  (Old address was '1 Veronica Lake'
+--                  (Old address was '1 Veronica Lake' - trigger does nothing)
 --                  (Old PostalCode2 was 12345)
 --
 UPDATE Customer
@@ -171,7 +173,7 @@ GO
 --
 UPDATE Customer
    SET BillingPostal2 = '12345-9876'
-WHERE Name1 = 'Fidgett, Panneck, and Runn'
+WHERE Name1 = 'Fidgett, Panneck, and Runn';
 GO
 SELECT * FROM Customer;
 GO
