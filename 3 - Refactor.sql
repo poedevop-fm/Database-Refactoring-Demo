@@ -45,7 +45,7 @@ GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
-   --SET NOCOUNT ON:    -- Normally present.
+   --SET NOCOUNT ON;    -- Normally present.
    --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 

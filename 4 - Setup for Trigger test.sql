@@ -6,7 +6,22 @@ GO
 --
 --   Create table
 --
-IF OBJECT_ID('Customer','U') IS NOT NULL DROP TABLE Customer;
+IF OBJECT_ID('DF_Customer_BillingCountry', 'D') IS NOT NULL
+    ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingCountry;
+IF OBJECT_ID('DF_Customer_BillingCountryCode', 'D') IS NOT NULL
+    ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingCountryCode;
+IF OBJECT_ID('DF_Customer_BillingPostal1', 'D') IS NOT NULL
+    ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingPostal1;
+IF OBJECT_ID('DF_Customer_BillingPostal2', 'D') IS NOT NULL
+    ALTER TABLE Customer DROP CONSTRAINT DF_Customer_BillingPostal2;
+IF OBJECT_ID('DF_Customer_Name1', 'D') IS NOT NULL
+    ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
+IF OBJECT_ID('DF_Customer_Name2', 'D') IS NOT NULL
+    ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name2;
+--
+IF OBJECT_ID('Customer','U') IS NOT NULL 
+   DROP TABLE Customer;
+--
 CREATE TABLE Customer
 (
    CustomerId       int IDENTITY(1,1) NOT NULL PRIMARY KEY,
