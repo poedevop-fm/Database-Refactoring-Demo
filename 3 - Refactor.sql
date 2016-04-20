@@ -1,6 +1,7 @@
 --   Demo of incremental table change
 --   Change Initial table schema and contents
 --
+--   TODO: add some more refactorings
 --
 ALTER DATABASE Demo1 SET RECURSIVE_TRIGGERS OFF;
 GO

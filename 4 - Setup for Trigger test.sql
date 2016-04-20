@@ -18,9 +18,11 @@ IF OBJECT_ID('DF_Customer_Name1', 'D') IS NOT NULL
     ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
 IF OBJECT_ID('DF_Customer_Name2', 'D') IS NOT NULL
     ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name2;
+GO
 --
 IF OBJECT_ID('Customer','U') IS NOT NULL 
    DROP TABLE Customer;
+GO
 --
 CREATE TABLE Customer
 (
@@ -32,6 +34,7 @@ CREATE TABLE Customer
    BillingState     char(2) NOT NULL,
    BillingZIP       char(9)
 );
+GO
 --
 --   Add sample data
 --
