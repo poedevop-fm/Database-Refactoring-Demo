@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+<title>ParallelChange</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta content="summary_large_image" name="twitter:card">
+
+<meta content="16665197" name="twitter:site:id">
+
+<meta content="bliki: ParallelChange" property="og:title">
+
+<meta content="http://martinfowler.com/bliki/ParallelChange.html" property="og:url">
+
+<meta content="a bliki entry for ParallelChange" property="og:description">
+
+<meta content="http://martinfowler.com/bliki/images/parallelChange/expand.png" property="og:image">
+
+<meta content="martinfowler.com" property="og:site_name">
+
+<meta content="article" property="og:type">
+
+<meta content="2014-05-13 23:44:00 +1000" property="og:article:modified_time">
+
+<link href="ParallelChange_files/bliki-entry.css" rel="stylesheet" type="text/css">
+</head>
+
+<body><div id="banner" style="background-image: url(&quot;../img/tate.png&quot;); background-repeat: no-repeat">
+ <a href="http://martinfowler.com/">
+    <img class="name-logo" src="ParallelChange_files/mf-name-white.png">
+<!--[if lte IE 6]>
+<img class = 'ie6-name-logo' src = '/mf-name-white-solid.png'/>
+<![endif]-->
+  </a>
+  
+  <div class="search">
+    <!-- SiteSearch Google -->
+    <form method="GET" action="http://www.google.com/search">
+      <input name="ie" value="UTF-8" type="hidden">
+      <input name="oe" value="UTF-8" type="hidden">
+      <input class="field" name="q" size="15" maxlength="255" type="text">
+      <button class="button" type="submit" name="btnG" value=" " title="Search">
+      <input name="domains" value="martinfowler.com" type="hidden">
+      <input name="sitesearch" value="" type="hidden"> 
+      <input name="sitesearch" value="martinfowler.com" type="hidden">
+    
+  </button></form></div>
+
+<div class="menu-button navmenu-button"><a class="icon-bars" href="#navmenu-bottom"></a></div>
+
+<div class="main-navigation"><ul>
+  <li><a href="http://martinfowler.com/intro.html">Intro</a></li>
+  <li><a href="http://martinfowler.com/videos.html">Videos</a></li>
+  <li><a href="http://martinfowler.com/design.html">Design</a></li>
+  <li><a href="http://martinfowler.com/agile.html">Agile</a></li>
+  <li><a href="http://refactoring.com/">Refactoring</a></li>
+  <li>
+    <p><a href="http://martinfowler.com/aboutMe.html">About Me</a></p>
+
+    </li><li class="navmenu-button"><p><a href="#bottom-navmenu">All Sections <span class="icon-bars" title="Menu"></span></a></p></li>
+
+    <li><p>
+      <a href="http://www.thoughtworks.com/" class="tw">ThoughtWorks</a>
+</p></li>
+
+    <li><p>
+  <a href="http://martinfowler.com/feed.atom" title="feed" class="icon-rss">
+  </a>
+ </p></li>
+
+    <li><p>
+  <a href="http://www.twitter.com/martinfowler" title="Twitter stream" class="icon-twitter">
+  </a>
+ </p></li>
+  
+</ul>
+
+</div>
+</div>
+<div class="div" id="top-navmenu">
+<ul class="navmenu">
+<li class="top-line"><a class="link-home" href="http://martinfowler.com/">home</a>  <div class="search">
+    <!-- SiteSearch Google -->
+    <form method="GET" action="http://www.google.com/search">
+      <input name="ie" value="UTF-8" type="hidden">
+      <input name="oe" value="UTF-8" type="hidden">
+      <input class="field" name="q" size="15" maxlength="255" type="text">
+      <button class="button" type="submit" name="btnG" value=" " title="Search">
+      <input name="domains" value="martinfowler.com" type="hidden">
+      <input name="sitesearch" value="" type="hidden"> 
+      <input name="sitesearch" value="martinfowler.com" type="hidden">
+    
+  </button></form></div>
+
+<span class="close" title="close"></span>
+</li>
+
+<li class="group"><span class="group-label">topics</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/agile.html">agile</a></li>
+
+<li class="item"><a href="http://refactoring.com/">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/design.html">design</a></li>
+
+<li class="item"><a href="http://martinfowler.com/nosql.html">noSQL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dsl.html">DSL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/delivery.html">continuous&nbsp;delivery</a></li>
+
+<li class="item"><a href="http://martinfowler.com/microservices">microservices</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">media</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/books">books</a></li>
+
+<li class="item"><a href="http://martinfowler.com/videos.html">video</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">site</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/intro.html">site&nbsp;introduction</a></li>
+
+<li class="item"><a href="http://martinfowler.com/aboutMe.html">about&nbsp;me</a></li>
+
+<li class="item"><a href="http://martinfowler.com/faq.html">FAQ</a></li>
+
+<li class="item"><a href="http://martinfowler.com/tags">content&nbsp;index</a></li>
+
+<li class="item"><a href="http://martinfowler.com/photos">photos</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">catalogs</span>
+<ul class="group-contents">
+<li class="item"><a href="http://refactoring.com/catalog">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaCatalog">P&nbsp;of&nbsp;EAA</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaDev">EAA&nbsp;dev</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dslCatalog">DSL</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">feeds</span>
+<ul class="group-contents">
+<li class="item"><a href="http://www.twitter.com/martinfowler">twitter</a></li>
+
+<li class="item"><a href="http://martinfowler.com/feed.atom">rss</a></li>
+
+<li class="item"><a href="https://www.facebook.com/martinFowlerThoughtWorks">facebook</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">popular</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/articles/microservices.html">microservices</a></li>
+
+<li class="item"><a href="http://martinfowler.com/articles/injection.html">dependency&nbsp;injection</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">ThoughtWorks</span>
+<ul class="group-contents">
+<li class="item"><a href="http://thoughtworks.com/blogs">blogs</a></li>
+
+<li class="item"><a href="http://thoughtworks.com/careers">careers</a></li>
+
+<li class="item"><a href="https://www.thoughtworks.com/products">products</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="content">
+<div id="main">
+<h1><a href="http://martinfowler.com/bliki/ParallelChange.html">ParallelChange</a></h1>
+
+<div class="author-date">
+<p class="author-photo"><a href="http://www.dtsato.com/"><img src="ParallelChange_files/dsato.jpg" title="Photo of Danilo Sato"></a></p>
+
+<p class="author"><a href="http://www.dtsato.com/" rel="author">Danilo Sato</a></p>
+
+<p class="date">13 May 2014</p>
+</div>
+
+<p class="tags"><a href="http://martinfowler.com/tags/evolutionary%20design.html">evolutionary design</a>&nbsp;· <a href="http://martinfowler.com/tags/API%20design.html">API design</a>&nbsp;· <a href="http://martinfowler.com/tags/refactoring.html">refactoring</a></p>
+
+<p class="tagLabel">tags:</p>
+
+<div class="clear"></div>
+
+<p>
+      Making a change to an interface that impacts all its consumers requires two thinking modes:
+      implementing the change itself, and then updating all its usages. This can be hard when you
+      try to do both at the same time, especially if the change is on a <a href="http://martinfowler.com/bliki/PublishedInterface.html">PublishedInterface</a>
+      with multiple or external clients.
+    </p>
+
+<p><b>Parallel change</b>, also known as <b>expand and contract</b>, is a pattern to
+      implement backward-incompatible changes to an interface in a safe manner, by breaking the
+      change into three distinct phases: expand, migrate, and contract.
+    </p>
+
+<p>
+    To understand the pattern, let's use an example of a simple <code>Grid</code> class that stores
+    and provides information about its cells using a pair of <code>x</code> and <code>y</code>
+    integer coordinates. Cells are stored internally in a two-dimentional array and clients can use
+    the <code>addCell()</code>, <code>fetchCell()</code> and <code>isEmpty()</code> methods to
+    interact with the grid.
+  </p>
+
+<pre>  class Grid {
+    private Cell[][] cells;
+    …
+
+    public void addCell(int x, int y, Cell cell) {
+      cells[x][y] = cell;
+    }
+
+    public Cell fetchCell(int x, int y) {
+      return cells[x][y];
+    }
+
+    public boolean isEmpty(int x, int y) {
+      return cells[x][y] == null;
+    }
+  }
+  </pre>
+
+<p>
+    As part of refactoring, we detect that <code>x</code> and <code>y</code> are a <a href="http://martinfowler.com/bliki/DataClump.html">DataClump</a>
+    and decide to introduce a new <code>Coordinate</code> class. However, this will be a
+    backwards-incompatible change to clients of the <code>Grid</code> class. Instead
+    of changing all the methods and the internal data structure at once, we decide to apply the
+    parallel change pattern.
+  </p>
+
+<p>
+    In the <i>expand</i> phase you augment the interface to support both the old and the new
+    versions. In our example, we introduce a new <code>Map&lt;Coordinate, Cell&gt;</code> data
+    structure and the new methods that can receive <code>Coordinate</code> instances without
+    changing the existing code.
+  </p>
+
+<pre>  class Grid {
+    private Cell[][] cells;
+    private Map&lt;Coordinate, Cell&gt; newCells;
+    …
+
+    public void addCell(int x, int y, Cell cell) {
+      cells[x][y] = cell;
+    }
+
+    public void addCell(Coordinate coordinate, Cell cell) {
+      newCells.put(coordinate, cell);
+    }
+
+    public Cell fetchCell(int x, int y) {
+      return cells[x][y];
+    }
+
+    public Cell fetchCell(Coordinate coordinate) {
+      return newCells.get(coordinate);
+    }
+
+    public boolean isEmpty(int x, int y) {
+      return cells[x][y] == null;
+    }
+
+    public boolean isEmpty(Coordinate coordinate) {
+      return !newCells.containsKey(coordinate);
+    }
+  }
+  </pre>
+
+<p>
+    Existing clients will continue to consume the old version, and the new changes can be introduced
+    incrementally without affecting them.
+  </p>
+
+<p><img src="ParallelChange_files/expand.png"></p>
+
+<p>
+    During the <i>migrate</i> phase you update all clients using the old version to the new
+    version. This can be done incrementally and, in the case of external clients, this will be the
+    longest phase.
+  </p>
+
+<p><img src="ParallelChange_files/migrate.png"></p>
+
+<p>
+    Once all usages have been migrated to the new version, you perform the <i>contract</i> phase to
+    remove the old version and change the interface so that it only supports the new version.
+  </p>
+
+<p><img src="ParallelChange_files/contract.png"></p>
+
+<p>
+    In our example, since the internal two-dimentional array is not used anymore after the old
+    methods have been deleted, we can safely remove that data structure and rename <code>newCells</code>
+    back to <code>cells</code>.
+  </p>
+
+<pre>  class Grid {
+    private Map&lt;Coordinate, Cell&gt; cells;
+    …
+
+    public void addCell(Coordinate coordinate, Cell cell) {
+      cells.put(coordinate, cell);
+    }
+
+    public Cell fetchCell(Coordinate coordinate) {
+      return cells.get(coordinate);
+    }
+
+    public boolean isEmpty(Coordinate coordinate) {
+      return !cells.containsKey(coordinate);
+    }
+  }
+  </pre>
+
+<p>
+    This pattern is particularly useful when practicing <a href="http://martinfowler.com/bliki/ContinuousDelivery.html">ContinuousDelivery</a> because it
+    allows your code to be released in any of these three phases. It also lowers the risk of change
+    by allowing you to migrate clients and to test the new version incrementally.
+  </p>
+
+<p>
+    Even when you have control over all usages of the interface, following this pattern is still
+    useful because it prevents you from spreading breakage across the entire codebase all at once.
+    The migrate phase can be short, but it is an alternative to leaning on the compiler to find all
+    the usages that need to be fixed.
+  </p>
+
+<p>Some example applications of this pattern are:</p>
+
+<ul>
+<li><i>Refactoring</i>: when changing a method or function signature, especially when doing a
+      <a href="http://martinfowler.com/articles/workflowsOfRefactoring/#long-term">Long Term
+      Refactoring</a> or when changing a <a href="http://martinfowler.com/bliki/PublishedInterface.html">PublishedInterface</a>. A variant implementation of
+      this pattern during a refactoring is to implement the old method in terms of the new API and
+      use <a href="http://refactoring.com/catalog/inlineMethod.html">Inline Method</a> to update
+      all usages at once. Delegating the old method to the new method is also a way to break the
+      migrate phase into smaller and safer steps, allowing you to change the internal implementation
+      first before changing the exposed API to clients. This is useful when the migrate phase is longer
+      so you don't have to maintain two separate implementations.
+    </li>
+
+<li><i>Database refactoring</i>: this is a key component to
+      <a href="http://martinfowler.com/articles/evodb.html">evolutionary database design</a>. Most
+      database refactorings follow the parallel change pattern, where the migrate phase is the
+      transition period between the original and the new schema, until all database access code has
+      been updated to work with the new schema.
+    </li>
+
+<li><i>Deployments</i>: deployment techniques such as canary
+      releases  and
+      <a href="http://martinfowler.com/bliki/BlueGreenDeployment.html">BlueGreenDeployment</a> are applications of the parallel change pattern where you
+      have both old and new versions of the code deployed side by side, and you incrementally
+      migrate users from one version to another, therefore lowering the risk of change. In a
+      <a href="http://martinfowler.com/articles/microservices.html">microservices</a> architecture,
+      it can also remove the need for complex deployment orchestration of different services due to
+      version dependencies between them.
+    </li>
+
+<li><i>Remote API evolution</i>: parallel change can be used to evolve a remote API (e.g.
+      a REST web service) when you can't make the change in a backwards compatible manner. This
+      is an alternative to using an explicit version in the exposed API. You can apply the
+      pattern when making a change to the payload accepted or returned by the API on a given
+      endpoint, or you can introduce a new endpoint to distinguish between the old and new
+      versions. In the case of using parallel change in the same endpoint, following
+      <a href="http://en.wikipedia.org/wiki/Robustness_principle">Postel's Law</a> is a good
+      technique to avoid consumers breaking when the payload is expanded.
+    </li>
+</ul>
+
+<p>
+    During the migrate phase, a <a href="http://martinfowler.com/bliki/FeatureToggle.html">FeatureToggle</a> can be used to control which version of
+    the interface is used. A feature toggle on the client side allows it to be forward-compatible
+    with the new version of the supplier, which decouples the release of the supplier from the
+    client.
+  </p>
+
+<p>
+    When implementing <a href="http://martinfowler.com/bliki/BranchByAbstraction.html">BranchByAbstraction</a>, parallel change is a good way to introduce
+    the abstraction layer between the clients and the supplier. It is also an alternative way to
+    perform a large-scale change without introducing the abstraction layer as a seam for
+    replacement on the supplier side. However, when you have a large number of clients, using branch
+    by abstraction is a better strategy to narrow the surface of change and reduce confusion during
+    the migrate phase.
+  </p>
+
+<p>
+    The downside of using parallel change is that during the migrate phase the supplier has to
+    support two different versions, and clients could get confused about which version is new
+    versus old. If the contract phase is not executed you might end up in a worse state than you
+    started, therefore you need discipline to finish the transition successfully. Adding deprecation
+    notes, documentation or TODO notes might help inform clients and other developers working on
+    the same codebase about which version is in the process of being replaced.
+  </p>
+
+<div class="furtherReading">
+<h2>Further Reading</h2>
+
+<p>
+      Industrial Logic's
+      <a href="https://elearning.industriallogic.com/gh/submit?Action=AlbumContentsAction&amp;album=foundations&amp;devLanguage=Java">
+      refactoring album</a> documents and demonstrates an example of performing a parallel change.
+    </p>
+</div>
+
+<div class="acknowledgements">
+<h2>Acknowledgements</h2>
+
+<p>
+      This technique was first documented as a refactoring strategy by Joshua Kerievsky in 2006
+      and presented in his talk <a href="http://www.infoq.com/presentations/The-Limited-Red-Society">The
+      Limited Red Society</a> presented at the Lean Software and Systems Conference in 2010.
+    </p>
+
+<p>
+      Thanks to Joshua Kerievsky for giving feedback on the first draft of this post. Also thanks to
+      many ThoughtWorks colleagues for their feedback: Greg Dutcher, Badrinath Janakiraman, Praful Todkar,
+      Rick Carragher, Filipe Esperandio, Jason Yip, Tushar Madhukar, Pete Hodgson, and Kief Morris.
+    </p>
+</div>
+
+<div class="shares">
+<div class="icons"><span class="label">Share:</span><a href="https://twitter.com/intent/tweet?url=http://martinfowler.com/bliki/ParallelChange.html&amp;text=Bliki:%20ParallelChange%20%E2%9E%99" title="Share on Twitter"><img src="ParallelChange_files/t_mini-a.png"></a><a href="https://facebook.com/sharer.php?u=http://martinfowler.com/bliki/ParallelChange.html" title="Share on Facebook"><img src="ParallelChange_files/fb-icon-20.png"></a><a href="https://plus.google.com/share?url=http://martinfowler.com/bliki/ParallelChange.html" title="Share on Google Plus"><img src="ParallelChange_files/gplus-16.png"></a></div>
+
+<div class="comment">if you found this article useful, please share it. I appreciate the feedback and encouragement</div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<div class="similar-sidebar">
+<h2>Find similar articles at these tags</h2>
+
+<p class="tags"><a href="http://martinfowler.com/tags/evolutionary%20design.html">evolutionary design</a> <a href="http://martinfowler.com/tags/API%20design.html">API design</a> <a href="http://martinfowler.com/tags/refactoring.html">refactoring</a></p>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<div style="display: none;" class="div" id="bottom-navmenu">
+<ul class="navmenu">
+<li class="top-line"><a class="link-home" href="http://martinfowler.com/">home</a>  <div class="search">
+    <!-- SiteSearch Google -->
+    <form method="GET" action="http://www.google.com/search">
+      <input name="ie" value="UTF-8" type="hidden">
+      <input name="oe" value="UTF-8" type="hidden">
+      <input class="field" name="q" size="15" maxlength="255" type="text">
+      <button class="button" type="submit" name="btnG" value=" " title="Search">
+      <input name="domains" value="martinfowler.com" type="hidden">
+      <input name="sitesearch" value="" type="hidden"> 
+      <input name="sitesearch" value="martinfowler.com" type="hidden">
+    
+  </button></form></div>
+
+<span class="close" title="close"></span>
+</li>
+
+<li class="group"><span class="group-label">topics</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/agile.html">agile</a></li>
+
+<li class="item"><a href="http://refactoring.com/">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/design.html">design</a></li>
+
+<li class="item"><a href="http://martinfowler.com/nosql.html">noSQL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dsl.html">DSL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/delivery.html">continuous&nbsp;delivery</a></li>
+
+<li class="item"><a href="http://martinfowler.com/microservices">microservices</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">media</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/books">books</a></li>
+
+<li class="item"><a href="http://martinfowler.com/videos.html">video</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">site</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/intro.html">site&nbsp;introduction</a></li>
+
+<li class="item"><a href="http://martinfowler.com/aboutMe.html">about&nbsp;me</a></li>
+
+<li class="item"><a href="http://martinfowler.com/faq.html">FAQ</a></li>
+
+<li class="item"><a href="http://martinfowler.com/tags">content&nbsp;index</a></li>
+
+<li class="item"><a href="http://martinfowler.com/photos">photos</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">catalogs</span>
+<ul class="group-contents">
+<li class="item"><a href="http://refactoring.com/catalog">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaCatalog">P&nbsp;of&nbsp;EAA</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaDev">EAA&nbsp;dev</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dslCatalog">DSL</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">feeds</span>
+<ul class="group-contents">
+<li class="item"><a href="http://www.twitter.com/martinfowler">twitter</a></li>
+
+<li class="item"><a href="http://martinfowler.com/feed.atom">rss</a></li>
+
+<li class="item"><a href="https://www.facebook.com/martinFowlerThoughtWorks">facebook</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">popular</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/articles/microservices.html">microservices</a></li>
+
+<li class="item"><a href="http://martinfowler.com/articles/injection.html">dependency&nbsp;injection</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">ThoughtWorks</span>
+<ul class="group-contents">
+<li class="item"><a href="http://thoughtworks.com/blogs">blogs</a></li>
+
+<li class="item"><a href="http://thoughtworks.com/careers">careers</a></li>
+
+<li class="item"><a href="https://www.thoughtworks.com/products">products</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="footer">
+  <div class="tw-logo">
+    <a href="http://www.thoughtworks.com/">
+      <img src="ParallelChange_files/TW_smb.jpg">
+    </a>
+  </div>
+  <div class="menu-button">
+    <div class="icon-bars navmenu-button"></div>
+  </div>
+  <div class="copyright">
+    <p>© Martin Fowler | <a href="http://www.thoughtworks.com/privacy-policy">Privacy Policy</a> | <a href="http://martinfowler.com/aboutMe.html#disclosures">Disclosures</a></p>
+  </div>
+</div>
+<script src="ParallelChange_files/ga.js" async="" type="text/javascript"></script><script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17005812-1']);
+  _gaq.push(['_setDomainName', 'martinfowler.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<script src="ParallelChange_files/jquery-1.js" type="text/javascript"></script>
+
+<script src="ParallelChange_files/mfcom.js" type="text/javascript"></script>
+
+
+</body></html>

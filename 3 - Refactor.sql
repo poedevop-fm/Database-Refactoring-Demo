@@ -18,6 +18,8 @@ GO
 --  first introduce new columns.
 --  defaults allowed only so that triggers can recognize what needs to be updated.
 --  Default constraints are named so that we can drop them later.
+--  Warning: Adding NOT NULL (with default) columns can be time consuming!
+--           (1 million rows on laptop took 17 seconds, 2 million took 28 seconds)
 --
 --   Add new columns
 ALTER TABLE Customer  ADD

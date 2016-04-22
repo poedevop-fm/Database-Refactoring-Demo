@@ -1,0 +1,994 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+<title>Evolutionary Database Design</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta content="summary" name="twitter:card">
+
+<meta content="16665197" name="twitter:site:id">
+
+<meta content="Evolutionary Database Design" property="og:title">
+
+<meta content="http://martinfowler.com/articles/evodb.html" property="og:url">
+
+<meta content="A long-form article entitled: &quot;Evolutionary Database Design&quot;" property="og:description">
+
+<meta content="http://martinfowler.com/logo-sq.png" property="og:image">
+
+<meta content="martinfowler.com" property="og:site_name">
+
+<meta content="article" property="og:type">
+
+<meta content="January 2003" property="og:article:modified_time">
+
+<link href="Evolutionary%20Database%20Design_files/article.css" rel="stylesheet" type="text/css">
+</head>
+
+<body><div id="banner" style="background-image: url(&quot;../img/poetta.png&quot;); background-repeat: no-repeat">
+ <a href="http://martinfowler.com/">
+    <img class="name-logo" src="Evolutionary%20Database%20Design_files/mf-name-white.png">
+<!--[if lte IE 6]>
+<img class = 'ie6-name-logo' src = '/mf-name-white-solid.png'/>
+<![endif]-->
+  </a>
+  
+  <div class="search">
+    <!-- SiteSearch Google -->
+    <form method="GET" action="http://www.google.com/search">
+      <input name="ie" value="UTF-8" type="hidden">
+      <input name="oe" value="UTF-8" type="hidden">
+      <input class="field" name="q" size="15" maxlength="255" type="text">
+      <button class="button" type="submit" name="btnG" value=" " title="Search">
+      <input name="domains" value="martinfowler.com" type="hidden">
+      <input name="sitesearch" value="" type="hidden"> 
+      <input name="sitesearch" value="martinfowler.com" type="hidden">
+    
+  </button></form></div>
+
+<div class="menu-button navmenu-button"><a class="icon-bars" href="#navmenu-bottom"></a></div>
+
+<div class="main-navigation"><ul>
+  <li><a href="http://martinfowler.com/intro.html">Intro</a></li>
+  <li><a href="http://martinfowler.com/videos.html">Videos</a></li>
+  <li><a href="http://martinfowler.com/design.html">Design</a></li>
+  <li><a href="http://martinfowler.com/agile.html">Agile</a></li>
+  <li><a href="http://refactoring.com/">Refactoring</a></li>
+  <li>
+    <p><a href="http://martinfowler.com/aboutMe.html">About Me</a></p>
+
+    </li><li class="navmenu-button"><p><a href="#bottom-navmenu">All Sections <span class="icon-bars" title="Menu"></span></a></p></li>
+
+    <li><p>
+      <a href="http://www.thoughtworks.com/" class="tw">ThoughtWorks</a>
+</p></li>
+
+    <li><p>
+  <a href="http://martinfowler.com/feed.atom" title="feed" class="icon-rss">
+  </a>
+ </p></li>
+
+    <li><p>
+  <a href="http://www.twitter.com/martinfowler" title="Twitter stream" class="icon-twitter">
+  </a>
+ </p></li>
+  
+</ul>
+
+</div>
+</div>
+<div class="div" id="top-navmenu">
+<ul class="navmenu">
+<li class="top-line"><a class="link-home" href="http://martinfowler.com/">home</a>  <div class="search">
+    <!-- SiteSearch Google -->
+    <form method="GET" action="http://www.google.com/search">
+      <input name="ie" value="UTF-8" type="hidden">
+      <input name="oe" value="UTF-8" type="hidden">
+      <input class="field" name="q" size="15" maxlength="255" type="text">
+      <button class="button" type="submit" name="btnG" value=" " title="Search">
+      <input name="domains" value="martinfowler.com" type="hidden">
+      <input name="sitesearch" value="" type="hidden"> 
+      <input name="sitesearch" value="martinfowler.com" type="hidden">
+    
+  </button></form></div>
+
+<span class="close" title="close"></span>
+</li>
+
+<li class="group"><span class="group-label">topics</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/agile.html">agile</a></li>
+
+<li class="item"><a href="http://refactoring.com/">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/design.html">design</a></li>
+
+<li class="item"><a href="http://martinfowler.com/nosql.html">noSQL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dsl.html">DSL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/delivery.html">continuous&nbsp;delivery</a></li>
+
+<li class="item"><a href="http://martinfowler.com/microservices">microservices</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">media</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/books">books</a></li>
+
+<li class="item"><a href="http://martinfowler.com/videos.html">video</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">site</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/intro.html">site&nbsp;introduction</a></li>
+
+<li class="item"><a href="http://martinfowler.com/aboutMe.html">about&nbsp;me</a></li>
+
+<li class="item"><a href="http://martinfowler.com/faq.html">FAQ</a></li>
+
+<li class="item"><a href="http://martinfowler.com/tags">content&nbsp;index</a></li>
+
+<li class="item"><a href="http://martinfowler.com/photos">photos</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">catalogs</span>
+<ul class="group-contents">
+<li class="item"><a href="http://refactoring.com/catalog">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaCatalog">P&nbsp;of&nbsp;EAA</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaDev">EAA&nbsp;dev</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dslCatalog">DSL</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">feeds</span>
+<ul class="group-contents">
+<li class="item"><a href="http://www.twitter.com/martinfowler">twitter</a></li>
+
+<li class="item"><a href="http://martinfowler.com/feed.atom">rss</a></li>
+
+<li class="item"><a href="https://www.facebook.com/martinFowlerThoughtWorks">facebook</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">popular</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/articles/microservices.html">microservices</a></li>
+
+<li class="item"><a href="http://martinfowler.com/articles/injection.html">dependency&nbsp;injection</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">ThoughtWorks</span>
+<ul class="group-contents">
+<li class="item"><a href="http://thoughtworks.com/blogs">blogs</a></li>
+
+<li class="item"><a href="http://thoughtworks.com/careers">careers</a></li>
+
+<li class="item"><a href="https://www.thoughtworks.com/products">products</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="content">
+<h1>Evolutionary Database Design</h1>
+
+<p class="abstract"><i>Over the last few years we've developed a number of
+techniques that allow a database design to evolve as an application
+develops. This is a very important capability for agile methodologies.
+The techniques rely on applying continuous integration and automated
+refactoring to database development, together with a close
+collaboration between DBAs and application developers. The techniques
+work in both pre-production and released systems.</i></p>
+
+<div class="frontMatter">
+<div class="frontLeft">
+<p class="date">January 2003</p>
+
+<div class="author"><img alt="Photo of Martin Fowler" src="Evolutionary%20Database%20Design_files/mf.jpg" width="80">
+<p class="name"><a href="http://martinfowler.com/" rel="author">Martin Fowler</a></p>
+</div>
+
+<div class="clear"></div>
+
+<div class="author"><img alt="Photo of Pramod Sadalage" src="Evolutionary%20Database%20Design_files/pramod.jpg" width="80">
+<p class="name"><a href="http://www.sadalage.com/" rel="author">Pramod Sadalage</a></p>
+</div>
+
+<div class="clear"></div>
+
+<div class="translations"><b>Translations: </b><a href="http://objectclub.esm.co.jp/eXtremeProgramming/evodb-jp.html">Japanese</a>&nbsp;· <a href="http://integration.ibs.ru/content/rus/217/2176-article.asp">Russian</a></div>
+
+<div class="tags">Find <b>similar articles</b> to this by looking at these tags: <a href="http://martinfowler.com/tags/agile.html">agile</a>&nbsp;· <a href="http://martinfowler.com/tags/refactoring.html">refactoring</a>&nbsp;· <a href="http://martinfowler.com/tags/application%20architecture.html">application architecture</a>&nbsp;· <a href="http://martinfowler.com/tags/database.html">database</a>&nbsp;· <a href="http://martinfowler.com/tags/evolutionary%20design.html">evolutionary design</a></div>
+</div>
+
+<div class="frontRight">
+<div class="contents">
+<h2>Contents</h2>
+
+<ul>
+<li><a href="#DealingWithChange">Dealing with Change</a>
+<ul>
+<li><a href="#Limitations">Limitations</a></li>
+</ul>
+</li>
+
+<li><a href="#ThePractices">The Practices</a>
+<ul>
+<li><a href="#DbasCollaborateCloselyWithDevelopers">DBAs collaborate closely with developers</a></li>
+
+<li><a href="#EverybodyGetsTheirOwnDatabaseInstance">Everybody gets their own database instance</a></li>
+
+<li><a href="#DevelopersFrequentlyIntegrateIntoASharedMaster">Developers frequently integrate into a shared master</a></li>
+
+<li><a href="#ADatabaseConsistsOfSchemaAndTestData">A database consists of schema and test data</a></li>
+
+<li><a href="#AllChangesAreDatabaseRefactorings">All changes are database refactorings</a></li>
+
+<li><a href="#AutomateTheRefactorings">Automate the refactorings</a></li>
+
+<li><a href="#AutomaticallyUpdateAllDatabaseDevelopers">Automatically Update all Database Developers</a></li>
+
+<li><a href="#ClearlySeparateAllDatabaseAccessCode">Clearly separate all database access code</a></li>
+</ul>
+</li>
+
+<li><a href="#Variations">Variations</a>
+<ul>
+<li><a href="#KeepingMultipleDatabaseLineages">Keeping multiple database lineages</a></li>
+
+<li><a href="#YouDontNeedADba">You don't need a DBA</a></li>
+</ul>
+</li>
+
+<li><a href="#ToolsToHelp">Tools to Help</a></li>
+
+<li><a href="#FurtherStepsAndFurtherInformation">Further Steps and Further Information</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="paperBody">
+<p>In the last few years, we've seen the rise of a new breed of
+software methodologies, the <a href="http://www.martinfowler.com/articles/newMethodology.html">agile
+methodologies</a>. These make some new and significant demands on
+database design. One of the most central of these demands is the idea
+of evolutionary design. On an agile project you assume that you cannot
+fix the requirements of the system up-front. As a result having a
+detailed design phase at the beginning of a project becomes
+impractical. The design of the system has to evolve through the
+various iterations of the software. Agile methods, in particular <a href="http://www.martinfowler.com/articles/newMethodology.html#XpextremeProgramming">extreme programming (XP)</a>, have
+  a number of practices that make this evolutionary design
+  practical.</p>
+
+<div class="sidebar">
+<p>Since this article was written, Pramod has further developed
+    and written about these kinds of techniques. His book (with Scott
+    Ambler) on <a href="http://martinfowler.com/books/refactoringDatabases.html">Database
+    Refactoring</a> describes how to refactor databases in more
+    detail. He's also written a short ebook on how to do <a href="http://www.informit.com/store/product.aspx?isbn=032150206X">continuous
+    integration with databases</a>. </p>
+</div>
+
+<p>Many people have questioned
+    whether evolutionary design can be applied to a system with a
+    large database component. Indeed many people told us that it was
+    impossible - a troubling thought as ThoughtWorks embarked on a
+    large database-oriented project using many agile and XP
+    techniques. </p>
+
+<p>This article describes the practices that
+    we've used to allow us to do this impossible thing. We won't say
+    that we've completely solved the database evolution problem, but
+    we do think we've demonstrated a set of techniques that many
+    people will find useful.</p>
+
+<div id="DealingWithChange"><hr class="topSection">
+<h2>Dealing with Change</h2>
+
+<p>One of the primary features of agile methods is their attitude
+towards change. Most of the thinking about software process is about
+understanding requirements early, signing off on these requirements,
+using the requirements as a basis for design, signing off on that, and
+then proceeding with construction. This is a plan-driven cycle, often
+referred to (usually with derision) as the waterfall approach</p>
+
+<p>Such approaches look to minimize changes by doing extensive
+up-front work. Once the early work is done, changes cause significant
+problems. As a result such approaches run into trouble if requirements
+are changing, and requirements churn is a big problem for such
+processes.</p>
+
+<p>Agile processes approach change differently. They seek to
+embrace change, allowing changes to occur even late in a development
+project. Changes are controlled, but the attitude of the process is to
+enable change as much as possible. Partly this is in response to the
+inherent instability of requirements in many projects, partly it is to
+better support dynamic business environments by helping them change
+with the competitive pressures.</p>
+
+<p>In order to make this work, you need a different attitude to
+design. Instead of thinking of design as a phase, which is mostly
+completed before you begin construction, you look at design as an
+on-going process that is interleaved with construction, testing, and
+even delivery. This is the contrast between planned and evolutionary
+design. One of the vital contributions of agile methods is that they
+have come up with practices that allow evolutionary design to work in
+a controlled manner. So instead of the common chaos that often happens
+when design isn't planned up-front, these methods provide techniques
+to control evolutionary design and make them practical.</p>
+
+<p>An important part of this approach is iterative development,
+where you run the entire software life-cycle many times during the
+life of a project. Agile processes run complete life cycles in each
+iteration, completing the iteration with working, tested, integrated
+code for a small subset of the requirements of the final product.
+These iterations are short, usually running between a week and a
+couple of months, with a preference towards shorter iterations.</p>
+
+<p>While these techniques have grown in use and interest, one of
+the biggest questions is how to make evolutionary design work for
+databases. Most people consider that database design is something that
+absolutely needs up-front planning. Changing the database schema late
+in the development tends to cause wide-spread breakages in application
+software. Furthermore changing a schema after deployment result in
+painful data migration problems. </p>
+
+<p>Over the course of the last three years we've been involved in
+a large project (called Atlas) that has used evolutionary database
+design and made it work. The project involved almost 100 people in
+multiple sites world-wide (US, Australia, and India). It is around
+half a million lines of code and has over 200 tables. The database
+evolved during a year and a half of initial development and continues
+to evolve even though it's in production for multiple customers.
+During this project we started with iterations of a month, but after a
+few months changed to two week iterations which worked better. The
+techniques we describe here are the ones that we (or more accurately
+Pramod) used to make this work.</p>
+
+<p>Since that project got going we've spread these techniques over
+more of our projects, gaining more experience from more cases. We've
+also found inspiration, ideas, and experience from other agile
+projects.</p>
+
+<div id="Limitations">
+<h3>Limitations</h3>
+
+<p>Before we dive into the techniques, it's important to state
+that we haven't solved all the problems of evolutionary database
+design. In particular:</p>
+
+<ul>
+<li>We developed an application database for a single
+application rather than an integration database that tries to
+integrate multiple databases.</li>
+
+<li>We don't have to keep the production databases up
+24/7</li>
+</ul>
+
+<p>We don't consider these problems to be inherently unsolvable,
+after all many people believed we couldn't solve this one. But until
+we do, we won't claim we can solve them either.</p>
+</div>
+</div>
+
+<div id="ThePractices"><hr class="topSection">
+<h2>The Practices</h2>
+
+<p>Our approach to evolutionary database design depends on a
+handful of important practices.</p>
+
+<div id="DbasCollaborateCloselyWithDevelopers">
+<h3>DBAs collaborate closely with developers</h3>
+
+<p>One of the tenets of agile methods is that people with
+different skills and backgrounds need to collaborate very closely
+together. They can't communicate mainly through formal meetings and
+documents. Instead they need to be out talking with each other and
+working with each other all the time.Everybody is affected by this:
+analysts, PMs, domain experts, developers... and DBAs. </p>
+
+<p>Every task that a developer works on potentially needs a
+DBA's help. Both the developers and the DBA need to consider whether a
+development task is going to make a significant change to the database
+schema. If so the developer needs to consult with the DBA to decide
+how to make the change. The developer knows what new functionality is
+needed, and the DBA has a global view of the data in the
+application.</p>
+
+<p>To make this happen the DBA has to make himself approachable
+and available. Make it easy for a developer to just pop over for a few
+minutes and ask some questions. Make sure the DBAs and developers sit
+close to each other so they can easily get together. Ensure that
+application design sessions are known about so the DBA can pop in
+easily. In many environments we see people erecting barriers between
+the DBA and application development functions. These barriers must
+come down for an evolutionary database design process to work.</p>
+</div>
+
+<div id="EverybodyGetsTheirOwnDatabaseInstance">
+<h3>Everybody gets their own database instance</h3>
+
+<p>Evolutionary design recognizes that people learn by trying
+things out. In programming terms developers experiment with how to
+implement a certain feature and may make a few attempts before
+settling down to a preferred alternative. Database design can be like
+that too. As a result it's important for each developer to have their
+own sandbox where they can experiment, and not have their changes
+affect anyone else.</p>
+
+<p>Many DBA experts see multiple databases as anathema, too
+difficult to work in practice, but we've found that you can easily
+manage a hundred or so database instances. The vital thing is to have
+to tools to allow you to manipulate databases much as you would
+manipulate files.</p>
+</div>
+
+<div id="DevelopersFrequentlyIntegrateIntoASharedMaster">
+<h3>Developers frequently integrate into a shared master</h3>
+
+<p>Although developers can experiment frequently in their own
+area, it's important to bring the different approaches back together
+again frequently. An application needs a shared master database that
+all work flows from. When a developer begins a task they copy the
+master into their own workspace, manipulate, and then integrate their
+changes back into the master. As a rule of thumb each developer should
+integrate once a day.</p>
+
+<p>Let's take an example where Mike starts a development task at
+10am (assuming he actually comes in that early). As part of this task
+he needs to change the database schema. If the change is easy, like
+adding a column, he just decides how to make the change himself, Mike
+also makes sure the column he wants to add does not already exist in
+the database, with the help of the data dictionary (discussed later).
+If it's more complicated then he grabs the DBA and talks over the
+likely changes with him. </p>
+
+<p>Once he's ready to begin he takes a copy of the database
+master and can modify both the database schema and code freely. As
+he's in a sandbox any changes he makes don't impact anyone else's. At
+some point, say around 3pm, he's pretty comfortable that he knows what
+the database change needs to be, even though he's not completely done
+with his programming task. At that point he grabs the DBA, and tells
+him about the change. At this point the DBA can raise any issues that
+Mike hasn't considered. Most of the time all is well and the DBA goes
+off and makes the change (by applying one or more database
+refactorings, which we'll come to below). The DBA makes the changes
+right away (unless they are destructive changes - again more on that
+below). Mike can continue to work on his task and commit his code any
+time he likes once the DBA has applied these changes to the master.
+</p>
+
+<p>You may well recognize this principle as similar to the
+practice of <a href="http://www.martinfowler.com/articles/continuousIntegration.html">Continuous Integration</a>,
+which is applied to source code management. Indeed this is really
+about treating the database as another piece of source code. As such
+the master database is kept under configuration management in much the
+same way as the source code. Whenever we have a successful build, the
+database is checked into the configuration management system together
+with the code, so that we have a complete and synchronized version
+history of both.</p>
+
+<p>With source code, much of the pain of integration is handled
+by source code control systems. For databases there's a bit more
+effort involved. Any changes to the database need to done properly, as
+automated database refactorings, which we'll discuss shortly. In
+addition the DBA needs to look at any database changes and ensure that
+it fits within the overall scheme of the database schema. For this to
+work smoothly, big changes shouldn't come as surprises at integration
+time - hence the need for the DBA to collaborate closely with the
+developers.</p>
+
+<p>We emphasize integrating frequently because we've found that
+it's much easier to do frequent small integrations rather than
+infrequent large integrations. It seems that the pain of integration
+increases exponentially with the size of the integration. As such
+doing many small changes is much easier in practice, even though it
+often seems counter-intuitive to many. This same effect's been noticed
+by people in the Software Configuration Management community for
+source code.</p>
+</div>
+
+<div id="ADatabaseConsistsOfSchemaAndTestData">
+<h3>A database consists of schema and test data</h3>
+
+<p>When we talk about a database here, we mean not just the
+schema of the database, but also a fair amount of data. This data
+consists of common standing data for the application, such as the
+inevitable list of all the states in the US, and also sample test data
+such as a few sample customers.</p>
+
+<p>The data is there for a number of reasons. The main reason is
+to enable testing. We are great believers in using a large body of
+automated tests to help stabilize the development of an application.
+Such a body of tests is a common approach in agile methods. For these
+tests to work efficiently, it makes sense to work on a database that
+is seeded with some sample test data, which all tests can assume is in
+place before they run.</p>
+
+<p>As well as helping test the code, this sample test data also
+allows to test our migrations as we alter the schema of the database.
+By having sample data, we are forced to ensure that any schema changes
+also handle sample data.</p>
+
+<p>In most projects we've seen this sample data be fictional.
+However in a few projects we've seen people use real data for the
+samples. In these cases this data's been extracted from prior legacy
+systems with automated data migration scripts. Obviously you can't
+migrate all the data right away, as in early iterations only a small
+part of the database is actually built. But the idea is to iteratively
+develop the migration scripts just as the application and the database
+are developed iteratively. Not just does this help flush out migration
+problems early, it makes it much easier for domain experts to work
+with the growing system as they are familiar with the data they are
+looking at and can often help to identify problem cases that may cause
+problems for the database and application design. As a result we are
+now of the view that you should try to introduce real data from the
+very first iteration of your project.</p>
+</div>
+
+<div id="AllChangesAreDatabaseRefactorings">
+<h3>All changes are database refactorings</h3>
+
+<p>The technique of refactoring is all about applying
+disciplined and controlled techniques to changing an existing code
+base. Similarly we've identified several database refactorings that
+provide similar control and discipline to changing a database.</p>
+
+<p>One of the big differences about database refactorings is
+that they involve three different changes that have to be done
+together</p>
+
+<ul>
+<li>Changing the database schema</li>
+
+<li>Migrating the data in the database</li>
+
+<li>Changing the database access code</li>
+</ul>
+
+<p>Thus whenever we describe a database refactoring, we have to
+describe all three aspects of the change and ensure that all three are
+applied before we apply any other refactorings.</p>
+
+<p>We are still in the process of documenting the various
+database refactorings, so we aren't able to go into detail on them
+yet. However there are a few things we can point out. Like code
+refactorings, database refactorings are very small. The concept of
+chaining together a sequence of very small changes is much the same
+for databases as it is for code. The triple nature of the change makes
+it all the more important to keep to small changes.</p>
+
+<p>Many database refactorings, such as adding a column, can be
+done without having to update all the code that accesses the system.
+If code uses the new schema without being aware of it, the column will
+just go unused. Many changes, however don't have this property. We
+call these <b>destructive changes</b>, an example of which is making
+an existing nullable column not null.</p>
+
+<p>Destructive changes need a bit more care, the degree of which
+depends on the degree of destruction involved. An example of a minor
+destructive change is that of changing a column from nullable to not
+null. In this case you can probably just go ahead and do it. The
+refactoring will take care of any data in the database that's null.
+Usually the only developer who cares about this property is the one
+who requested the change, and that developer will update the database
+mapping code. As a result the update won't break anyone else's code
+and if by some strange chance it does, they find out as soon as they
+run a build and use their tests. (On our large project we gave
+ourselves some extra breathing space by waiting a week before making
+the database change.)</p>
+
+<p>Splitting a heavily used table into two however is a rather
+more complicated case. In this case it's important to let everyone
+know that the change is coming up so they can prepare themselves for
+it. In addition it's worth waiting for a safer moment to make the
+change. (These kinds of changes we would defer until the start of a
+new iteration - we like to use iterations of two weeks or less).</p>
+
+<p>The important thing here is to choose a procedure that's
+appropriate for the kind of change that you're making. If in doubt try
+to err on the side of making changes easier. Our experience is that we
+got burned much less frequently than many people would think, and with
+a strong configuration control of the entire system it's not difficult
+to revert should the worst happen.</p>
+</div>
+
+<div id="AutomateTheRefactorings">
+<h3>Automate the refactorings</h3>
+
+<p>In the world of code we are seeing tools for some languages
+to automate many of the identified refactorings. Such automation is
+essential for databases; at least in the areas of schema changes and
+data migration.</p>
+
+<p>As a result every database refactoring is automated by
+writing it in the form of SQL DDL (for the schema change) and DML (for
+the data migration). These changes are never applied manually, instead
+they are applied to the master by running a small SQL script to
+perform the changes. </p>
+
+<p>Once done, we keep hold of these script files to produce a
+complete change log of all the alterations done to the database as a
+result of database refactorings. We can then update any database
+instance to the latest master by running the change log of all the
+changes since we copied the master to produce the older database
+instance.</p>
+
+<p>This ability to sequence automated changes is an essential
+tool both for the continuous integration process in development, and
+for migrating production databases to a new release.</p>
+
+<p>For production databases we don't make changes during the
+usual iteration cycles. Once we do a release, which may occur at the
+end of any iteration, we apply the full change log of database
+refactorings since the previous release. This is a big change, and one
+that so far we've only done by taking the application offline. (We
+have some ideas for doing this in a 24/7 environment, but we haven't
+actually had to do it yet.) It's also wise to test this migration
+schema before applying it to the live database. So far, we've found
+that this technique has worked remarkably well. By breaking down all
+the database changes into a sequence of small, simple changes; we've
+been able to make quite large changes to production data without
+getting ourselves in trouble.</p>
+
+<p>As well as automating the forward changes, you can consider
+automating reverse changes for each refactoring. If you do this you'll
+be able to back out changes to a database in the same automated way.
+We haven't done this yet, as we've not had a much demand for it, but
+it's the same basic principle.</p>
+
+<p>(A similar thing that we have done is to support an old
+version of an application with an updated version of the database.
+This involved writing a compatibility layer that allowed the
+application to think it was talking to the older version of the
+database even though it was actually talking to the newer one.)</p>
+</div>
+
+<div id="AutomaticallyUpdateAllDatabaseDevelopers">
+<h3>Automatically Update all Database Developers</h3>
+
+<p>It's all very well for people to make changes and update the
+master, but how do they find out the master has changed? In a
+traditional continuous integration environment with source code,
+developers update to the master before doing a commit. That way they
+can resolve any build issues on their own machine before committing
+their changes to the shared master. There's no reason you can't do
+that with the database, but we found a better way.</p>
+
+<p>We automatically update everyone on the project whenever a
+change is made to the database master. The same refactoring script
+that updates the master automatically updates everyone's databases.
+When we've described this, people are usually concerned that
+automatically updating developers databases underneath them will cause
+a problem, but we found it worked just fine.</p>
+
+<p>This only worked when people were connected to the network.
+If they worked offline, such as on an airplane, then they had to
+resync with the master manually once they got back to the office.</p>
+</div>
+
+<div id="ClearlySeparateAllDatabaseAccessCode">
+<h3>Clearly separate all database access code</h3>
+
+<p>To understand the consequences of database refactorings, it's
+important to be able to see how the database is used by the
+application. If SQL is scattered willy-nilly around the code base,
+this is very hard to do. As a result it's important to have a clear
+database access layer to show where the database is being used and
+how. To do this we suggest following one of the data source
+architectural patterns from <a href="http://www.martinfowler.com/books/eaa.html">P of
+EAA</a>.</p>
+
+<p>Having a clear database layer has a number of valuable side
+benefits. It minimizes the areas of the system where developers need
+SQL knowledge to manipulate the database, which makes life easier to
+developers who often are not particularly skilled with SQL. For the
+DBA it provides a clear section of the code that he can look at to see
+how the database is being used. This helps in preparing indexes,
+database optimization, and also looking at the SQL to see how it could
+be reformulated to perform better. This allows the DBA to get a better
+understanding of how the database is used.</p>
+</div>
+</div>
+
+<div id="Variations"><hr class="topSection">
+<h2>Variations</h2>
+
+<p>Like any set of practices, these should be varied depending on
+your specific circumstances. These practices are still pretty new, so
+we haven't come across that many variations, but here are some we
+have.</p>
+
+<div id="KeepingMultipleDatabaseLineages">
+<h3>Keeping multiple database lineages</h3>
+
+<p>A simple project can survive with just a single database
+master in the repository. With more complex projects there's a need to
+support multiple varieties of the project database, which we refer to
+as database linages. We may create a new lineage if we have to branch
+an application that's put into production. In essence creating a new
+database lineage is much the same as branching the source code on the
+application, with the added twist that you also make a lineage when
+you need a different set of sample data, such as if you need a lot of
+data for performance testing.</p>
+
+<p>When a developer takes a copy of a master they need to
+register which lineage they are modifying. As the DBA applies updates
+to a master for a particular lineage the updates propagate to all the
+developers who are registered for that lineage.</p>
+</div>
+
+<div id="YouDontNeedADba">
+<h3>You don't need a DBA</h3>
+
+<p>All of this sounds like it would be a lot of work, but in
+fact it doesn't require a huge amount of manpower. On the Atlas
+project we had thirty-odd developers and a team size (including, QA,
+analysts and management) of close to a hundred. On any given day we
+would have a hundred or so copies of various lineages out on people's
+workstations. Yet all this activity needed only one full time DBA
+(Pramod) with a couple of developers doing some part-time assistance
+and cover.</p>
+
+<p>On smaller projects even that isn't needed. We've been using
+these techniques on a number of smaller projects (about a dozen
+people) and we find these projects don't need a full time DBA. Instead
+we rely on a couple of developers with an interest in DB issues who
+handle the DBA tasks part-time.</p>
+
+<p>The reason for this is automation. If you are determined to
+automate every task, you can handle a lot work with much less
+people.</p>
+</div>
+</div>
+
+<div id="ToolsToHelp"><hr class="topSection">
+<h2>Tools to Help</h2>
+
+<p>Doing this kind of thing requires a lot of repetitive tasks.
+The good news is that whenever you run into repetitive tasks
+in software development you are ideally placed to automate them. As a
+result we've developed a fair amount of often simple tools to help
+us.</p>
+
+<p>One of the most valuable pieces of automation is a simple set
+of scripts for common database tasks.</p>
+
+<ul>
+<li>Bring a user up to date with the current master.</li>
+
+<li>Create a new user</li>
+
+<li>Copy a database schema, for example Sue finds a bug with her
+database, now Mike can copy Sue's database and try to debug the
+application </li>
+
+<li>Move a  database, for example from a workstation to a
+different workstation, this is essentially Copy database and Delete
+database combined as one</li>
+
+<li>Drop a user</li>
+
+<li>Export a user so team members can make offine backups of the
+database that they are working with. </li>
+
+<li>Import a user, so if the team members have a backup copy of
+the database, they can import the backup and create a new schema.
+</li>
+
+<li>Export a baseline -  make a backup copy of the master
+database. This is a specialized case of Export a User </li>
+
+<li>Create a difference report of any number of schemas, so that
+Mike can find out what is different structurally between his database
+and Sue's. </li>
+
+<li>Diff a schema against the master, so that developers can
+compare their local copy against the master.</li>
+
+<li>List all the users</li>
+</ul>
+
+<p>Analysts and QA folks often need to look at the test data in
+the database and to be able to easily change it. For that we created
+an Excel application with VBA scripts to pull data down from the
+database into an excel file, allow people to edit the file, and send
+the data back up to the database. Although other tools exist for
+viewing and editing the contents of a database, excel works well
+because so many people are familiar with it.</p>
+
+<p>Everybody on the project needs to be able to explore the
+database design easily, that way they can find out what tables are
+available and how they are used. We built an HTML based tool to do
+this that used servlets to query database metadata. So Mike before
+adding the column to a table, could go lookup if the column he is
+adding already exists, by searching the metadata of the tables and
+columns.  We did the data modeling using ERwin and pulled data from ERwin into our own metadata
+tables.</p>
+</div>
+
+<div id="FurtherStepsAndFurtherInformation"><hr class="topSection">
+<h2>Further Steps and Further Information</h2>
+
+<p>This is by no means the last word on the subject of
+evolutionary database design. We certainly want to see if and how we
+can extend these techniques to integration databases, 24/7 operation,
+and other problem areas that we haven't run into yet.</p>
+
+<p>If you'd like to find out more about this, or talk about your
+own experiences, Pramod has started a <a href="http://groups.yahoo.com/group/agileDatabases">yahoo egroup for agile databases</a>.
+ Pramod is also starting to talk about these techniques at various 
+conferences, so you may get a chance to talk to him directly. Naturally 
+we also do consulting on this stuff too. </p>
+</div>
+
+<hr class="bodySep">
+
+<div class="end-box">
+<div class="shares">
+<div class="icons"><span class="label">Share:</span><a href="https://twitter.com/intent/tweet?url=http://martinfowler.com/articles/evodb.html&amp;text=Evolutionary%20Database%20Design%20%E2%9E%99" title="Share on Twitter"><img src="Evolutionary%20Database%20Design_files/t_mini-a.png"></a><a href="https://facebook.com/sharer.php?u=http://martinfowler.com/articles/evodb.html" title="Share on Facebook"><img src="Evolutionary%20Database%20Design_files/fb-icon-20.png"></a><a href="https://plus.google.com/share?url=http://martinfowler.com/articles/evodb.html" title="Share on Google Plus"><img src="Evolutionary%20Database%20Design_files/gplus-16.png"></a></div>
+
+<div class="comment">if you found this article useful, please share it. I appreciate the feedback and encouragement</div>
+</div>
+
+<div class="clear"></div>
+
+<h2>For articles on similar topics…</h2>
+
+<p>…take a look at the following tags:</p>
+
+<p class="tags"><a href="http://martinfowler.com/tags/agile.html">agile</a> <a href="http://martinfowler.com/tags/refactoring.html">refactoring</a> <a href="http://martinfowler.com/tags/application%20architecture.html">application architecture</a> <a href="http://martinfowler.com/tags/database.html">database</a> <a href="http://martinfowler.com/tags/evolutionary%20design.html">evolutionary design</a></p>
+</div>
+</div>
+
+<div class="appendix">
+<h2>
+<a name="SignificantRevisions"></a>
+Significant Revisions</h2>
+
+<p><i>January 2003: </i>First publication</p>
+</div>
+</div>
+
+<div style="display: none;" class="div" id="bottom-navmenu">
+<ul class="navmenu">
+<li class="top-line"><a class="link-home" href="http://martinfowler.com/">home</a>  <div class="search">
+    <!-- SiteSearch Google -->
+    <form method="GET" action="http://www.google.com/search">
+      <input name="ie" value="UTF-8" type="hidden">
+      <input name="oe" value="UTF-8" type="hidden">
+      <input class="field" name="q" size="15" maxlength="255" type="text">
+      <button class="button" type="submit" name="btnG" value=" " title="Search">
+      <input name="domains" value="martinfowler.com" type="hidden">
+      <input name="sitesearch" value="" type="hidden"> 
+      <input name="sitesearch" value="martinfowler.com" type="hidden">
+    
+  </button></form></div>
+
+<span class="close" title="close"></span>
+</li>
+
+<li class="group"><span class="group-label">topics</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/agile.html">agile</a></li>
+
+<li class="item"><a href="http://refactoring.com/">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/design.html">design</a></li>
+
+<li class="item"><a href="http://martinfowler.com/nosql.html">noSQL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dsl.html">DSL</a></li>
+
+<li class="item"><a href="http://martinfowler.com/delivery.html">continuous&nbsp;delivery</a></li>
+
+<li class="item"><a href="http://martinfowler.com/microservices">microservices</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">media</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/books">books</a></li>
+
+<li class="item"><a href="http://martinfowler.com/videos.html">video</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">site</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/intro.html">site&nbsp;introduction</a></li>
+
+<li class="item"><a href="http://martinfowler.com/aboutMe.html">about&nbsp;me</a></li>
+
+<li class="item"><a href="http://martinfowler.com/faq.html">FAQ</a></li>
+
+<li class="item"><a href="http://martinfowler.com/tags">content&nbsp;index</a></li>
+
+<li class="item"><a href="http://martinfowler.com/photos">photos</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">catalogs</span>
+<ul class="group-contents">
+<li class="item"><a href="http://refactoring.com/catalog">refactoring</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaCatalog">P&nbsp;of&nbsp;EAA</a></li>
+
+<li class="item"><a href="http://martinfowler.com/eaaDev">EAA&nbsp;dev</a></li>
+
+<li class="item"><a href="http://martinfowler.com/dslCatalog">DSL</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">feeds</span>
+<ul class="group-contents">
+<li class="item"><a href="http://www.twitter.com/martinfowler">twitter</a></li>
+
+<li class="item"><a href="http://martinfowler.com/feed.atom">rss</a></li>
+
+<li class="item"><a href="https://www.facebook.com/martinFowlerThoughtWorks">facebook</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">popular</span>
+<ul class="group-contents">
+<li class="item"><a href="http://martinfowler.com/articles/microservices.html">microservices</a></li>
+
+<li class="item"><a href="http://martinfowler.com/articles/injection.html">dependency&nbsp;injection</a></li>
+</ul>
+</li>
+
+<li class="group"><span class="group-label">ThoughtWorks</span>
+<ul class="group-contents">
+<li class="item"><a href="http://thoughtworks.com/blogs">blogs</a></li>
+
+<li class="item"><a href="http://thoughtworks.com/careers">careers</a></li>
+
+<li class="item"><a href="https://www.thoughtworks.com/products">products</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="footer">
+  <div class="tw-logo">
+    <a href="http://www.thoughtworks.com/">
+      <img src="Evolutionary%20Database%20Design_files/TW_smb.jpg">
+    </a>
+  </div>
+  <div class="menu-button">
+    <div class="icon-bars navmenu-button"></div>
+  </div>
+  <div class="copyright">
+    <p>© Martin Fowler | <a href="http://www.thoughtworks.com/privacy-policy">Privacy Policy</a> | <a href="http://martinfowler.com/aboutMe.html#disclosures">Disclosures</a></p>
+  </div>
+</div>
+<script src="Evolutionary%20Database%20Design_files/ga.js" async="" type="text/javascript"></script><script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17005812-1']);
+  _gaq.push(['_setDomainName', 'martinfowler.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<script src="Evolutionary%20Database%20Design_files/jquery-1.js" type="text/javascript"></script>
+
+<script src="Evolutionary%20Database%20Design_files/mfcom.js" type="text/javascript"></script>
+
+
+</body></html>
