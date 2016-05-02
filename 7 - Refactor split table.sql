@@ -1,5 +1,4 @@
---   Demo of incremental table change
---   Change Initial table schema and contents
+--   Demo of split table change
 --
 ALTER DATABASE Demo1 SET RECURSIVE_TRIGGERS OFF;
 GO
@@ -12,46 +11,64 @@ GO
 --
 --  Step 1: Expand.
 --
---  Using "Refactoring Databases", page 126, "Replace Column",
---  first introduce new columns.
---  defaults allowed only so that triggers can recognize what needs to be updated.
---  Default constraints are named so that we can drop them later.
---  Warning: Adding NOT NULL (with default) columns can be time consuming!
---           (1 million rows on laptop took 17 seconds, 2 million took 28 seconds)
+--  Using "Refactoring Databases", page 145, "Split Table",
 --
---   Add new columns
-ALTER TABLE Customer  ADD
-   Name1              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name1          DEFAULT '',
-   Name2              nvarchar(64) NOT NULL CONSTRAINT DF_Customer_Name2          DEFAULT '',
-   BillingPostal1     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal1 DEFAULT '',
-   BillingPostal2     nvarchar(11) NOT NULL CONSTRAINT DF_Customer_BillingPostal2 DEFAULT '',
-   BillingCountry     nvarchar(64) NOT NULL CONSTRAINT DF_Customer_BillingCountry DEFAULT '',
+CREATE TABLE BillingAddress
+(
+   BillingAddressID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+   CustomerId       int NOT NULL,
+   Address1  nvarchar(64) NOT NULL,
+   Address2  nvarchar(64) NOT NULL,
+   City      nvarchar(64) NOT NULL,
+   State     char(2)      NOT NULL,
+   Postal1   nvarchar(11) NOT NULL CONSTRAINT DF_BillingAddress_Postal1 DEFAULT '',
+   Postal2   nvarchar(11) NOT NULL CONSTRAINT DF_BillingAddress_Postal2 DEFAULT '',
+   Country   nvarchar(64) NOT NULL CONSTRAINT DF_BillingAddress_Country DEFAULT '',
                           -- 'United Kingdom of Great Britain and Northern Ireland' is 53 chars
-   BillingCountryCode nchar(2)     NOT NULL  
-       CONSTRAINT DF_Customer_BillingCountryCode DEFAULT 'us'; -- ISO 3166
+   CountryCode nchar(2)     NOT NULL  
+       CONSTRAINT DF_BillingAddress_CountryCode DEFAULT 'us', -- ISO 3166
+ CONSTRAINT FK_BillingAddress_Customer 
+   FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId)
+);
 GO
 --
---  Add DEFAULT constraint
---  so that INSERTing new rows using only the new columns will not fail.
+--   Now add a column to the Shipping Address table
 --
-ALTER TABLE Customer ADD CONSTRAINT DF_Customer_Name DEFAULT '' FOR Name;
-GO
-SELECT * FROM Customer;
+ALTER TABLE ShippingAddress
+   ALTER COLUMN CustomerID int NULL;
+ALTER TABLE ShippingAddress
+   ADD BillingAddressID int NULL;
+ALTER TABLE ShippingAddress
+   ADD CONSTRAINT FK_ShippingAddress_BillingAddressID
+   FOREIGN KEY (BillingAddressID) REFERENCES BillingAddress (BillingAddressID);
+--
 GO
 --
 --   Step 2: create triggers to keep everything in sync.
-IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
-   DROP TRIGGER SynchronizeCustomerAddress;
+IF OBJECT_ID ('SynchronizeCustomerWithBillingAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeCustomerWithBillingAddress;
 GO
-CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
+CREATE TRIGGER SynchronizeCustomerWithBillingAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
    --SET NOCOUNT ON;    -- Normally present.
    --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
-   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
-   IF @cnt > 0 
-   BEGIN;
+   --DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   --IF @cnt > 0 
+   --BEGIN;
    --
+   --  STOP!  Write test cases first!
+   --
+   IF deleted.CustomerID IS NULL
+   BEGIN
+      -- Inserting a customer: add a billing address to match
+   END;
+   ELSE
+   BEGIN
+      -- Updating a customer: look for a matching billing address.
+      -- If not found, add one.
+   END;
+   
    IF UPDATE(Name) OR UPDATE(Name1)
    BEGIN;
       -- old columns updated: update new columns
@@ -99,7 +116,7 @@ BEGIN
         AND inserted.BillingCountryCode = 'us'
         AND ISNULL(inserted.BillingZIP,'') <> 
             SUBSTRING(inserted.BillingPostal2,1,5) + SUBSTRING(inserted.BillingPostal2,7,4);
-   END;
+   --END;
    END;
 END;
 GO
