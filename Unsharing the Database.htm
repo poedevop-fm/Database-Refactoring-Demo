@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Unsharing the Database | Stitch Fix Technology – Multithreaded</title>
+  <meta name="description" content="At Stitch Fix, we are currently tackling a pretty common problem among fast-growing startups in the process of scaling.  Our applications are overdependent o...">
+
+  <link rel="stylesheet" href="Unsharing%20the%20Database_files/main.css">
+  <link rel="canonical" href="http://multithreaded.stitchfix.com/blog/2016/05/03/un-sharing-the-database/">
+  <link rel="alternate" type="application/rss+xml" title="Stitch Fix Technology – Multithreaded" href="http://multithreaded.stitchfix.com/feed.xml">
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://multithreaded.stitchfix.com/favicon.ico">
+  <script src="Unsharing%20the%20Database_files/modernizr.js"></script>
+  <script>
+      var RimgOptions = {
+          breakpoint:
+                  '-tiny 320w 1x,    -tiny-retina 320w 2x,' +
+                  '-small 480w 1x,   -small-retina 480w 2x,' +
+                  '-medium 600w 1x,  -medium-retina 600w 2x,' +
+                  '-regular 768w 1x, -regular-retina 768w 2x,' +
+                  '-large 1024w 1x,  -large-retina 1024w 2x,' +
+                  '-huge 1200w 1x,   -huge-retina 1200w 2x'
+      }
+  </script>
+  <script src="Unsharing%20the%20Database_files/rimg.js"></script>
+</head>
+
+  <body class="blog-post">
+    
+<nav class="global-nav">
+  <ul class="hidden-gtxs list-flex">
+    <li>
+      <a href="http://multithreaded.stitchfix.com/" class="logo global-nav__item global-nav__item--logo left">
+        <img src="Unsharing%20the%20Database_files/logomark.svg" alt="Stitch Fix logomark">
+      </a>
+    </li>
+    
+      
+      
+      
+      
+        <li class="flex-4">
+          <a href="http://multithreaded.stitchfix.com/engineering" class="global-nav__item ">
+            Engineering
+          </a>
+        </li>
+    
+      
+      
+      
+      
+        <li class="flex-4">
+          <a href="http://multithreaded.stitchfix.com/algorithms" class="global-nav__item ">
+            Algorithms
+          </a>
+        </li>
+    
+      
+      
+      
+      
+        <li class="flex-3">
+          <a href="http://multithreaded.stitchfix.com/careers" class="global-nav__item ">
+            Careers
+          </a>
+        </li>
+    
+      
+      
+      
+      
+        <li class="flex-3">
+          <a href="http://multithreaded.stitchfix.com/blog" class="global-nav__item current">
+            Blog
+          </a>
+        </li>
+    
+  </ul>
+  <div class="hidden-xs container flex">
+    <a href="http://multithreaded.stitchfix.com/" class="logo global-nav__item global-nav__item--logo left">
+        <img src="Unsharing%20the%20Database_files/logov5.svg" alt="Stitch Fix logo">
+    </a>
+    <div class="right">
+      
+        
+        
+          <a href="http://multithreaded.stitchfix.com/engineering" class="global-nav__item ">
+            Engineering
+          </a>
+      
+        
+        
+          <a href="http://multithreaded.stitchfix.com/algorithms" class="global-nav__item ">
+            Algorithms
+          </a>
+      
+        
+        
+          <a href="http://multithreaded.stitchfix.com/careers" class="global-nav__item ">
+            Careers
+          </a>
+      
+        
+        
+          <a href="http://multithreaded.stitchfix.com/blog" class="global-nav__item current">
+            Blog
+          </a>
+      
+    </div>
+  </div>
+</nav>
+      <div class="container">
+        <header class="mt6 mb3">
+          <h1 class="h1 mb1 text-c h-limited">Unsharing the Database</h1>
+
+        <aside class="authors-row">
+          
+            
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <img src="Unsharing%20the%20Database_files/randy-shoup.jpg" class="blog-post__author-image circleimage" alt="Blog post by Randy Shoup">
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+            
+              
+                
+              
+            
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+            
+          
+        </aside>
+
+          <div class="blog-meta">
+            <h6 class="h6 heading--impact m1">
+              
+                Randy Shoup
+              
+            </h6>
+
+            <h6 class="thin text-c"><time datetime="2016-05-03">May 03, 2016</time>
+            
+              <span class="location">
+                - San Francisco, CA
+              </span>
+            </h6>
+          </div>
+        </header>
+    </div>
+    <div class="container contain-to-sm pos-rel">
+      <article>
+        <section class="text-content">
+          <p>At Stitch Fix, we are currently tackling a pretty common 
+problem among fast-growing startups in the process of scaling.  Our 
+applications are overdependent on a shared database, and in order for us
+ to uncouple the various engineering teams from one another and to grow 
+our applications to the next level, we need to unshare it.  This blog 
+post will talk about the problems we are trying to solve, and the 
+stepwise approach we are taking to solve them.</p>
+
+<h2 id="how-we-got-here">How We Got Here</h2>
+
+<p>We have set ourselves up for success in many ways:</p>
+
+<ul>
+  <li>We have organized ourselves into small, independent teams strongly aligned with different business areas</li>
+  <li>Each team is responsible for its own particular set of applications and services</li>
+  <li>We practice TDD and Continuous Delivery, and release software multiple times per day</li>
+  <li>We embrace a DevOps culture where the team that builds an application is responsible for running and maintaining it</li>
+</ul>
+
+<p>Like the other companies who follow this model (Google, Amazon, 
+Netflix, etc.), we do this to decouple teams from one another and enable
+ them to move forward quickly and independently.  We also believe that 
+giving autonomy and agency to individual teams motivates every engineer 
+to bring their best.</p>
+
+<p>Getting to this point has been an evolutionary process, though, where
+ we started small and have grown over time.  Just as with biological 
+evolution, some of the vestiges of the earliest phases of our 
+development are still visible.  And one of the (biggest) vestiges is the
+ fact that most of our applications read and write to a shared database.</p>
+
+<h2 id="the-shared-database">The Shared Database</h2>
+
+<p>For an early- and mid-stage startup, a monolithic database is 
+absolutely the appropriate architecture choice.  With a small team and a
+ small company, a single shared database made it simple to get started. 
+ Moving fast meant being able to make rapid changes across the entire 
+system.  A shared database made it very easy to join data between 
+different tables, and it made transactions across multiple tables 
+possible.  These are pretty convenient.</p>
+
+<p>As we have gotten larger, those benefits have become liabilities.  It
+ has become a single point of failure, where issues with the shared 
+database can bring down nearly all of our applications.  It has become a
+ performance bottleneck, where long-running operations from one 
+application can slow down others.  Finally, and most importantly, the 
+shared database has become a coupling point between teams, slowing down 
+our ability to make changes.</p>
+
+<h2 id="enter-services">Enter Services</h2>
+
+<p>Our approach to unsharing the shared database is to move individual 
+pieces of the shared database into private databases owned by individual
+ services.  Instead of having applications communicate by reading and 
+writing common tables in a shared database, we encapsulate that 
+functionality in a service which owns and manages the storage, and 
+applications use the service interface.</p>
+
+<p>As our industry has learned through painful experience, a 
+service-oriented architecture with shared storage is an anti-pattern.  
+In order to be effective, services need to be completely isolated from 
+one another, and the only way to read and write a service’s data should 
+be through its supported interface.</p>
+
+<p>Sharing a database underneath encourages backdoor violations of the 
+interface contract, because its data can be read and written directly.  
+It bypasses business logic, and makes it impossible to enforce 
+invariants inside the service.  Worse, because the internal 
+implementation details of the service are implicitly exposed, it makes 
+it impossible to safely change them.  The service cannot, for example, 
+safely introduce a cache or use an alternate storage mechanism.</p>
+
+<p>eBay’s first foray into SOA—circa 2008—ended up failing for exactly 
+this reason.  There was a lot of careful and concerted effort designing 
+and implementing reasonable service interfaces, and they were nicely 
+orthogonal and decoupled.  But all the underlying databases were still 
+shared.  This meant that the services were actually not isolated from 
+one another, so one service’s operations could have unexpected side 
+effects on another’s data.  It also meant that an application did not 
+have to use the service interface to get its job done—it could continue 
+reading and writing directly to the underlying tables as it had always 
+done.</p>
+
+<p>After all, a service’s interface is not just the API we usually think
+ of.  The interface comprises all mechanisms someone could use to 
+influence its behavior or read / write its data.  This includes both the
+ obvious and the non-obvious:</p>
+
+<ul>
+  <li>Synchronous API (e.g., a REST / JSON request - response)</li>
+  <li>Messages consumed and produced</li>
+  <li>Logging and monitoring data produced</li>
+  <li>Any direct access to its storage</li>
+</ul>
+
+<p>With the benefit of 20-20 hindsight, it should maybe be a bit 
+surprising that it has taken as long as it has for our industry to come 
+to this realization.  After all, we would never be so cavalier about 
+violating the encapsulation of a class or component.  Imagine a class 
+whose interface boundary you could bypass by reading or writing to its 
+private memory locations!  In almost all modern languages, this is not 
+even possible.  Just as we would never make internal implementation 
+details of a class accessible to the outside world, a properly isolated 
+service would never expose its storage either.</p>
+
+<h2 id="getting-from-here-to-there">Getting from Here to There</h2>
+
+<p>As with everything we do at Stitch Fix, we ask ourselves how we can approach this unsharing problem incrementally.</p>
+
+<p>Here are our steps:</p>
+
+<ul>
+  <li>First, we introduce a service interface, whose implementation 
+simply directly accesses the table(s) in the shared database.  We make 
+sure that that service interface contains operations that are 
+semantically meaningful to the caller, rather than being just a CRUD 
+API.</li>
+  <li>We refactor code that uses the table(s) to run all access to the 
+table(s) through that interface.  For tables that are joined in other 
+queries, this involves some non-trivial effort sorting out what to do 
+with those queries.  Now all access to the table(s) is through the 
+service interface, but that interface is inline in the applications.</li>
+  <li>We now write a remote service (using our open-sourced <a href="https://github.com/stitchfix/stitches">stitches service framework</a>),
+ and replace the implementation of the service interface with a call to 
+the remote service.  Now all access to the table(s) is via the remote 
+service, but the table(s) still live in the shared database.</li>
+  <li>Last, we migrate the table(s) from the shared database into a 
+private database for the service, and update the service implementation 
+to read and write to its private database.  Now the data is encapsulated
+ inside the service, and we are done.</li>
+  <li>Rinse and repeat</li>
+</ul>
+
+<h2 id="why-didnt-we-just-start-there">Why Didn’t We Just Start There?</h2>
+
+<p>Why did we even do this?  More specifically, why didn’t we partition 
+the database from the very beginning?  The honest answer is that it 
+would have been absolutely the wrong thing to do.  In the early stages, 
+we should (and did) prioritize validating our business model and making 
+sure we found a product-market fit.  Even as we were growing, we 
+prioritized delighting our early customers and rapidly iterating on our 
+product offering over engineering for a future scale that may never have
+ come.  The opportunity cost of over-engineering early on is too high.  
+Far better to spend our scarce time and resources concentrating on 
+solving near-term problems rather than problems that might only occur in
+ a year or two.</p>
+
+<p>Now that we have achieved a scale where the shared database is a pain point, it makes sense to invest in unsharing it.</p>
+
+<p>It is worth pointing out that rearchitecting or reengineering a 
+system is almost always a sign of success, not a sign of failure.  It is
+ not so much that you <em>have</em> to rearchitect as that you <em>get</em>
+ to rearchitect.  It means that you have reached a scale where your 
+earlier choices no longer work, and that people actually care about the 
+product you provide.  Or, as I like to say, if you don’t end up 
+regretting your early technology decisions, you probably 
+over-engineered!</p>
+
+
+        </section>
+      </article>
+    </div>
+
+    <div class="divider py4 text-c">
+      <img src="Unsharing%20the%20Database_files/logomark.svg" alt="Multithreaded" width="60">
+    </div>
+
+    
+  <section class="py4 text-c">
+    <div class="container contain-to-md">
+      <h2 class="h2 heading--impact">Come Work with Us!</h2>
+      <p class="text-c p-limited">
+        We’re a diverse team dedicated to building great products, and we’d love your help. Do you want to build
+        amazing products with amazing peers? Join us!
+      </p>
+      <footer class="m2">
+        <a href="http://multithreaded.stitchfix.com/careers" class="btn-cta m1 mr1 ml1">All Technology Careers</a>
+        <a href="http://stitchfix.com/careers" class="btn-cta m1">All Careers at Stitch Fix</a>
+      </footer>
+    </div>
+  </section>
+
+    <div class="container">
+  <footer class="global-footer">
+    <div class="global-footer__content">
+      <section class="footer-column--brand">
+        <img src="Unsharing%20the%20Database_files/StitchFix%2520Tagline%2520leftalign%2520SVG.svg" class="footer-logo" alt="Stitch Fix: Your partner in personal style">
+        <small class="copyright">Stitch Fix and Fix are<br>trademarks of Stitch Fix, Inc.</small>
+      </section>
+      <section class="footer-column--links">
+        <div class="links-container">
+          <ul class="links-list">
+            <li><a href="https://www.stitchfix.com/">Stitch Fix Home</a></li>
+            <li><a href="https://www.stitchfix.com/faq">FAQ</a></li>
+            <li><a href="https://www.stitchfix.com/press">Press</a></li>
+          </ul>
+          <ul class="links-list">
+            <li><a href="http://multithreaded.stitchfix.com/blog/">Tech Blog</a></li>
+            <li><a href="http://multithreaded.stitchfix.com/careers/">Tech Careers</a></li>
+          </ul>
+          <ul class="links-list">
+            <li><a href="https://www.stitchfix.com/terms">Terms of Use</a></li>
+            <li><a href="https://www.stitchfix.com/privacy">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </section>
+      <section class="footer-column--social">
+        <h5 class="f-sm mb1">Follow Us!</h5>
+        <a href="http://github.com/stitchfix" class="pxhalf">
+          <img src="Unsharing%20the%20Database_files/socialgithub.svg" alt="Stitch Fix Tech on Github" height="32" width="33">
+        </a>
+      </section>
+    </div>
+
+    <div class="global-footer__content-small-views">
+      <section class="m4">
+        <h5 class="f-sm mb1">Follow Us!</h5>
+        <a href="http://github.com/stitchfix" class="pxhalf">
+          <img src="Unsharing%20the%20Database_files/socialgithub.svg" alt="Stitch Fix Tech on Github" height="32" width="33">
+        </a>
+      </section>
+      <ul class="links-list--small-views">
+        <li><a href="http://multithreaded.stitchfix.com/blog/">Tech Blog</a></li>
+        <li><a href="http://multithreaded.stitchfix.com/careers/">Tech Careers</a></li>
+        <li><a href="https://www.stitchfix.com/">Stitch Fix Home</a></li>
+        <li><a href="https://www.stitchfix.com/faq">FAQ</a></li>
+        <li><a href="https://www.stitchfix.com/press">Press</a></li>
+        <li><a href="https://www.stitchfix.com/terms">Terms of Use</a></li>
+        <li><a href="https://www.stitchfix.com/privacy">Privacy Policy</a></li>
+      </ul>
+      <section class="copyright m1">
+        <div class="mb1">Stitch Fix and Fix are trademarks of Stitch Fix, Inc.</div>
+        <img src="Unsharing%20the%20Database_files/sf_logomark.svg" alt="Stitch Fix logomark" height="32" width="33">
+      </section>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-25598599-8', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+<script src="Unsharing%20the%20Database_files/MathJax.js"></script>
+
+  
+
+</body><style>.site{opacity: 1 !important}</style></html>

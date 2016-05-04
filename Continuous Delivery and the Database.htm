@@ -1,0 +1,1473 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta http-equiv="content-language" content="en-us"><meta name="viewport" content="width=device_display, initial-scale=1.0"><meta name="msvalidate.01" content="9C05A0BBFB5A166A5C1C7202D4E5D72B">
+    <script type="text/javascript" data-main="/static/versioned/3e62335f7e28118064c631b9a3a32e46/js/main.js" src="Continuous%20Delivery%20and%20the%20Database_files/require-2_002.js"></script>
+    <script>
+      require.config({
+        paths: {
+          "jquery": "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min",
+          "mediaelement": "lib/mediaelement/mediaelement-and-player"
+        },
+        urlArgs: "v=105"
+      });
+    </script>
+    <!-- Start of Async HubSpot Analytics Code --> 
+    <script type="text/javascript">
+        (function (d, s, i, r) {
+            if (d.getElementById(i)) { return; }
+            var n = d.createElement(s), e = d.getElementsByTagName(s)[0];
+            n.id = i; n.src = '//js.hs-analytics.net/analytics/' + (Math.ceil(new Date() / r) * r) + '/305265.js';
+            e.parentNode.insertBefore(n, e);
+        })(document, "script", "hs-analytics", 300000); 
+    </script> 
+    <!-- End of Async HubSpot Analytics Code -->
+
+    <script type="text/javascript" src="Continuous%20Delivery%20and%20the%20Database_files/modernizr.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="Continuous%20Delivery%20and%20the%20Database_files/main.css">
+    <link rel="stylesheet" type="text/css" href="Continuous%20Delivery%20and%20the%20Database_files/content.css">
+    <link rel="stylesheet" type="text/css" href="Continuous%20Delivery%20and%20the%20Database_files/mobile-navigation.css">
+    <link rel="stylesheet" type="text/css" href="Continuous%20Delivery%20and%20the%20Database_files/mobile-searchbar.css">
+
+    
+      <link rel="stylesheet" href="Continuous%20Delivery%20and%20the%20Database_files/sql.css" type="text/css">
+    
+    <!--[if lt IE 9]>
+      <script src="/static/versioned/c42155be65838a3ecf77bfc6caf1ee7f/js/lib/html5shiv-printshiv.js"></script>
+    <![endif]-->
+
+    
+    
+  <meta name="description" content="Continuous Delivery is fairly generally understood to be an effective way of tackling the problems of software delivery and deployment by making build, integration and delivery into a routine. The way that databases fit into the Continuous Delivery story has been less-well defined. Phil Factor explains why he's an enthusiast for databases being full participants, and suggests practical ways of doing so. ">
+  <meta keywords="">
+  <meta itemprop="interactionCount" content="UserComments:0">
+  <link rel="canonical" href="https://www.simple-talk.com/sql/database-administration/continuous-delivery-and-the-database/">
+<title>
+	Continuous Delivery and the Database
+</title></head>
+<body>
+  <div id="corner-peel">
+	  <a href="http://www.red-gate.com/sqlmonitor-simpletalk" rel="nofollow">
+      <img class="lrkxcscxzkbgkpslxbbf" src="Continuous%20Delivery%20and%20the%20Database_files/corner-peel.png" alt="Click here to monitor SSC">
+    </a>
+	  <div id="corner-peel-behind"></div>
+  </div>
+
+  <div class="site">
+    <div itemscope="" itemtype="http://schema.org/TechArticle" class="page"> 
+      
+
+<div class="site-header">
+  <div class="mobile-navigation" style="float: left; padding-top: 13px;">
+    
+	  <div class="mobile-navigation-column">
+    <div id="dl-menu" class="dl-menuwrapper">
+		  <button class="dl-trigger">Open Menu</button>
+		  <ul class="dl-menu">
+			  <li>
+				  <a href="https://www.simple-talk.com/">Home</a>
+        </li>
+        <li>
+          <a href="">SQL</a>
+				  <ul class="dl-submenu">
+					  <li><a href="https://www.simple-talk.com/sql/">SQL Home</a></li>
+					  <li><a href="https://www.simple-talk.com/sql/learn-sql-server/">Learn SQL Server</a></li>
+					  <li><a href="https://www.simple-talk.com/sql/sql-training/">SQL Training</a></li>
+					  <li><a href="https://www.simple-talk.com/sql/database-administration/">Database Administration</a></li>
+            <li><a href="https://www.simple-talk.com/sql/t-sql-programming/">T-SQL Programming</a></li>
+            <li><a href="https://www.simple-talk.com/sql/performance/">Performance</a></li>
+            <li><a href="https://www.simple-talk.com/sql/backup-and-recovery/">Backup and Recovery</a></li>
+            <li><a href="https://www.simple-talk.com/sql/sql-tools/">SQL Tools</a></li>
+            <li><a href="https://www.simple-talk.com/sql/editors-corner">Editor's Corner</a></li>
+            <li><a href="https://www.simple-talk.com/sql/ssis/">SSIS</a></li>
+            <li><a href="https://www.simple-talk.com/sql/reporting-services">Reporting Services</a></li>
+				  </ul>
+			  </li>
+			  <li>
+				  <a href="">.NET</a>
+          <ul class="dl-submenu">
+            <li><a href="https://www.simple-talk.com/dotnet/">.NET Home</a></li>
+					  <li><a href="https://www.simple-talk.com/dotnet/asp.net/">ASP.Net</a></li>
+					  <li><a href="https://www.simple-talk.com/dotnet/windows-forms/">Windows Forms</a></li>
+            <li><a href="https://www.simple-talk.com/dotnet/.net-framework/">.Net Framework</a></li>
+            <li><a href="https://www.simple-talk.com/dotnet/performance/">Performance</a></li>
+            <li><a href="https://www.simple-talk.com/dotnet/visual-studio/">Visual Studio</a></li>
+            <li><a href="https://www.simple-talk.com/dotnet/.net-tools/">.Net Tools</a></li>
+            <li><a href="https://www.simple-talk.com/dotnet/editors-corner/">Editor's Corner</a></li>
+				  </ul>
+			  </li>
+			  <li>
+				  <a href="">Cloud</a>
+          <ul class="dl-submenu">
+					  <li><a href="https://www.simple-talk.com/cloud/">Cloud Home</a></li>
+					  <li><a href="https://www.simple-talk.com/cloud/cloud-data/">Cloud Data</a></li>
+					  <li><a href="https://www.simple-talk.com/cloud/platform-as-a-service/">Platform as a Service</a></li>
+            <li><a href="https://www.simple-talk.com/cloud/development/">Development</a></li>
+            <li><a href="https://www.simple-talk.com/cloud/infrastructure-as-a-service/">Infrastructure as a Service</a></li>
+            <li><a href="https://www.simple-talk.com/cloud/security-and-compliance/">Security and Compliance</a></li>
+            <li><a href="https://www.simple-talk.com/cloud/data-science/">Data Science</a></li>
+            <li><a href="https://www.simple-talk.com/cloud/software-as-a-service/">Software as a Service</a></li>
+				  </ul>
+			  </li>
+			  <li>
+				  <a href="">SysAdmin</a>
+          <ul class="dl-submenu">
+            <li><a href="https://www.simple-talk.com/sysadmin/">SysAdmin Home</a></li>
+					  <li><a href="https://www.simple-talk.com/sysadmin/editors-corner/">Editor's Corner</a></li>
+					  <li><a href="https://www.simple-talk.com/sysadmin/exchange/">Exchange</a></li>
+            <li><a href="https://www.simple-talk.com/sysadmin/general/">General</a></li>
+            <li><a href="https://www.simple-talk.com/sysadmin/virtualization/">Virtualization</a></li>
+            <li><a href="https://www.simple-talk.com/sysadmin/unified-messaging/">Unified Messaging</a></li>
+            <li><a href="https://www.simple-talk.com/sysadmin/powershell/">Powershell</a></li>
+				  </ul>
+			  </li>
+        <li>
+          <a href="https://www.simple-talk.com/opinion/">Opinion</a>
+        </li>
+        <li>
+				  <a href="">Books</a>
+          <ul class="dl-submenu">
+            <li><a href="https://www.simple-talk.com/books/">Books Home</a></li>
+					  <li><a href="https://www.simple-talk.com/books/.net-books/">.Net Books</a></li>
+					  <li><a href="https://www.simple-talk.com/books/sql-books/">SQL Books</a></li>
+            <li><a href="https://www.simple-talk.com/books/sysadmin-books/">SysAdmin Books</a></li>
+            <li><a href="https://www.simple-talk.com/books/book-reviews/">Book Reviews</a></li>
+				  </ul>
+			  </li>
+        <li>
+				  <a href="https://www.simple-talk.com/blogs/">Blogs</a>
+        </li>
+        <li>
+				  <a href="https://www.simple-talk.com/community/forums/">Forums</a>
+        </li>
+		  </ul>
+	  </div><!-- /dl-menuwrapper -->
+    </div>
+<script type="text/javascript">
+  require(["jquery", "jquery.dlmenu"], function ($) {
+      $(document).ready(function() {
+          $('#dl-menu').dlmenu({
+              animationClasses: { classin: 'dl-animate-in-2', classout: 'dl-animate-out-2' }
+          });
+      });
+  });
+</script>
+  </div>
+  <div class="site-logo">
+    <a href="https://www.simple-talk.com/">
+      <img src="Continuous%20Delivery%20and%20the%20Database_files/simple-talk-logo.png" class="simple-talk-logo-image" alt="Simple-Talk">
+    </a>
+  </div>
+        
+  <div class="site-tagline">
+    A technical journal and community hub from Redgate
+  </div>
+
+	<div class="red-gate-logo">
+	  <a href="http://www.red-gate.com/?utm_source=simpletalk&amp;utm_medium=textad&amp;utm_campaign=homepage">
+	  	<img src="Continuous%20Delivery%20and%20the%20Database_files/red-gate-logo.png" class="red-gate-logo-header-image" alt="Redgate">
+	  </a>
+	</div>
+  <div class="signup-buttons">
+    
+  <div class="account-nav account-nav-anonymous">
+      <a href="https://www.simple-talk.com/community/user/CreateUser.aspx?ReturnUrl=%2fsql%2fdatabase-administration%2fcontinuous-delivery-and-the-database%2f">Join Simple-Talk</a>
+      <a href="https://www.simple-talk.com/community/login.aspx?ReturnUrl=%2fsql%2fdatabase-administration%2fcontinuous-delivery-and-the-database%2f">Sign in</a>
+  </div>
+
+  </div>
+  <br>
+  <div class="mobile-search">
+    
+<div class="mobile-searchbar-column">
+	<div id="sb-search" class="sb-search">
+		<input class="sb-search-input" placeholder="Search..." name="search" id="search" type="text">
+		<input class="sb-search-submit" value="" type="submit">
+		<span class="sb-icon-search"><img src="Continuous%20Delivery%20and%20the%20Database_files/search_white.png" style="height: 25px;" alt="Search"></span>
+	</div>
+</div>  
+  </div>
+</div>
+
+      
+
+<div class="mainnav nav">
+  <ul class="primarynav">
+    
+      <li>
+        <a href="https://www.simple-talk.com/">Home</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/sql/" class="on">SQL</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/dotnet/">.NET</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/cloud/">Cloud</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/sysadmin/">SysAdmin</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/opinion/">Opinion</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/books/">Books</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/blogs/">Blogs</a>
+      </li>
+    
+      <li>
+        <a href="https://www.simple-talk.com/community/forums/">Forums</a>
+      </li>
+    
+  </ul>
+  <div class="site-search">
+    
+      <form action="/search/" method="get">
+    
+			  <input name="search" placeholder="Search…" type="text">
+        <button type="submit" class="search-button">
+          <img src="Continuous%20Delivery%20and%20the%20Database_files/search.png" alt="Search">
+        </button>
+		
+      </form>
+    
+  </div>
+</div>
+  
+<div class="subnav nav">
+  <ul>
+    
+        <li>
+          <a id="ctl00_Navigation1_repSubMenu_ctl00_lnkItem" href="https://www.simple-talk.com/sql/"><span itemprop="articleSection">SQL Home</span></a>
+        </li>
+      
+        <li>
+          <a id="ctl00_Navigation1_repSubMenu_ctl01_lnkItem" href="https://www.simple-talk.com/sql/database-administration/"><span itemprop="articleSection">Database Administration</span></a>
+        </li>
+      
+        <li>
+          <span class="inactive-link ">Continuous Delivery and the Database</span>
+        </li>
+      
+  </ul>
+</div>
+      <div class="maincontent">
+        
+  <div class="article">
+  
+    <div id="ctl00_MainContent_panSummary" class="summarybox">
+	
+      <ul>
+        <li>Av rating: <img id="ctl00_MainContent_imgRating1" src="Continuous%20Delivery%20and%20the%20Database_files/icon_plain_5stars.gif" style="height:13px;width:70px;border-width:0px;"></li>
+        <li>Total votes: 22</li>
+        <li>Total comments: 0</li>
+      </ul>
+      <ul>
+        <li><img id="ctl00_MainContent_imgEmail" src="Continuous%20Delivery%20and%20the%20Database_files/icon_email_13x11.gif" style="height:11px;width:14px;border-width:0px;">&nbsp;<a id="ctl00_MainContent_lnkEmail" href="https://www.simple-talk.com/content/email.aspx?article=1974">send to a friend</a></li>
+		    <li><img id="ctl00_MainContent_imgPrint" src="Continuous%20Delivery%20and%20the%20Database_files/icon_print_13x11.gif" style="height:11px;width:14px;border-width:0px;">&nbsp;<a id="ctl00_MainContent_lnkPrint" href="https://www.simple-talk.com/content/print.aspx?article=1974" target="_blank">printer friendly version</a></li>
+      </ul>
+      <ul>
+        <li>
+          
+        </li>
+      </ul>
+	
+</div>
+
+    <div class="article-header">
+      <img id="ctl00_MainContent_imgAuthor" class="authorpicture" itemprop="image" src="Continuous%20Delivery%20and%20the%20Database_files/3.gif" alt="Phil Factor" style="border-width:0px;" align="left">
+      <h1 class="articletitle">Continuous Delivery and the Database</h1>
+      <div class="date">03 April 2014</div>
+      <div class="author">by <a id="ctl00_MainContent_lnkAuthor" rel="author" href="https://www.simple-talk.com/author/phil-factor/"><span itemprop="author">Phil Factor</span></a></div>
+    </div>
+    <div class="clear"></div>
+    
+    <div itemprop="articleBody">
+
+    <style type="text/css">
+
+.dbd-banner{
+    background:#f0f0f0;
+    padding:15px;
+    color:#333;
+    margin-top: 10px;
+}
+
+.lower {
+	background:#f0f0f0 url('https://www.simple-talk.com/iwritefor/articlefiles/1970-db-pap_icon.png') no-repeat 107% center;
+	padding:8px 15px 8px 15px;
+}
+
+.dbd-banner p{
+    font-size:1.1em;
+    padding:0px 0px 10px 50px;
+    margin:0;
+    max-width: 580px;
+}
+
+.dbd-banner img {
+	float:left;
+	margin: 10px 10px 0 px 10px;
+	padding-right: 10px;
+}
+
+.dbd-banner p span{
+    color:#675C6D;
+    font-size:0.9em;
+}
+
+.dbd-banner p:last-child{
+    padding:0;
+}
+
+
+@media ALL and (max-width:640px){
+	.dbd-banner{
+		background:#f0f0f0;
+		padding:5px;
+	    color:#333;
+	    margin-top: 5px;
+	}
+}
+
+</style>
+
+<div class="article-content">
+<div class="dbd-banner">
+    	<img src="Continuous%20Delivery%20and%20the%20Database_files/2091-stage4.png" alt="Database Lifecycle Management Patterns &amp; Practices Library Stage 4">
+        <p><b><span style="">DATABASE LIFECYCLE MANAGEMENT PATTERNS &amp; PRACTICES LIBRARY</span></b></p>
+        <p><b>Automated Deployment</b></p>
+    </div>
+
+<p class="note">Continuous Delivery is fairly generally understood to be
+ an effective way of tackling the problems of software delivery and 
+deployment by making build, integration and delivery into a routine. The
+ way that databases fit into the Continuous Delivery story has been 
+less-well defined. Phil Factor explains why he's an enthusiast for 
+databases being full participants, and suggests practical ways of doing 
+so.&nbsp;</p><p>Software Delivery means different things depending on 
+the type of development being done, but the common thread is the 
+completion of software to the point where it is releasable and making it
+ generally accessible within the organization. There is a world of 
+difference between a simple game or utility and a complex manufacturing 
+or financial application, or an embedded control system on which lives 
+depend. This means that there will be a huge diversity in the range of 
+processes that need to be a part of the chain between development and 
+delivery. However, there are some principles in common.</p><p>Essentially,
+ 'Continuous Delivery’ is a term that describes a means of supporting 
+rapid development, focusing on delivery throughout development. The term
+ 'Delivery' will, in the very early stages, simply imply that the 
+initial aim is to automatically unit-test, and build a 'hello world' 
+application automatically from, and only from, the code in the source 
+control repository. It will apply all integration, load tests, and 
+routine user-acceptance tests automatically before deploying the 
+application to the test VMs. Of course, many of these will be stubs, and
+  one wouldn’t argue that a ‘hello world’ is feature-complete in the 
+terms of the users’ requirements, but a successful delivery will be one 
+that is at least robust in displaying ‘hello world’.</p><p>As the 
+application grows, the team can extend Continuous Delivery beyond the 
+testers within the development team, to production-like environments, 
+such as Staging, as well as to the 'alpha' users, and any broader 'beta'
+ program. In a major application, the Continuous Delivery process will 
+involve a wide range of specialized roles such as business analysts, 
+operators, support people, DBAs, application programmers, database 
+developers, compliance experts, change control managers, account 
+managers, librarians, testers, system programmers, PMO, webmasters, and 
+technical architects.</p><p>'Continuous Delivery' is a different mindset
+ towards developing applications. It is not dependent on a prevailing 
+Agile methodology and nor is it reliant on a "DevOps culture. It doesn’t
+ require special tooling. All these can help of course, but the methods 
+that underpin Continuous Delivery are long-established and 
+well-supported, and we can use them to develop applications rapidly 
+whatever the methodology of the organization in which it is practiced. 
+For example, the routine of a nightly builds from source control, and 
+deployment, is relevant to any methodology, and is the best way of 
+nipping deployment problems in the bud.</p><p>This article will focus on
+ Continuous Delivery and the database, describing the various issues 
+that database developers will face, and the solutions they can apply, in
+ order to participate in Continuous Delivery.</p><h1>Why is Continuous Delivery necessary?</h1><p>It
+ was generally recognized some time ago that delivery and deployment of 
+any application represents a roadblock. For commercial applications, 
+games and software tools, the process of delivering a finished package 
+uncovers many aspects that slipped through the planning. There will be 
+problems with the installer, unforeseen difficulties with certain 
+combinations of operating system or hardware, or even problems with 
+functionality that the automated tests failed to cover. For a large 
+enterprise-scale application, the problems are greater, rising 
+exponentially with scale. </p><p>With an enterprise application, a 
+release of a new version coincides with a handover to production and 
+support staff, who will cast a critical eye over its 
+production-readiness in its many aspects before accepting the hand-over.
+  Because of the difference in cultures between development and 
+production, the developers are often only dimly aware of the essential 
+requirements of documentation, logging, security, compliance, reporting 
+and application-instrumentation. Being focused on a particular 
+application, they will, typically,  have neglected the broader 
+requirements for data-management and reporting across the enterprise. 
+They will, perhaps, have made hardware requirements that cannot be met 
+within the budget. It is rare for the two groups to agree on what 
+constitutes a releasable software product. The developers will often, 
+early on in development, take architectural and platform decisions 
+without considering wider issues such as the use of application data for
+ reporting or analysis, or the  cost of support. By the time the first 
+delivery comes to the attention of system architects or production 
+managers, these decisions have become irreversible. There is no obvious 
+way out of this deadlock, however cooperative all the parties are.</p><p>Added
+ to this, the many steps and components that are necessary for a release
+ make for a complex delivery process. The development team never arrive 
+at a reliable and repeatable form of their release process, simply 
+because the process is so infrequent. This makes deployment and release 
+stressful and prone to postponement. During the delay the team 
+inevitably add more functionality, broaden the scope of the application 
+still further, which in turn lengthens and complicates the release 
+process. The net result of this friction, and memories of stress, is 
+that a no-man's land develops between development and production. 
+Releases turn into extended struggles and the gap between releases 
+becomes ridiculous. When releases finally happen, and the applications 
+features and architecture are revealed, they often contain unpleasant 
+surprises.</p><p>The Agile philosophy of promoting rapid releases is 
+appropriate as a way of solving many of the problems of delivery, but it
+ is not a universal panacea. They may be rapidly-releasing entirely 
+inappropriate software that is impossible to support, or even 
+contravenes security or usability regulations to the extent that it is 
+impossible to require staff to use it.  In enterprise IT, the idea of 
+rapid releases is less appealing than elsewhere. Each release of a 
+corporate application comes with a training cost that can match or even 
+dwarf the development cost. The repercussions of a deployment can cause 
+knock-on problems to server-storage, network, support, disaster-recovery
+ planning and so on. Enterprises need predictable deployments with no 
+surprises, but they don’t necessarily want rapid deployments. They must 
+be able to release at the time they choose. </p><p>The idea of 
+‘Continuous Delivery’, where development is geared around the idea of an
+ automated delivery process, evolved from the idea of ‘Continuous 
+Deployment’ to meet the needs of rapid software-release from parts of 
+the industry, and for predictable deployment from other parts. It is the
+ practice of bringing in the techniques and culture of testing and 
+release right through development and application-design. It takes the 
+sting from delivery because it will have been practiced from the start. 
+If a component such as a server component, third-party library, existing
+ platform or database is introduced that proves to cause difficulty to 
+the build, then the problem is tackled before subsequent work reduces 
+the options down to sweat and tears. If coding practices, for example, 
+make unit testing difficult, then the problem has to be faced and solved
+ before the problem piles up into a considerable refactoring exercise. </p><p>'Continuous
+ Delivery' cannot solve every development problem, but it prevents the 
+accumulation of deployment issues that typically lie concealed until the
+ release process has to be done in earnest. It reduces nasty surprises. 
+It also makes a number of issues more visible and increases the urgency 
+of fixing them rather than ploughing on regardless.</p><p>Continuous 
+Delivery does not demand that software can be released into production 
+at any time, since this makes work on new features, more difficult. It 
+should be delivered, but not necessarily released. The relative appeal 
+of Continuous Delivery depends on scale. Continuous Delivery makes a 
+distinction between being able to deliver, and actually doing so. With 
+larger applications, there are so many repercussions to a deployment 
+that need to be considered, such as the customer, channel, process, 
+organization and Location (Business Architecture) and Data, Applications
+ and Technology (Systems Architecture). To take a simple example, the 
+release of a new version of an application that is used by many workers 
+in an organization will require training, might require a third-party 
+audit for its compliance, clearance with unions for usability, work on 
+facilities such as printers or lighting and ISO 9000 SQA certification. 
+Although Continuous Delivery still means that a new release can be 
+predictable and rapid, and that all the contributors will be up-to-date 
+with the application, there will, inevitably, be processes that require 
+judgment and expertise that are therefore unlikely candidates for 
+automation, but they can still be participants in the workflow processes
+ of Continuous Delivery..</p><h1>What's Required for Continuous Delivery</h1><h3>A scaffolding of Automation</h3><p>A
+ development  team will need to automate the build, integration and test
+ processes before it can participate in Continuous Delivery. It is like 
+putting up the basic scaffolding before working on the house. From then 
+on, the developers will be responsible for ensuring that they develop in
+ a way that facilitates automation of all the processes that contribute 
+to a successful delivery of a working application. They will be 
+constantly reminded of how the decisions they make have repercussions 
+down the line.</p><p>It is a very liberating for the programmer to 
+automate the worst development chores, from source control, unit test, 
+build, integration tests, through to deployment. However, this isn't 
+easy to do retrospectively. To develop easily-tested code, for example, 
+the code must be designed with the needs of testing in mind. There must,
+ for example, be separation of concerns, it must be possible to test 
+each component in isolation, and there should be obvious assertions that
+ can be tested. The code should be well-instrumented.</p><h3>The ‘DevOps’ culture of delivery</h3><p>We
+ also need a different type of development culture that is aware of the 
+needs for software delivery at all points in the development process. We
+ must 'think delivery' at the point at which we design and develop 
+applications. </p><p>Whatever the development methodology, there should be a <strong>'culture of delivery'</strong>,
+ right from the planning stage. If the system architect, project 
+manager, and developers are mindful of the means of build, integration 
+and deployment, then there are likely to be fewer roadblocks when the 
+developers are ready to release an application. </p><p>If developers 
+understand the implications for the delivery process of a particular 
+development choice, such as choosing to partition the logic across 
+several databases rather than using schema, very soon after making the 
+choice, then they can avoid many of the 'unforeseen issues'. Once this 
+happens, a script to deploy this arrangement easily is likely to follow.
+ If it proves difficult to deploy, then there is time to retreat from 
+that particular decision.</p><h3>The Culture of Resilience</h3><p>Even more important is the <strong>'culture of resilience'</strong>.
+ Builds cause problems because of the time it takes to work out the 
+reason for failure. It is not enough to detect where the build has 
+failed, but also why. When things go wrong with the process, as is 
+inevitable, then the event should be carefully logged in such a way that
+ a member of the team that isn't 'in the know' can fix it. SQL source 
+code that won't execute should be logged and recorded with an 
+explanation, for example. </p><p>If the development team remains 
+conscious from the start about what is needed for the delivery of the 
+full system, then when the application is deployed or shipped, there is 
+less likely to be a roadblock. There is nothing more exasperating for a 
+production DBA than to come across an aspect of development that shows 
+little or no thought for how one could ever go about deploying it. There
+ are so many common practices that fit this category, from embedded 
+connection strings to undocumented calls, to linked databases. </p><p>I suspect that the best approach is the imposition, right from the start of development, of an automated system for <strong>nightly </strong><strong>delivery. </strong><strong><strong>This would include build</strong></strong>,
+ followed by deployment to all the Test VMs, and a run of integration 
+testing, before deployment to an environment that is set up as if it 
+were production. With a nightly build, it is far more likely that 
+anything that could cause difficulties to the deployment operation, such
+ as a server-based background scheduled task, will get quickly scripted 
+and put in source control. This means fewer nasty surprises later on. 
+The nightly build will highlight problems whilst the full details of the
+ offending component is fresh in the developer's mind and, of course, 
+there is a certain stigma attached to the 'dev who broke the build'. </p><p>If
+ the problem is a deployment one ('it works on my machine!'), then it 
+can be solved by scripting. Rehearsing this extra work before a 
+deployment is strictly necessary may smack of wasted effort but it means
+ that the requirements in terms of  scripts to support deployment will 
+be known up-front, and are likely to be in a good enough state for the 
+first release. These scripts should be all in source control, ready for 
+use by the automated deployment system.</p><p>From the developer's 
+perspective, an automated build system may be a pain to set up, but it 
+is always a pleasure to use. It is a great feeling when red turns to 
+green; all the unit tests run overnight, and in the morning it is just 
+green ticks. Loads of test databases automatically created, or spun up, 
+fixed and randomized data inserted and all those tests run after the 
+lights at work were switched off. Then, because the alterations look 
+good, they are included in the automated build and subjected to the 
+suite of integration and scalability tests, again all run overnight and 
+done by the morning. As one idly sips coffee and scans the paper, the 
+last tests complete and we have a reliable version of the software.</p><h1>The Benefits of Continuous Delivery</h1><p>During
+ the early stages, it can be hard for a team to appreciate the benefits a
+ development practice that imposes certain restrictions on them. It 
+means they have to spend considerable time and effort in practicing 
+build and deployment, rather than working on features. Early feedback 
+from production and support staff may cause them to rethink certain 
+development decisions, slowing initial progress still further.</p><p>It 
+can be tempting to just "push on" with the features, but any time saved 
+early in development will disappear very quickly when it comes time to 
+deploy. Do not underestimate how often the unpredictability of the 
+deployment process causes major delays in the completion of an IT 
+project. The team that delays embarking on a deployment process will 
+find errors springing up in all parts of it, from test, UX signoff, 
+security audit, resilience testing, misunderstandings about data feeds, 
+code reviews, misjudged hardware scaling, and user-acceptance testing. 
+When these problems arise, it is tempting to blame 'politics' for the 
+inevitable postponement of the software release, which is tantamount to 
+describing a headache as a cause rather than a symptom.</p><p>If teams 
+start deploying early, and continue to refine their build, test and 
+deploy processes, the most obvious benefit becomes predictability. If 
+the whole build and deployment process is timed, and done regularly, the
+ manager will be able to give a good estimate of how long it will take. 
+Most, but not all, of the likely issues will be revealed much earlier on
+ in the development process. Once they are known about, then the project
+ managers can predict timescales better and act to resolve conflicts 
+easier.</p><p>The idea of designing and developing software for the 
+purpose of deployment is no more alien than the idea that Nature 
+designed baby mammals to pass through the birth canal.</p><p>If a 
+development team is able to do rapidly build, test, deployment and 
+release, then it is better able to support whatever development 
+methodology is in place. It is wrong, as some have claimed, that the 
+ability to do rapid deployment is somehow linked with Agile 
+methodologies. The problems are not so much with the developmental 
+methodologies in place, as with the technical barriers; it isn't easy to
+ automate all the steps and some, like exploratory software testing, are
+ logically impossible to automate.</p><h1>The Challenges of Continuous Delivery</h1><p>Testing,
+ change control, release, and deployment should be as slick, automated, 
+and painless as possible, but no more so than that. Continuous Delivery 
+does not imply reckless release of software, but is geared more to the 
+idea that all the areas of expertise within IT have the current version 
+deployed and available to them to spot issues earlier.</p><p>Whereas the
+ controls within the deployment and release process are minimal for a 
+startup or small IT shop, they become important for the corporate, 
+government, healthcare or large manufacturing setting. Controls are 
+there for a reason. </p><h2>The need for Multi-skilled staff</h2><p>To 
+move closer toward the reality of Continuous Delivery, a broader degree 
+of skill will be required of IT staff. For example, operations people 
+such as network admins and DBAs will need to be familiar with skills 
+such as scripting with PowerShell. Developers will require more 
+awareness of other parts of the build, integration, test, UX testing, 
+deployment, user-acceptance and release process, and appreciate the 
+constraints of the wider context of the software that they create. There
+ is, however, a danger of automating processes that are no longer 
+required, irrelevant or seem to be there simply to give work to the 
+otherwise unemployable.  Even those processes that are really important,
+ such as bug-tracking or quality-checking may be inefficient and 
+inappropriate for rapid delivery. There is no sense in automating a 
+process that is deficient. These will need attention first, and this 
+inevitably requires broad knowledge and experience in a number of 
+different aspects of development. </p><h2>The problem of scale to the corporate IT setting</h2><p>It
+ is difficult to scale the practice of running the entire deployment 
+process regularly, and automating as much as possible of it. The process
+ must be able to work in a traditional moderate-to-large scale legacy-IT
+ setting. Where a range of different expertise is required, such as 
+change-management or compliance, the task of coordinating these 
+processes with the deployment process becomes more complicated. However,
+ if other experts are able to become familiar with the product as it 
+evolves and are alerted to potential issues earlier in the development 
+process, there are less likely to be major issues to resolve when it is 
+released.</p><h2>User Documentation and Training materials </h2><p>There
+ is still a lot of work to do even after the final build of the 
+software. User documentation, and the training materials are obvious 
+examples. Although it is reasonable to keep documentation and training 
+in step with the software if releases are  sporadic, continuous changes 
+to the functionality of a software application are a different matter 
+altogether. Where a training manual or help text makes use of 
+screenshots, these all have to be redone on every change: training 
+courses have to be checked on every release to make sure that they are 
+up-to-date:  It can become a daunting task.</p><h2>Documentation requirements for production</h2><p>Any
+ production or operations department will have an 'operational readiness
+ checklist ' requirement for support of the application, including any 
+necessary 'instrumentation' for monitoring the application in production
+ to alert for potential problems. All maintenance and support procedures
+ have to be described in step-by-step terms in case of emergency. There 
+must be sufficient materials provided for operational training as well </p><h1>Database Challenges for Continuous Delivery</h1><p>There
+ is an entrenched myth that a database is "just code" like any other 
+application code and therefore the team can treat it in the same way, 
+evolving the structure of the database rapidly, in step with the team's 
+application, and as their understanding of the problem domain, evolves.</p><p>In
+ fact, the database poses very particular challenges for our Continuous 
+Delivery processes, making it even more critical that teams practice 
+their database build and deployment process from very early on in the 
+development cycle.</p><h2>The Myth that a database is 'just code'</h2><p>One
+ can see how the idea started that database deployment is no different 
+from application deployment, since a small database with no data, or 
+external dependencies looks much like any application code. All you need
+ to do is to execute the code and the database is set up. There is a 
+danger in generalizing from this experience. As databases grow, so an 
+apparently simple task gets complicated. What if you are updating a 
+database to a new version, rather than just creating it, for example? 
+What if the database has scheduled tasks? What if the database has ETL 
+routines or if there is a separate database doing reporting. Having 
+coped with these cases, what if the database is part of a complex 
+replication system, or if it accesses linked databases across servers? </p><p>A
+ database of any complexity is more than just a collection of tables, 
+views and routines. Aside from database objects, we need to consider the
+ deployment of a number of server objects such as linked databases, 
+endpoints, linked servers and triggers that will need to be scripted as 
+part of the deployment. There will also be SQL Server Agent objects such
+ as Agent alerts, Agent jobs, job alerts, and operators. You will 
+probably need different security objects, such as those associated with 
+your application. There are ETL processes, driven by PowerShell or SSIS,
+ and other processes that defy generalization. All this needs to be part
+ of the build.</p><p>There are many ways of distributing the processing 
+in a database of any size. Sometimes, several databases share a SQL 
+Server instance. At the other extreme, we might spread a single logical 
+database across several linked instances in a number of physical 
+databases. Co-hosted databases all share the same system databases, so 
+the job and alerts for all databases on the instance are stored in the 
+same <code>msdb</code> database. Likewise, SQL Server defines 
+linked-server mappings at the server instance level, so they are not 
+stored with the database either. If these mappings are missing when you 
+deploy a database then your links won't work. Instead, you'll get an 
+error. </p><p>More subtle problems come from the common arrangement in 
+the corporate IT environment where several applications will share one 
+or more databases. From the database perspective, it is serving several 
+applications and database feeds. The one-application-one-database model 
+doesn't apply. In this case, the database will have a version, and each 
+API to each application has a version. This requires rather different 
+handling.</p><p>A method of deployment that works fine with a small 
+database may not scale up to handle industrial-scale databases. Here, 
+the idea of building the database in any reasonable time-frame is 
+absurd. Even the DDL (tables, procedures, constraints, permissions and 
+so on) takes a surprising amount of time when there are several thousand
+ tables or procedures. On top of that, there is the task of copying in 
+the data. On a system like this, even the trivial act of adding a column
+ to a table can lead to the database being inoperable for maybe an hour.
+ Who knows? It could be a lot longer.</p><p>All these difficulties have 
+their solutions, of course, but it requires expertise, and good 
+judgment. I would also argue that as much as possible must be automated,
+ and preferably done when the system was first developed.</p><h2>Source Control Issues</h2><p>Developers
+ who are unfamiliar with Database Development are sometimes horrified by
+ the fact that a significant minority of Database Developers don’t use 
+source control. It is certainly bad practice, but not for the reasons 
+usually given. If a SQL Server instance is being used for a shared 
+development, and is subject to a good backup regime, it will not easily 
+suffer loss of code. It is, also, unlikely to suffer integration or 
+build problems. Both the default trace and a server trigger can tell you
+ when an object was altered and by whom. The problems come from the 
+database’s application-interface being out of sync with the version 
+number of the application, and from the source not being held together. 
+Normally, where database developers are using their own system, they 
+also use source control to make it simpler for team-working, to add 
+documentation that cannot easily be attached to individual database 
+objects, for belt-and-braces backup, and to make sure that the source 
+code, as a company asset, is stored in easily-accessible text format. 
+There is another subtle problem that is due to the fact that some of the
+ code, and rather more documentation and other information, from the 
+typical hand-cut Database build script isn’t retained in any way in the 
+database. This includes comments and comment blocks outside module 
+definitions, static data insertion code, and in-line assertion and 
+integration tests. The only way of team-working with hand-cut build 
+scripts, without fear of losing information or ‘merge-hell’ is to use a 
+source-control with sophisticated merge capabilities.</p><h3>‘Static’ data</h3><p>A
+ database is unlikely to be operable without initializing it with data. 
+The data that is required for the database to function should be part of
+ the standard build, and the DML SQL code to make this happen must be 
+held in source control. </p><h3>Schema-based namespaces.</h3><p>Database
+ teams will manage the complexity with large or complex databases by 
+partitioning the work into Schemas. This requires that the source code 
+also be logically split into schemas. The tooling that is currently 
+available gives little support to this sort of working. The SSMS object 
+browser, for example, does not allow the listing of objects 
+hierarchically within  schemas. It is also likely that source control 
+will need to reflect the schema structure in the same way that C# code 
+can be saved in namespaces. </p><h3>Migration scripts</h3><p>For the 
+database, as well as a nightly clean build from the SQL Data Definition 
+Language (DDL), I like to do an upgrade from the previous release to the
+ current build that preserves existing data. This may not always be 
+possible if there has been significant refactoring, but SQL Compare can 
+sort out most of these problems. If it is impossible to determine how 
+existing data is preserved when these DDL changes are made, then SQL 
+Compare might need help with a hand-written rather than automated 
+migration script. </p><h3>Basic integration and object ‘assertion’ tests.</h3><p>A
+ problem with putting automatically-generated scripts into source 
+control  is that documentation is lost. The traditional scripts used by 
+database developers include comment blocks outside  script blocks,  
+stored at the end of column definitions, or within table definitions.  
+These are all inevitably lost if the build scripts in source control are
+ generated from the code in the database or from a comparison tool such 
+as SQL Compare. Additionally, all the ‘assertion’ scripts that check 
+that every function or procedure works properly with at least a test 
+case, or which ensures that a function is first compiled with 
+characteristic parameters, are all lost.  Many Database Developers also 
+add basic integration tests into the end of a build script to check that
+ a series of processes give the predicted results, based on a standard 
+immutable data set. </p><p>All  these ‘extras’ that are not stored in 
+the database, must be preserved in source control, and executed in the 
+right order. Any errors or warnings must also be detected and logged 
+properly.</p><h2>Curing the Database-Application mismatch</h2><p>Earlier,
+ I mentioned the particular problem where several applications will 
+share one or more databases. This problem is usually solved by creating 
+an interface, consisting of views, procedures and functions. This 
+represents a consumer-driven ‘contract’ between database and application
+ that is changed only after mutual agreement and  is ‘versioned’ in 
+source control.  The use of an interface between database and 
+application in order to provide an abstraction layer is probably the 
+most important way of solving the mismatch, but is often rejected in 
+favour of unfettered access by the application to the base tables, but 
+this creates a large number of dependencies that are difficult to 
+control and lead in turn to  problems of release and version tracking 
+that have to be dealt with at the time of deployment, which is a bad 
+idea. When a single database supports more than one application, then 
+the problem just gets more interesting.</p><h3>Direct database access and impedance mismatch</h3><p>If
+ an application requires access to a database, then we have to be able 
+to deploy all the objects that are accessed  so as to be 
+version-compatible with the database, in phase. If we can deploy both 
+together, then the application and database, or at least the database 
+relevant schemae,  must normally be deployed at the same version in 
+which they, together, passed integration and functional testing. </p><p>To
+ be more precise, it is the application-interface definition of the 
+database that needs to be in a compatible 'version'. You wouldn’t need 
+to be concerned with the TSQL source code of the interface as this will 
+change as the database evolves: it is the unchanging name of the views, 
+procedures and functions and, where relevant, the names, datatypes and 
+meaning of the parameters passed to them that are important.  
+Unfortunately, most databases that get into production have no separate 
+application interface; in other words they are 'close-coupled'. For this
+ vast majority, the whole database is the application interface, and 
+applications are free to wander through the bowels of the database 
+scot-free. </p><p>As well as fixing the mismatch between application and
+ database, an interface makes tests for the application a great deal 
+easier. Instead of hand-crafted’ stubs, the application can be ‘pointed’
+ (via connection-string or whatever) to a stripped down version of the 
+database that can be installed on a developer’s machine, with sufficient
+ data to allow unit tests.</p><p>If you've spurned the perceived wisdom 
+of application architects to have a defined application interface within
+ the database, based on views and stored procedures, then any 
+version-mismatch will be as sensitive as a kitten. If a small change is 
+made withing the internals of the database, such as when a  column in a 
+base table in the  database is renamed or has a change in datatype, then
+ this will break the application. A team that creates an application 
+that makes direct access to base tables in a database will have to put a
+ lot of energy into keeping database and application in sync, to say 
+nothing of having to tackle issues such as security and audit. It is not
+ the obvious route to development nirvana. An abstraction layer can 
+easily prevent this.</p><p>I've been in countless, tense meetings with 
+application developers who bridle instinctively at the apparent 
+restrictions of being 'banned' from the base tables or routines of a 
+database. There is no good technical reason for needing that sort of 
+access that I've ever come across. Everything that the application wants
+ can be delivered via a set of views and procedures, and with far less 
+pain for all concerned: This is the application interface. If more than 
+zero developers are creating a database-driven application, then the 
+project will benefit from the loose-coupling that an application 
+interface brings. The <a href="http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29">SOLID</a>
+ principles of the 'gang of four', for which any object-oriented 
+programmer will fight tooth and mail, within application code, apply 
+equally to the database, particularly the dependency inversion and 
+interface segregation principles.</p><p>Once we allow an intimate relationship between application and database, we are into the realms of <strong>impedance mismatch</strong>.
+ Part of this impedance problem is a difference in development 
+practices. Whereas the application has to be regularly built and 
+integrated, this isn't necessarily the case with the database. An RDBMS 
+is inherently multi-user and self-integrating in that it isn’t rebuilt 
+from code on every change. If the database-developers work together on 
+the database, shared on a server, then a subsequent integration of the 
+database on a staging server doesn't often bring nasty surprises. If a 
+database developer attempts to alter code with results that ‘break the 
+build’ it is made  immediately obvious with unit tests, or will be 
+prevented by existing constraints. </p><p>A separate 
+database-integration process is only needed if the database is 
+deliberately built in a way that mimics the application development 
+process, but which hampers the normal database-development techniques.  
+ By using this technique, each developer can, separately, alter a 
+database, and satisfactorily unit-test the objects they create, only to 
+find that the database will not build because another developer has 
+altered an object referenced by an object they’ve altered.  This can’t 
+happen if they are sharing a development server. This process is like 
+demanding that an official walk with a red flag in front of a motor car.
+ In order to closely coordinate databases with applications, entire 
+databases have to be 'versioned', so that an application version can be 
+matched with a database version to produce a working build without 
+errors. There is no natural process to 'version' databases. Each 
+development project will have to define a system for maintaining the 
+version level.</p><p>A curious paradox occurs in development when there 
+is no formal application interface. When the strains and cracks happen, 
+the extra meetings, bureaucracy, and activity required to maintain 
+accurate deployments looks to IT management like work. They see 
+activity, and it looks good. Work means progress. Management then smile 
+on the design choices made. In IT, good design work doesn't necessarily 
+look good, and conversely bad design work doesn't necessarily look bad.</p><h3>The importance of the interface</h3><p>The
+ idea of an application interface with a database is as old as I can 
+remember. The big corporate or government databases generally supported 
+several applications, and there was little option. When a new 
+application wanted access to an existing corporate database, the 
+developers, and myself as technical architect, would have to meet with 
+hatchet-faced DBAs and production staff to work out an interface. Sure, 
+they would talk up the effort involved for budgetary reasons, but it was
+ routine work, because it decoupled the database from its supporting 
+applications. We'd be given our own stored procedures. One of them, I 
+still remember, had ninety-two parameters. All database access was 
+encapsulated in one application module.</p><p>The basic idea is that 
+each application has a stable, well-defined application interface with 
+the database (one for each application, usually). Essentially, the 
+application development team owns the application interface definition, 
+which should be within the application source. It is the responsibility 
+of the database developers to implement the interface and maintain it, 
+in conformance with the ‘customer-driven’ contract.</p><p>The team 
+should keep the external definitions of the components of this interface
+ in version control, in the same repository as the application source, 
+along with the tests that verify that the interface is working 
+correctly. Internally, we can make all sorts of changes and refactoring 
+to the database, as long as the definitions of the components are 
+maintained in  source control . The database developers will, of course,
+ maintain their own source control for the entire database, including 
+the source of all database objects, and will be likely to maintain 
+versions for all major releases. However, this will not need to be 
+shared with the associated applications. What is important here is that 
+the database development role is separated from the application 
+development role, even if it is the same developer performing both 
+roles.</p><p>Database developers and application developers must 
+carefully track and negotiate any changes to the interface. Changes in 
+it have to be subject to change-control procedures, as they will require
+ a chain of tests. We design a comprehensive set of daily, automated 
+integration and functional tests for the application interface, for each
+ version of the application. If it passes all tests, nothing is broken. 
+The performance tests can 'hang' on the same interface, since databases 
+are judged on the performance of the application, not an 'internal' 
+database process. In this setting, the deployment can proceed if the 
+more stable application interface, rather than the continuously-changing
+ database, passes all tests, for the version of the application.</p><p>Normally,
+ if all goes well, a database with a well-designed application interface
+ can evolve gracefully without changing the external appearance of the 
+interface, and this is confirmed by integration tests that check the 
+interface, and which hopefully don't need to be altered very often. If 
+the application is rapidly changing its 'domain model' in the light of 
+an increased understanding of the application domain, then it can change
+ the interface definitions and the database developers need only 
+implement the interface rather than refactor the underlying database. 
+The test team will also have to redo the functional and integration 
+tests which are, of course 'written to' the interface definition. The 
+database developers will find it easier if these tests are done before 
+their re-wiring job to implement the new interface.</p><p>If, at the 
+other extreme, an application receives no further development work but 
+survives unchanged, the database can continue to change and develop to 
+keep pace with the requirements of the other applications it supports, 
+and needs only to take care that the application interface is never 
+broken. Testing is easy since your automated scripts to test the 
+interface do not need to change.</p><h2>The Difficulties of Refactoring</h2><p>It
+ is a cause of irritation to the developers that the DBAs discourage 
+refactoring. Whole books have been written with the shaky assumption 
+that one can evolve databases as one's understanding of the business 
+domain evolves. If it weren't for the inconvenient presence of data, 
+this would be a sustainable approach. Actually, any grey-muzzled 
+database developer will try to avoid refactoring tables that contain 
+many millions of rows, and are subject to high levels of access by 
+database users. The good developer will avoid these problems by getting 
+the design right up-front, taking pains to ensure that the application 
+domain is properly understood. </p><p>Whereas there is little problem in
+ changing procedures or other routines, or even adding indexes and 
+constraints, things can get tricky with big tables. If, for example, an 
+upgrade script requires an <code>ALTER TABLE</code> command that will 
+result in changes to data. When the command is executed, the data 
+altering starts immediately, requiring a schema-modify lock on the 
+table. SQL Server fully logs all actions that form part of the table 
+modification, in order to ensure it can roll back the operation.</p><p>If,
+ for example, we wish to add a column to a large and important table, 
+then every other process that needs to access that table will be blocked
+ for the duration of the modification. The modification will be logged, 
+of course and if something goes wrong, as when a constraint is violated,
+ or the person doing the update loses their nerve and cancels the 
+operation, then the rollback can seem interminable.</p><p>It isn't just changes to columns that will bring a production database to its knees; many other <code>ALTER</code> operations on large tables, such as changing the clustered index, can take a long time.</p><p>Some alterations can't be performed at all using <code>ALTER TABLE</code>,
+ so we have to fall back on the even longer process of creating the 
+altered version of the table as a new table with a different name, 
+copying the data into it, and then finally renaming both tables. If, for
+ example, a column participates in a schema-bound view, we cannot change
+ that column.</p><p>There are all sorts of restrictions on how we can or
+ can't alter a column, depending on its data type. For example, with SQL
+ Server:</p><ul><li>We can't alter a column if it has a <code>timestamp</code> data type, is a computed column or is used in a computed column, is the <code>ROWGUIDCOL</code> for the table, or is used in  a <code>PRIMARY KEY</code> or <code>FOREIGN KEY</code> constraint. </li><li>We can only increase, not decrease, the length of a column used in an index, <code>CHECK</code> constraint, or in custom statistics if the data type is <code>varchar</code>, <code>nvarchar</code>, or <code>varbinary</code>. </li><li>Although it is certainly possible to  alter the length of a VARxxx  (<code>varchar</code>, <code>nvarchar</code>, or <code>varbinary</code><code>)</code> column if it is involved in an index, or explicit statistics, we can't change its type. If the column is part of a <code>PRIMARY KEY</code> constraint then only a VARxxx column can be altered in size.</li><li>Columns associated with a <code>DEFAULT</code> definition can only have their length, precision, or scale changed.</li><li>The data type of a column in a partitioned table can't be altered.</li><li>If we change the length, precision, or scale of a column with the <code>ALTER COLUMN</code> statement, and data already exists in the column, the new size must be sufficient to hold the largest data item in the column. </li></ul><p>Of
+ course, SQL Compare will do all your thinking for you, when working out
+ how to perform a change in a table. It knows all the complex 
+restrictons and will work out whether an ALTER TABLE statement can be 
+performed or if the table must be renamed, rebuilt and restocked;  but 
+it may have to opt for a strategy that will prevent a production system 
+from accessing the table involved because of the necessary table-locks. 
+If it is an important table, or one with a lot of dependencies on it, 
+this is quite likely to bring trading to a halt.</p><h2>Database Synchronization</h2><p>At the heart of integration and deployment is the database synchronization process.</p><p>The
+ first stage of synchronization is to ensure that the two databases are 
+identical in their metadata, tables, and routines. This isn't an 
+all-or-none action, since you can exclude certain classes of database 
+objects from the process. You are unlikely to want to remove replication
+ objects from a production server, for example. You may also need to 
+synchronize certain objects that are outside the database, and based on 
+the server, such as events and scheduled tasks. </p><p>The next stage of
+ synchronization involves the data. If synchronization of metadata has 
+already been achieved, then all is reasonably easy, with the right tool.
+ The arm-wrestling with the data will already have been achieved on the 
+integration server. Arm-wrestling? I mean that if you have made 
+substantial changes to the schema of the databases, then you have the 
+problem of preserving the existing data. Where does it go? </p><p>On the
+ integration server, we create a latest version of the database from 
+source control. However, we need to put the data into the database. 
+Although a data synchronization tool will work fine when there are 
+identical schemas, no tool could be expected do the DML to stuff the 
+data into a newly refactored set of tables, since there is no way that 
+any tool will be able to work out where the data should go. If there are
+ substantial differences to the table structure, we would have to do 
+this migration by hand-coded scripts, and these would need to go into 
+source control. Migration scripts describe how to preserve the data when
+ the schema changes between X and Y, we need to execute them when we 
+upgrade a database from version X to Y. If we wish to use an automated 
+process to deploy most of our database changes, then we need a way to 
+over-ride the automated script when the system detects that it entails 
+an upgrade between version X and Y. </p><p>Whenever there is a metadata 
+change to the tables of the database, we will need a script that 
+over-rides the data synchronization process between the two versions. 
+The script needs to have checks to make sure that the data migration has
+ not already been done.</p><p>There is a problem with separating a table
+ refactoring from the data migration. The process should be atomic. 
+Either the whole lot is done, or it is not done. This sort of deployment
+ can't remain stuck in the tubes. This means that it should, ideally, be
+ done all in one transaction, so it should be one script. This becomes 
+impractical with very large amounts of data purely because of the time 
+taken to do the data migration, whilst all the time holding a 
+schema-modify lock on the table. Also, depending on the way you do your 
+deployment, you may not want to migrate the data at that stage. There is
+ no advice I can give that will fit every circumstance, but it is always
+ essential to ensure that there is no possibility of the operation 
+ending up half-done.</p><p>Another problem with scripting a refactoring 
+change to a database is that it has to work both ways. If we deploy a 
+new system into production and then have to roll back the changes 
+afterwards, we could, unless we are careful, lose all of the data that 
+has been added or changed before the rollback decision was taken. Yes, 
+if you are subject to a stringent service-level agreement (SLA) then you
+ have to script any rollback! These have to be mercilessly tested, and 
+put in source control just in we need to rollback a deployment after it 
+has been in place for any length of time. You will be faced with the 
+dispiriting task of carefully writing scripts which, hopefully, will 
+never be used, but at least you will sleep well!</p><h1>Conclusions</h1><p>Although
+ it is possible to automate the deployment of databases, it is a mistake
+ to underestimate the difference between a database and an application. 
+The sort of difficulties one can come across range from the subtle to 
+the scary, and it is hardly surprising that operations and productions 
+specialists in IT can be apprehensive about a database deployment. In 
+general, by far the best approach is to adopt the discipline of a daily 
+automated build from source control, followed by an integration test run
+ so as to deal with all problems as they happen. When it comes to 
+deployment, these scripts can be integrated into the pre and post 
+deployment scripts for the package, greatly increasing the likelihood of
+ a stress-free delivery of the application.</p>
+<div class="dbd-banner lower">
+        <p style="padding-left: 0px;"><strong>This article is part of our Database Lifecycle Management patterns &amp; practices.</strong></p>
+        <p style="padding-left: 0px;"><strong><span><a href="https://www.simple-talk.com/sql/database-administration/database-lifecycle-management-patterns--practices-library-/?utm_source=simpletalk&amp;utm_medium=publink&amp;utm_campaign=dlm&amp;utm_content=pandparticle&amp;utm_term=bottombanner">Return to the library</a> to find more articles on DLM, or visit <a href="https://www.red-gate.com/dlm?utm_source=simpletalk&amp;utm_medium=publink&amp;utm_campaign=dlm&amp;utm_content=pandparticle&amp;utm_term=bottombanner">red-gate.com/dlm</a> for more information about SQL Server products for database lifecycle management.</span></strong></p>
+    </div>
+
+</div>
+    
+    </div>
+
+    
+
+    <div class="content-meta">
+      <div class="share-tools">
+      </div>
+      This article has been viewed 23720 times.
+    </div>
+  </div>
+
+  
+<div class="authorpanel">
+    <a id="ctl00_MainContent_Author1_lnkImage" title="Phil Factor" href="https://www.simple-talk.com/author/phil-factor/"><img id="ctl00_MainContent_Author1_imgAuthor" class="authorpicture" itemprop="image" src="Continuous%20Delivery%20and%20the%20Database_files/3.gif" alt="Phil Factor" style="border-width:0px;" align="left"></a>
+    <p><strong>Author profile:</strong> <a id="ctl00_MainContent_Author1_lnkName" href="https://www.simple-talk.com/author/phil-factor/"><span itemprop="author">Phil Factor</span></a></p>
+    <p>Phil Factor (real name withheld to protect the guilty), aka 
+Database Mole, has 30 years of experience with database-intensive 
+applications. Despite having once been shouted at by a furious Bill 
+Gates at an exhibition in the early 1980s, he has remained resolutely 
+anonymous throughout his career. See also :
+</p><ul>
+<li><a href="http://www.simple-talk.com/community/blogs/philfactor/default.aspx">The Phrenetic Phoughts of Phil Factor</a></li><a href="http://www.simple-talk.com/community/blogs/philfactor/default.aspx">
+</a><li><a href="http://www.simple-talk.com/community/blogs/philfactor/default.aspx"></a><a href="http://twitter.com/Phil_Factor">Phil on Twitter</a></li><li><a href="http://www.sqlservercentral.com/blogs/philfactor/">Phil on SQL Server Central</a></li> 
+<li><a href="http://www.simple-talk.com/author/robyn-page-and-phil-factor/">Robyn and Phil's Workbenches</a>
+</li><li><a href="http://www.sqlservercentral.com/Authors/Articles/Phil_Factor/322525/">Phil's Editorials on SQL Server Central</a></li></ul>
+  <a href="https://plus.google.com/106425589704685208213?rel=author">Google +</a>
+To translate this article...<div id="google_translate_element"></div><script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en'
+  }, 'google_translate_element');
+}
+</script><script src="Continuous%20Delivery%20and%20the%20Database_files/element.js"></script><p></p>
+    <p><a id="ctl00_MainContent_Author1_lnkSearch" href="https://www.simple-talk.com/author/phil-factor/">Search for other articles by Phil Factor</a></p>
+    <div class="clear"></div>
+</div>
+  
+
+  <form name="aspnetForm" method="post" action="https://www.simple-talk.com/content/article.aspx?article=1974" id="aspnetForm">
+<div>
+<input name="__EVENTTARGET" id="__EVENTTARGET" value="" type="hidden">
+<input name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" type="hidden">
+<input name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUIMjAwMDcyMjNkGAIFHl9fQ29udHJvbHNSZXF1aXJlUG9zdEJhY2tLZXlfXxYLBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmcxBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmcxBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmcyBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmcyBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmczBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmczBRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmc0BRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmc0BRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmc1BRxjdGwwMCRNYWluQ29udGVudCRyYWRSYXRpbmc1BSBjdGwwMCRNYWluQ29udGVudCRidG5SYXRlQXJ0aWNsZQURY3RsMDAkTmF2aWdhdGlvbjEPFCsAAmQyhAUAAQAAAP////8BAAAAAAAAAAwCAAAAQVdlYlNpdGUsIFZlcnNpb249MS4zLjAuMTA5MCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBAEAAAB7U3lzdGVtLkNvbGxlY3Rpb25zLkdlbmVyaWMuTGlzdGAxW1tTaW1wbGVUYWxrLk1lbnVJdGVtLCBXZWJTaXRlLCBWZXJzaW9uPTEuMy4wLjEwOTAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbF1dAwAAAAZfaXRlbXMFX3NpemUIX3ZlcnNpb24EAAAVU2ltcGxlVGFsay5NZW51SXRlbVtdAgAAAAgICQMAAAADAAAAAwAAAAcDAAAAAAEAAAAEAAAABBNTaW1wbGVUYWxrLk1lbnVJdGVtAgAAAAkEAAAACQUAAAAJBgAAAAoFBAAAABNTaW1wbGVUYWxrLk1lbnVJdGVtBAAAAAxtX0NoaWxkQ291bnQKbV9TZWxlY3RlZAdtX1RpdGxlBW1fVXJsAAABAQgBAgAAAAAAAAAABgcAAAAIU1FMIEhvbWUGCAAAACBodHRwczovL3d3dy5zaW1wbGUtdGFsay5jb20vc3FsLwEFAAAABAAAAAAAAAAABgkAAAAXRGF0YWJhc2UgQWRtaW5pc3RyYXRpb24GCgAAADhodHRwczovL3d3dy5zaW1wbGUtdGFsay5jb20vc3FsL2RhdGFiYXNlLWFkbWluaXN0cmF0aW9uLwEGAAAABAAAAAAAAAAABgsAAAAkQ29udGludW91cyBEZWxpdmVyeSBhbmQgdGhlIERhdGFiYXNlBgwAAAAAC2RVwSWn6tEosOKS+1C41/GBcA0O6Q==" type="hidden">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="Continuous%20Delivery%20and%20the%20Database_files/WebResource.js" type="text/javascript"></script>
+
+
+<script src="Continuous%20Delivery%20and%20the%20Database_files/ScriptResource_002.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax client-side framework failed to load.');
+//]]>
+</script>
+
+<script src="Continuous%20Delivery%20and%20the%20Database_files/ScriptResource.js" type="text/javascript"></script>
+    <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl00$MainContent$ScriptManager1', document.getElementById('aspnetForm'));
+Sys.WebForms.PageRequestManager.getInstance()._updateControls([], [], [], 90);
+//]]>
+</script>
+
+    <script language="javascript" type="text/javascript">
+      function EndRequestHandler() {
+        if (theForm._initialAction == undefined)
+          theForm._initialAction = theForm.action;
+        else
+          theForm.action = theForm._initialAction;
+      }
+      if (typeof (Sys) != "undefined") {
+        EndRequestHandler();
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+      }
+    </script>
+    
+  <div id="ctl00_MainContent_panVoting" class="rating">
+	
+    <strong>Rate this article:</strong> &nbsp;&nbsp;Avg rating: <img id="ctl00_MainContent_imgRating2" src="Continuous%20Delivery%20and%20the%20Database_files/icon_plain_5stars.gif" style="height:13px;width:70px;border-width:0px;"> from a total of 22 votes.<br><br>
+    <div id="ctl00_MainContent_panToRate">
+		
+        <table class="rating" border="0">
+          <tbody><tr>
+	        <td><input id="ctl00_MainContent_radRating1" name="ctl00$MainContent$radRating" value="radRating1" type="radio"><br>Poor</td>
+	        <td><input id="ctl00_MainContent_radRating2" name="ctl00$MainContent$radRating" value="radRating2" type="radio"><br>OK</td>
+	        <td><input id="ctl00_MainContent_radRating3" name="ctl00$MainContent$radRating" value="radRating3" type="radio"><br>Good</td>
+	        <td><input id="ctl00_MainContent_radRating4" name="ctl00$MainContent$radRating" value="radRating4" type="radio"><br>Great</td>
+	        <td><input id="ctl00_MainContent_radRating5" name="ctl00$MainContent$radRating" value="radRating5" type="radio"><br>Must read</td>
+		    <td>
+		        <input name="ctl00$MainContent$btnRateArticle" id="ctl00_MainContent_btnRateArticle" title="Rate article" src="Continuous%20Delivery%20and%20the%20Database_files/btn_submit.gif" style="height:19px;width:56px;border-width:0px;" type="image">
+		    </td>
+	      </tr>
+        </tbody></table>
+    
+	</div>
+    
+    
+  
+</div>
+  
+  <div id="ctl00_MainContent_panComments" class="comments">
+	
+    <div class="haveyoursayheader">
+      <div class="title">Have Your Say</div>
+        Do you have an opinion on this article? Then <a href="#commentform" class="commentlink"><u>add your comment below</u></a>:
+      </div>
+      <div class="forumview">
+        
+
+<script type="text/javascript" src="Continuous%20Delivery%20and%20the%20Database_files/jquery.js"></script>
+<div id="ctl00_MainContent_ForumView1_panPostingNotAllowed" style="width:100%;">
+	
+    You must be logged in to post to this forum<br><br><a id="ctl00_MainContent_ForumView1_lnkLogin" href="https://www.simple-talk.com/community/login.aspx?ReturnUrl=%2fsql%2fdatabase-administration%2fcontinuous-delivery-and-the-database%2f">Click here to log in</a>.
+
+</div>
+
+
+
+
+<script type="text/javascript">
+    require(["jquery"], function($) {
+        $('.comment-name').watermark('Name');
+        $('.comment-subject').watermark('Subject');
+        $('.comment-message').watermark('Message');
+    });
+</script>
+        <a name="commentform">&nbsp;</a>
+      </div>
+  
+</div>
+  
+<div>
+
+	<input name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="AC54A3B1" type="hidden">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+Sys.Application.initialize();
+//]]>
+</script>
+</form>
+
+      </div> 
+      <div class="rightcolumn">
+        
+  
+
+<div class="widget-new" id="categories">
+  <h2>SQL Categories</h2>
+  <div class="widget-new-body">
+    <ul>
+      
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl00_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl00_lnkCategory" href="https://www.simple-talk.com/sql/">SQL Home</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl01_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl01_lnkCategory" href="https://www.simple-talk.com/sql/learn-sql-server/">Learn SQL Server</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl02_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl02_lnkCategory" href="https://www.simple-talk.com/sql/sql-training/">SQL Training</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl03_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl03_lnkCategory" href="https://www.simple-talk.com/sql/database-administration/">Database Administration</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl04_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl04_lnkCategory" href="https://www.simple-talk.com/sql/t-sql-programming/">T-SQL Programming</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl05_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl05_lnkCategory" href="https://www.simple-talk.com/sql/performance/">Performance</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl06_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl06_lnkCategory" href="https://www.simple-talk.com/sql/backup-and-recovery/">Backup and Recovery</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl07_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl07_lnkCategory" href="https://www.simple-talk.com/sql/sql-tools/">SQL Tools</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl08_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl08_lnkCategory" href="https://www.simple-talk.com/sql/editors-corner/">Editor's Corner</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl09_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl09_lnkCategory" href="https://www.simple-talk.com/sql/ssis/">SSIS</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl10_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl10_lnkCategory" href="https://www.simple-talk.com/sql/reporting-services/">Reporting Services</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl11_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl11_lnkCategory" href="https://www.simple-talk.com/sql/database-delivery/">Database Delivery</a>
+    	    </li>
+        
+    	    <li id="ctl00_RightColumn_Categories1_repCategories_ctl12_CategoryListItem">
+  	        <a id="ctl00_RightColumn_Categories1_repCategories_ctl12_lnkCategory" href="https://www.simple-talk.com/sql/bi/">BI</a>
+    	    </li>
+        
+    </ul>
+  </div>
+</div>
+
+  
+<div class="widget-new" id="dlm">
+    <div style="background-color:#ddd; height: 100px;">
+        <img style="float: right" src="Continuous%20Delivery%20and%20the%20Database_files/1970-delivery_pathway_icon.png" alt="Simple-Talk Database Delivery">
+        <a href="https://www.simple-talk.com/sql/database-administration/database-delivery-patterns-and-practices/?utm_source=simpletalk&amp;utm_medium=publink&amp;utm_campaign=dlm&amp;utm_content=deliverylearningprogram&amp;utm_term=mainpagewidget"><h2 style="vertical-align: center">DLM<br>Patterns &amp; Practices Library</h2></a>
+    </div>
+  <div class="widget-new-body" id="deliverypathway">
+    <p>Visit our patterns and practices library to learn more about database lifecycle management.</p>
+    <p>Find out how to automate the process of building, testing and 
+deploying your database changes to reduce risk and make rapid releases 
+possible.</p>
+    <h3><a href="https://www.simple-talk.com/sql/database-administration/database-delivery-patterns-and-practices/?utm_source=simpletalk&amp;utm_medium=publink&amp;utm_campaign=dlm&amp;utm_content=deliverylearningprogram&amp;utm_term=mainpagewidget">Get started</a></h3>
+  </div>
+</div>
+
+  
+  
+  
+  
+  
+
+  
+<div class="widget-new hidden" id="RSSfeedwidget">
+  <h2>Custom RSS feeds</h2>
+  <div class="widget-new-body">
+    <div class="rss-inputs">
+      <input name="rss" id="sqlFeed" value="2" checked="checked" type="checkbox"><label for="sqlFeed">SQL</label><br>
+      <input name="rss" id="netFeed" value="3" checked="checked" type="checkbox"><label for="netFeed">.NET</label><br>
+      <input name="rss" id="exchangeFeed" value="31" checked="checked" type="checkbox"><label for="exchangeFeed">SysAdmin</label><br>
+      <input name="rss" id="opinionFeed" value="4" checked="checked" type="checkbox"><label for="opinionFeed">Opinion</label><br>
+      <input name="rss" id="booksFeed" value="35" checked="checked" type="checkbox"><label for="booksFeed">Books</label><br>
+      <input name="rss" id="blogsFeed" value="B" checked="checked" type="checkbox"><label for="blogsFeed">Blogs</label><br>                
+      <p>
+        <a id="rssGetLink" href="https://www.simple-talk.com/rss.aspx" onclick="RssGetSide(false); return(false);" class="btn">Get my feed</a>
+      </p>
+    </div>
+    <div class="rss-buttons">
+      <div class="rss-advanced">
+        If you update your feed, please remember to tell your RSS reader the new URL
+        <br><br>
+        <a id="rssAdvLink" href="https://www.simple-talk.com/rsssel.aspx" onclick="RssGetSide(true); return(false);">Click here for <b>advanced</b> RSS options</a>
+      </div>
+    </div>
+  </div>
+</div>      
+  
+  
+  
+<div class="widget-new">
+  <h2><a id="ctl00_RightColumn_SQLOpinion1_lnkHeader" href="https://www.simple-talk.com/author/phil-factor/"><span itemprop="author">Phil Factor</span></a></h2>
+  <div class="widget-new-body">
+    <a id="ctl00_RightColumn_SQLOpinion1_lnkAuthor" title="Phil Factor" href="https://www.simple-talk.com/author/phil-factor/"><img id="ctl00_RightColumn_SQLOpinion1_imgAuthor" class="avatar" itemprop="image" src="Continuous%20Delivery%20and%20the%20Database_files/avatar.jpg" alt="Phil Factor" style="height:83px;width:65px;border-width:0px;" align="left"></a>
+    <div id="ctl00_RightColumn_SQLOpinion1_panArticles">
+	
+      <strong><a id="ctl00_RightColumn_SQLOpinion1_lnkArticle1" href="https://www.simple-talk.com/sql/sql-tools/routine-sql-dml-testing-for-the-unenthusiastic-tester/">Routine SQL DML Testing for the Unenthusiastic Tester</a></strong><br>
+      <p>There are more exciting things in life than unit testing SQL Statements, checking the results, timings, and... <a id="ctl00_RightColumn_SQLOpinion1_lnkArticle2" href="https://www.simple-talk.com/sql/sql-tools/routine-sql-dml-testing-for-the-unenthusiastic-tester/">Read more...</a></p>
+    
+</div>
+    <div id="ctl00_RightColumn_SQLOpinion1_panBlogs">
+	
+      RECENT BLOG POSTS:<br>
+		  <img src="Continuous%20Delivery%20and%20the%20Database_files/1px.gif" alt="" height="8" width="1"><br>
+      
+          <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;<a id="ctl00_RightColumn_SQLOpinion1_repBlogPosts_ctl00_lnkBlogPost" href="https://www.simple-talk.com/blogs/2016/03/07/sql-server-table-smells/">SQL Server Table Smells</a><br>
+				  <img src="Continuous%20Delivery%20and%20the%20Database_files/1px.gif" alt="" height="8" width="1"><br>
+        
+          <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;<a id="ctl00_RightColumn_SQLOpinion1_repBlogPosts_ctl01_lnkBlogPost" href="https://www.simple-talk.com/blogs/2016/02/16/the-luhn-algorithm-in-sql/">The Luhn Algorithm in SQL</a><br>
+				  <img src="Continuous%20Delivery%20and%20the%20Database_files/1px.gif" alt="" height="8" width="1"><br>
+        
+          <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;<a id="ctl00_RightColumn_SQLOpinion1_repBlogPosts_ctl02_lnkBlogPost" href="https://www.simple-talk.com/blogs/2016/01/19/de-duplicating-delimited-lists-in-sql-server/">De-duplicating Delimited Lists in SQL Server</a><br>
+				  <img src="Continuous%20Delivery%20and%20the%20Database_files/1px.gif" alt="" height="8" width="1"><br>
+        
+    
+</div>
+    <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_articles_13x15.gif" alt="" height="15" width="13">&nbsp;<a id="ctl00_RightColumn_SQLOpinion1_lnkBlog" href="https://www.simple-talk.com/blogs/author/2126-phil-factor/">View the blog</a><br>
+  </div>
+</div>
+  
+<div class="widget-new">
+  <h2><a id="ctl00_RightColumn_ArticlesRated1_lnkHeader">Top Rated</a></h2>
+  <div class="widget-new-body">
+    
+        <strong><a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl00_lnkArticle1" href="https://www.simple-talk.com/sql/database-administration/sql-server-security-audit-basics/">SQL Server Security Audit Basics</a></strong><br>
+        <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;SQL Server Server Audit has grown in functionality over the years but it can be tricky to maintain and...&nbsp;<a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl00_lnkArticle2" href="https://www.simple-talk.com/sql/database-administration/sql-server-security-audit-basics/">Read more...</a><br><br>
+      
+        <strong><a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl01_lnkArticle1" href="https://www.simple-talk.com/sql/database-administration/the-sql-server-2016-query-store-analyzing-query-store-performance/">The SQL Server 2016 Query Store: Analyzing Query Store Performance</a></strong><br>
+        <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;There are some obvious advantages to having the Query Store, but what is the performance impact that it...&nbsp;<a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl01_lnkArticle2" href="https://www.simple-talk.com/sql/database-administration/the-sql-server-2016-query-store-analyzing-query-store-performance/">Read more...</a><br><br>
+      
+        <strong><a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl02_lnkArticle1" href="https://www.simple-talk.com/sql/database-administration/the-posh-dba-assigning-data-to-variables-via-powershell-common-parameters/">The PoSh DBA: Assigning Data to Variables Via PowerShell Common Parameters</a></strong><br>
+        <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;Sometimes, it is the small improvements in a language that can make a real difference. PowerShell is...&nbsp;<a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl02_lnkArticle2" href="https://www.simple-talk.com/sql/database-administration/the-posh-dba-assigning-data-to-variables-via-powershell-common-parameters/">Read more...</a><br><br>
+      
+        <strong><a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl03_lnkArticle1" href="https://www.simple-talk.com/sql/database-delivery/issue-tracking-for-databases/">Issue Tracking for Databases</a></strong><br>
+        <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;Any database development project will be hard to manage without a system for reporting bugs in the...&nbsp;<a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl03_lnkArticle2" href="https://www.simple-talk.com/sql/database-delivery/issue-tracking-for-databases/">Read more...</a><br><br>
+      
+        <strong><a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl04_lnkArticle1" href="https://www.simple-talk.com/sql/database-delivery/releasing-databases-in-vsts-with-redgate-sql-ci-and-octopus-deploy/">Releasing Databases in VSTS with Redgate SQL CI and Octopus Deploy</a></strong><br>
+        <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;You can still do Database Lifecycle Management (DLM) workflows in the hosted version of Team foundation...&nbsp;<a id="ctl00_RightColumn_ArticlesRated1_repArticles_ctl04_lnkArticle2" href="https://www.simple-talk.com/sql/database-delivery/releasing-databases-in-vsts-with-redgate-sql-ci-and-octopus-deploy/">Read more...</a><br><br>
+      
+  </div>
+</div>
+  
+
+<div class="widget-new" id="mostviewed">
+  <h2>Most Viewed</h2>
+  <div class="widget-new-body">
+  
+      <strong><a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl00_lnkArticle1" href="https://www.simple-talk.com/sql/reporting-services/beginning-sql-server-2005-reporting-services-part-1/">Beginning SQL Server 2005 Reporting Services Part 1</a></strong><br>
+      <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;Steve Joubert begins an in-depth tour of SQL Server 2005 Reporting Services with a step-by-step guide...&nbsp;<a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl00_lnkArticle2" href="https://www.simple-talk.com/sql/reporting-services/beginning-sql-server-2005-reporting-services-part-1/">Read more...</a><br><br>
+    
+      <strong><a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl01_lnkArticle1" href="https://www.simple-talk.com/sql/database-administration/ten-common-database-design-mistakes/">Ten Common Database Design Mistakes</a></strong><br>
+      <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;If database design is done right, then the development, deployment and subsequent performance in...&nbsp;<a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl01_lnkArticle2" href="https://www.simple-talk.com/sql/database-administration/ten-common-database-design-mistakes/">Read more...</a><br><br>
+    
+      <strong><a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl02_lnkArticle1" href="https://www.simple-talk.com/sql/t-sql-programming/temporary-tables-in-sql-server/">Temporary Tables in SQL Server</a></strong><br>
+      <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;Temporary tables are used by every DB developer, but they're not likely to be too adventurous with...&nbsp;<a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl02_lnkArticle2" href="https://www.simple-talk.com/sql/t-sql-programming/temporary-tables-in-sql-server/">Read more...</a><br><br>
+    
+      <strong><a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl03_lnkArticle1" href="https://www.simple-talk.com/sql/learn-sql-server/sql-server-index-basics/">SQL Server Index Basics</a></strong><br>
+      <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;Given the fundamental importance of indexes in databases, it always comes as a surprise how often the...&nbsp;<a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl03_lnkArticle2" href="https://www.simple-talk.com/sql/learn-sql-server/sql-server-index-basics/">Read more...</a><br><br>
+    
+      <strong><a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl04_lnkArticle1" href="https://www.simple-talk.com/sql/t-sql-programming/concatenating-row-values-in-transact-sql/">Concatenating Row Values in Transact-SQL</a></strong><br>
+      <img src="Continuous%20Delivery%20and%20the%20Database_files/w_icon_article_9x11.jpg" alt="" height="11" width="9">&nbsp;It is an interesting problem in Transact SQL, for which there are a number of solutions and...&nbsp;<a id="ctl00_RightColumn_ArticlesViewed1_repArticles_ctl04_lnkArticle2" href="https://www.simple-talk.com/sql/t-sql-programming/concatenating-row-values-in-transact-sql/">Read more...</a><br><br>
+    
+  </div>
+</div>
+  
+
+<div class="widget-new" id="whyjoin">
+  
+      <h2>Why Join</h2>
+      <div class="widget-new-body">
+	      <p>
+	        Over 400,000 Microsoft professionals subscribe to the 
+Simple-Talk technical journal. Join today, it's fast, simple, free and 
+secure.
+	      </p>
+		    <div class="joinbutton">
+		      <a href="https://www.simple-talk.com/community/user/CreateUser.aspx?ReturnUrl=%2fsql%2fdatabase-administration%2fcontinuous-delivery-and-the-database%2f" class="btn">
+            Join Simple-Talk!
+          </a>
+		    </div>
+      </div>
+    
+</div>
+
+        <div class="clear"></div><br>
+      </div>
+      <div class="clear"></div><br>
+      
+
+<div class="pagefooter nav">
+  <div class="red-gate-logo">
+	  <a href="http://www.red-gate.com/?utm_source=simpletalk&amp;utm_medium=textad&amp;utm_campaign=homepage">
+	  	<img src="Continuous%20Delivery%20and%20the%20Database_files/red-gate-logo-footer.png" class="red-gate-logo-footer-image" alt="Redgate">
+	  </a>
+  </div>
+  <ul class="footer-nav">
+    <li>
+      <a id="ctl00_ctl02_lnkGotoAbout" href="https://www.simple-talk.com/about.aspx">About</a>
+    </li>
+    <li>
+      <a id="ctl00_ctl02_lnkGotoSitemap" href="https://www.simple-talk.com/site-map.aspx">Site map</a>
+    </li>
+    <li>
+      <a id="ctl00_ctl02_lnkGotoAuthor" href="https://www.simple-talk.com/become-an-author.aspx">Become an author</a>
+    </li>
+    <li>
+      <a id="ctl00_ctl02_lnkGotoArchive" href="https://www.simple-talk.com/newsletter-archive/">Newsletters</a>
+    </li>
+    <li>
+      <a id="ctl00_ctl02_lnkGotoContact" href="https://www.simple-talk.com/contact-us.aspx">Contact us</a>
+    </li>
+    <li>
+      <a href="https://www.simple-talk.com/community/languages/en-US/docs/faq.aspx">Help</a>
+    </li>
+  </ul>
+
+  <ul class="footer-legal-nav">
+    <li>
+      <a id="ctl00_ctl02_lnkGotoPrivacy" href="https://www.simple-talk.com/privacy-policy.aspx">Privacy policy</a>
+    </li>
+    <li>
+      <a id="ctl00_ctl02_lnkGotoTerms" href="https://www.simple-talk.com/terms-and-conditions.aspx">Terms and conditions</a>
+    </li>
+    <li>
+      <a href="http://www.red-gate.com/" target="_blank">©2005-2016 Red Gate Software Ltd</a>
+    </li>
+  </ul>
+</div>
+    </div>
+  </div>
+<script type="text/javascript">
+/* <![CDATA[ */
+    var google_conversion_id = 1072726260;
+    var google_conversion_language = "en";
+    var google_conversion_format = "3";
+    var google_conversion_color = "ffffff";
+    var google_conversion_label = "kOZ_CJS21AIQ9IHC_wM";
+    var google_conversion_value = 0;
+/* ]]> */
+</script>
+
+<script type="text/javascript" src="Continuous%20Delivery%20and%20the%20Database_files/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img style="border-style:none;" alt="" src="Continuous%20Delivery%20and%20the%20Database_files/a_002.gif" height="1" width="1">
+</div>
+</noscript>
+
+
+
+<script data-main="/static/versioned/3e62335f7e28118064c631b9a3a32e46/js/main.js" src="Continuous%20Delivery%20and%20the%20Database_files/require-2.js"></script> 
+<script src="Continuous%20Delivery%20and%20the%20Database_files/retina-1.js"></script>
+
+<!-- LinkedIn Remarketing -->
+<script type="text/javascript">
+    _bizo_data_partner_id = "8524"; 
+</script> 
+<script type="text/javascript">
+    (function () {
+        var s = document.getElementsByTagName("script")[0];
+        var b = document.createElement("script");
+        b.type = "text/javascript";
+        b.async = true;
+        b.src = (window.location.protocol === "https:" ? "https://sjs" : "http://js") + ".bizographics.com/insight.min.js";
+        s.parentNode.insertBefore(b, s);
+    })(); 
+</script> 
+<noscript> 
+<img alt="" style="display:none;" src="Continuous%20Delivery%20and%20the%20Database_files/a.gif" height="1" width="1"> 
+</noscript>
+<!-- /LinkedIn Remarketing -->
+
+
+</body></html>

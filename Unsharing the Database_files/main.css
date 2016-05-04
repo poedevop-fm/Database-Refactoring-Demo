@@ -1,0 +1,2430 @@
+@charset "UTF-8";
+/* Base - global setup, styles, and classes for any project ========================================================================== */
+/* ========================================================================== Variables ========================================================================== */
+/**
+* These are the default values for the framework's many options. Variables
+* that use the !default flag are basically saying "assign this value unless
+* a value already exists."
+*/
+/* ========================================================================== Base Variables ========================================================================== */
+/* OPTION: include typography */
+/* OPTION: include basic elements styles */
+/* OPTION: include flexbox and flex list styles */
+/* OPTION: include layout helper classes */
+/* OPTION: include grid */
+/* OPTION: decoration classes and mixins */
+/* OPTION: skin classes and placeholders */
+/* OPTION: media object classes and placeholders */
+/* OPTION: buttons classes and placeholders */
+/*doc
+---
+title: "Global variables"
+name: global-variables
+category: base - variables
+---
+
+These variables set up consistent framework conventions
+
+```
+$xs : ("xs", "extra-small", 1px,  1 ) !default;
+$sm : ("sm", "small",       2px,  2 ) !default;
+$md : ("md", "medium",      4px,  4 ) !default;
+$lg : ("lg", "large",       8px,  8 ) !default;
+$xl : ("xl", "extra-large", 16px, 16) !default;
+
+$top:    ("t", "top")    !default;
+$bottom: ("b", "bottom") !default;
+$left:   ("l", "left")   !default;
+$right:  ("r", "right")  !default;
+```
+
+*/
+/* Colors ========================================================================== */
+/*doc
+---
+title: "Color variables"
+name: colors-variables
+category: base - variables
+---
+
+All of the colors here are default values intended to give
+a reasonable base set of colors to use in an application.
+
+```
+$ghost-white-light: rgba(white, 0.25) !default;
+$ghost-white-base:  rgba(white, 0.5) !default;
+$ghost-white-dark:  rgba(white, 0.75) !default;
+$ghost-black-light: rgba(black, 0.1) !default;
+$ghost-black-base:  rgba(black, 0.25) !default;
+$ghost-black-dark:  rgba(black, 0.5) !default;
+
+$base-gray-lightest: #eeeff4 !default;
+$base-gray-light:    #d5dbe7 !default;
+$base-gray-soft:     #a2acb7 !default;
+$base-gray:          #677084 !default;
+$base-gray-dark:     #505a69 !default;
+$base-gray-darkest:  #3f4551 !default;
+
+$base-whale-gray:    #ababbb !default;
+$base-yellow:        #fffc71 !default;
+$base-green:         #0fa359 !default;
+$base-blue:          #3874b5 !default;
+$base-blue-dark:     #284c72 !default;
+$base-blue-soft:     #77abc9 !default;
+$base-blue-light:    #a9caea !default;
+$base-cyan:          #2ca8e4 !default;
+$base-cyan-light:    #5ebdea !default;
+$base-red:           #b70808 !default;
+$base-orange:        #e39215 !default;
+$base-tomato:        #e73c36 !default;
+$base-lime:          #9ee76d !default;
+$base-tangerine:     #ffd912 !default;
+$base-aqua:          #7FDBFF !default;
+$base-grape:         #945eff !default;
+$base-violet:        #cd95f0 !default;
+$base-peach:         #ffa086 !default;
+```
+
+*/
+/* Body variables ========================================================================== */
+/* Transitions variables ========================================================================== */
+/* Global typography values ========================================================================== */
+/**
+* 1. The base font size of the site. This variable controls the basis of the
+*    vertical rhythm of the site. Since everything's in rems, the rem will size
+*    off of this number exactly.
+*
+*    So what's awesome about this? You now have complete control over a very
+*    powerful unit of math that controls your entire site. Congratulations!
+*
+*    Padding and margins are set in rems (by default) as is the entire typography
+*    scale of the site, so all you need to do is modify this just a bit to get
+*    a totally new scale.
+*
+* 2. Modular scale ratio: This system makes use of math (oy, vey...) to create
+*    sequential, relational type in a scale. Basically, it's a simple way to
+*    get good-looking type sizes using only a couple of variables.
+*
+*    Reading: http://alistapart.com/article/more-meaningful-typography
+*    Practice: http://modularscale.com/
+*
+*    $type-ratio is a number or fraction that defines our exponential scale.
+*    Even minor changes can make a noticeable impact on your type scale. Don't
+*    worry though: the vertical rhythm is calculated and will accept any
+*    changes in scale and adapt. See _mixins.scss for more info.
+*/
+/* This will automatically adjust heading letter spacing to look nicer at larger font sizes. */
+/* 1 */
+/* 2 */
+/* Basic typography variables ========================================================================== */
+/**
+* 1. Optional: User font family definition. Add a font or fonts as a variable
+*    and it will be injected into the site font family (serif or sans).
+* 2. $font-family-base defines which style of font (defined before) to use as
+*    default for the site. $font-family-sans-serif by default.
+* 3. Default color for text. If using dark on light, avoid solid black (#000).
+*    This is just good practice and looks nicer, too.
+* 4. Some variables for <small> text. Accepts a size and a unit.
+*/
+/* 1 */
+/* 2 */
+/* 3 */
+/* 4 */
+/* Headings variables ========================================================================== */
+/* Font size variables ========================================================================== */
+/**
+* I choose not to use classes or variables with the greek naming convention
+* (i.e. ".alpha, $beta, etc.")
+* I find it easier not to have to learn new languages (however common) nor
+* have to think about (however briefly) a class and its implication.
+*
+* In this numerical naming convention, it's easier to associate lower
+* numbers with larger text, simply because that convention is already in
+* place with heading markup (h1 - h6).
+*
+* Also included here are a few more font sizes with the sm, md, lg
+* naming convention.
+*
+* 1. Expressed as progressive steps in scale (as integers).
+*    Basically, the type grows (or shrinks) from a base font size variable
+*    at a rate that is exponential according to the integers below.
+*    If this makes no sense, it might be easier to try changing these numbers,
+*    the $font-size-base, or the $type-ratio and seeing the results in your
+*    application. Tweak them to get something that works for you.
+*/
+/* 1 */
+/* Custom breakpoints ========================================================================== */
+/**
+* These variables represent the max-width of a size break.
+*
+* Define these values as you need, but, by default, we're looking at something
+* like mobile (xs), tablet (sm), smaller lap (md), big lap/small monitor (lg),
+* standard monitor (xl).
+*
+* Feel free to customize these size breaks and/or rename and replace these
+* variable names.
+*/
+/* ========================================================================== Elements Variables ========================================================================== */
+/* Links variables ========================================================================== */
+/* Lists variables ========================================================================== */
+/* Tables variables ========================================================================== */
+/* Forms variables ========================================================================== */
+/* ========================================================================== Structure Variables ========================================================================== */
+/* Layout variables ========================================================================== */
+/* Containers variables ========================================================================== */
+/**
+* 1. Include a $container-max if you want to constrain the maximum allowable
+*    width for the container, regardless of breakpoint constraints.
+*
+* 2. Center the container by default. Possible values: left / right / center
+*/
+/* Container constraint variables */
+/* 1 */
+/* 2 */
+/* Grid variables ========================================================================== */
+/* ========================================================================== Modules Variables ========================================================================== */
+/* Buttons variables ========================================================================== */
+/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css
+
+   Customized by Brian Cleveland (@yorthehunter | brian@stitchfix.com)
+*/
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { background-color: #f7f5f2; margin: 0; }
+
+/* HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined for any HTML5 element in IE 8/9. Correct `block` display not defined for `details` or `summary` in IE 10/11 and Firefox. Correct `block` display not defined for `main` in IE 11. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary { display: block; margin: 0; }
+
+/** 1. Correct `inline-block` display not defined in IE 8/9. 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera. */
+audio, canvas, progress, video { display: inline-block; /* 1 */ vertical-align: baseline; /* 2 */ }
+
+/* Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background-color: transparent; }
+
+/** Improve readability of focused elements when they are also in an active/hover state. */
+a:active, a:hover { outline: 0; }
+
+/* Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9/10. */
+img { border: 0; max-width: 100%; }
+
+/** Correct overflow not hidden in IE 9/10/11. */
+svg:not(:root) { overflow: hidden; }
+
+/* Forms ========================================================================== */
+/** Known limitation: by default, Chrome and Safari on OS X allow very limited styling of `select`, unless a `border` property is set. */
+/** 1. Correct color not being inherited. Known issue: affects color of disabled elements. 2. Correct font properties not being inherited. 3. Address margins set differently in Firefox 4+, Safari, and Chrome. */
+button, input, optgroup, select, textarea { color: inherit; /* 1 */ font: inherit; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address `overflow` set to `hidden` in IE 8/9/10/11. */
+button { overflow: visible; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera. Correct `select` style inheritance in Firefox. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+input { line-height: normal; }
+
+/** It's recommended that you don't attempt to style these elements. Firefox's implementation doesn't respect box-sizing, padding, or width.  1. Address box sizing set to `content-box` in IE 8/9/10. 2. Remove excess padding in IE 8/9/10. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** Fix the cursor style for Chrome's increment/decrement buttons. For certain `font-size` values of the `input`, it causes the cursor style of the decrement button to change from `default` to `text`. */
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { height: auto; }
+
+/** 1. Address `appearance` set to `searchfield` in Safari and Chrome. 2. Address `box-sizing` set to `border-box` in Safari and Chrome. */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ box-sizing: content-box; /* 2 */ }
+
+/** Remove inner padding and search cancel button in Safari and Chrome on OS X. Safari (but not Chrome) clips the cancel button when the search input has padding (and `textfield` appearance). */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9/10/11. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** Remove default vertical scrollbar in IE 8/9/10/11. */
+textarea { overflow: auto; }
+
+/** Don't inherit the `font-weight` (applied by a rule above). NOTE: the default cannot safely be changed in Chrome and Safari on OS X. */
+optgroup { font-weight: bold; }
+
+/* Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+td, th { padding: 0; }
+
+/* Box sizing
+*/
+* { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+
+/* Type ========================================================================== */
+h1, h2, h3, h4, h5, h6, p { margin: 0; }
+
+/* ========================================================================== Base Mixins ========================================================================== */
+/**
+* These mixins are needed for almost all parts of this project, so they are
+* always included.
+*/
+/* Media breakpoint, super-simple version ========================================================================== */
+/**
+* 1. Sass magic that lets us pass content to the mixin. More reading:
+*    http://krasimirtsonev.com/blog/article/SASS-content-directive-is-a-wonderful-thing
+*/
+/* Returns exponent ========================================================================== */
+/**
+* 1. Reset value
+* 2. Positive integers get multiplied
+* 3. Negative integers get divided. A number divided by itself is 1
+* 4. Return the last value written
+*/
+/* Font size and line height mixin ========================================================================== */
+/**
+* 1. Multiply by 1 unit (e.g. rem) to get the size in units
+* 2. Do a little math and round it to get a pleasant and scalable line height.
+*    This is a necessity for rem-based, beautiful vertical rhythm. At least, it
+*    is for this system.
+* 3. Optional: For aesthetics, adjust letter-space to -1% of font size.
+*/
+/*doc
+---
+title: "Customizing typography"
+name: basic-typography-variables
+category: base - typography
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$user-font-family-sans-serif: "Source Sans Pro" !default;
+$user-font-family-serif:      null !default;
+
+$font-family-sans-serif: $user-font-family-sans-serif, "Helvetica Neue", Helvetica, sans-serif;
+$font-family-serif:      $user-font-family-serif, Georgia, Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, serif;
+$font-family-monospace:  Menlo, Monaco, Consolas, "Courier New", monospace;
+$font-family-base:       $font-family-sans-serif !default;
+
+$text-base-color:  #444 !default;
+$text-light-color: lighten($text-base-color, 33%);
+$text-dark-color:  darken($text-base-color, 33%);
+
+$small-size:      0.8 !default;
+$small-size-unit: em  !default;
+```
+
+*/
+/*doc
+---
+title: Typography
+name: basic-typography
+category: base - typography
+---
+
+The basic typography and vertical rhythm is already setup by default. It's
+all variable-driven and moderately easy to modify.
+
+*/
+/* Typography basics ========================================================================== */
+/**
+* 1. This line sets up our rem size for the site. We set it up as the
+*    $font-size-base so we can keep tight control over the font sizes and
+*    vertical rhythm.
+*    You can test out what a change to this number looks like by changing it
+*    to, oh say, 30px and refreshing the page. Everything will scale up
+*    drastically because everything in this app is rem-based :}
+*/
+html, body { font-size: 15px; }
+
+/* 1 */
+body { line-height: 1rem; font-family: brandontext, "Helvetica Neue", Helvetica, sans-serif; font-weight: 400; color: #847c77; }
+
+/* Font size placeholders ========================================================================== */
+/**
+* @extend these placeholders in modules to give a component a specific font size.
+*/
+h1, .h1, .text-content h1 { font-size: 2.93163rem; /* 1 */ margin-bottom: 3rem; line-height: 3rem; /* 2 */ }
+
+h2, .h2, .text-content h2 { font-size: 2.36421rem; /* 1 */ margin-bottom: 2rem; line-height: 3rem; /* 2 */ }
+
+h3, .h3, .text-content h3, .btn.btn-xl { font-size: 1.90662rem; /* 1 */ margin-bottom: 2rem; line-height: 2rem; /* 2 */ }
+
+h4, .h4, .text-content h4, .btn.btn-lg { font-size: 1.5376rem; /* 1 */ margin-bottom: 1rem; line-height: 2rem; /* 2 */ }
+
+h5, .h5, p, .p, dl, ol, ul { font-size: 1.24rem; /* 1 */ margin-bottom: 1rem; line-height: 2rem; /* 2 */ }
+
+h6, .h6, .member-bio__name { font-size: 1rem; /* 1 */ margin-bottom: 0; line-height: 1rem; /* 2 */ }
+
+  /*doc --- title: "Headings and paragraphs" name: headings-and-paragraphs category: base - typography ---
+ Headings are given some default styling to give them a typographical hierarchy. There is more than one school of thought when using headings in markup. See this example:
+
+```
+<h1>This is a giant header</h1>
+```
+ Your output is dependent on the styles given to h1{}. If you would rather present your h1 as a smaller font, maybe more like an h2, then your markup could look like this:
+
+```
+<h1 class="h2">This is a moderately big header.</h1>
+```
+ Semantically, you are saying "this heading is as important as an h1, but should present itself as an h2".
+ Despite being a semantically correct and easily identifiable solution, it doesn't always feel right (or feels excessive) in a shared development environment. Therefore:
+
+```
+<h2>This is a moderately big header, too.</h2>
+```
+ The code above works, but doesn't say as much semantically. YMMV.
+
+ ```html_example <header> <h1 class="h2">This is a moderately big header.</h1> </header> <p>And this is some paragraph text.</p> ``` */
+/**
+* 1. The .p class can be used to describe paragraph text when an actual <p>
+*    isn't used. E.g. <div class="p">Text goes here.</div>
+*/
+h1, .h1, .text-content h1, h2, .h2, .text-content h2, h3, .h3, .text-content h3, h4, .h4, .text-content h4, h5, .h5, h6, .h6, .member-bio__name { font-weight: normal; color: inherit; text-rendering: optimizeLegibility; }
+
+.f-xl { font-size: 5.58951rem; /* 1 */ margin-bottom: 4rem; line-height: 6rem; /* 2 */ }
+
+.f-lg { font-size: 3.63522rem; /* 1 */ margin-bottom: 3rem; line-height: 4rem; /* 2 */ }
+
+.btn-cta, .btn-pagination, .btn, .btn.btn-md, .f-md { font-size: 1.24rem; /* 1 */ margin-bottom: 1rem; line-height: 2rem; /* 2 */ }
+
+.btn-pagination, .btn.btn-sm, .links-list, .links-list--small-views > li > a, .member-bio__description, .f-sm { font-size: 1rem; /* 1 */ margin-bottom: 0; line-height: 1rem; /* 2 */ }
+
+.btn.btn-xs, .f-xs { font-size: 0.80645rem; /* 1 */ margin-bottom: 0; line-height: 1rem; /* 2 */ }
+
+  /*doc --- title: "Helper classes" name: helper-typography-classes category: base - typography ---
+ The following are some utility classes that help control the visuals of your typography.
+ *A note about placeholders:**
+ Why include placeholders along with classes? Why not just use one or the other? Because there are cases to be made for each at different times. It's sometimes less meaningful to use a class (or @extend a placeholder). I've found cases for both in all of my projects, so I am proactively trying to create placeholders for classes that I *may* later want to @extend. If this makes no sense, please feel free to ignore and do what you please :}
+ Oh, by the way: placeholders do not compile on their own, so there's no need to worry about bloating your code. However, classes DO compile, whether you use them or not, so stay cautious, friends.
+ ```html_example <div class="u">Underline text</div> <sup>Superscript text</sup> <br /> <sub>Subscript text</sub> <br /> <div class="small">Small text</div> <div class="uppercase">Uppercase text</div> <div class="strike">Strikethrough text</div> <div style="width: 250px;" class="truncated"> Lorem ipsum dolor sit amet, nibh elit inermis ex eum, at quot verear vix, sed no unum dicam. Et pro possim repudiandae mediocritatem. Noster petentium expetenda ea pro, diam elit ridens id pro. Deserunt praesent ut vel, ad est natum habeo abhorreant. </div> <div class="text-l">Align left</div> <div class="text-c">Align center</div> <div class="text-r">Align right</div> <div class="light">Light text</div> <div class="dark">Dark text</div> <div class="thin">Thin text</div> <div class="thick">Thick text</div> <div class="normal">Normal weight text</div> <div class="line1">Line height of 1 rem</div> <div class="line2">Line height of 2 rem</div> <div class="line3">Line height of 3 rem</div> <div class="line4">Line height of 4 rem</div> ``` */
+/**
+* 1. I decided I liked this enough to put it in. <sub> and <sup> now have life.
+*    Based on this: https://gist.github.com/unruthless/413930
+*
+* 2. Line height helpers: This seems a little over-the-top-micro-managey, but
+*    since I've come across times where this is particularly useful, I've
+*    included a few helpful classes. It's worth it, I think.
+*/
+strong, b, .b { font-weight: 800; }
+
+em, i, .i { font-style: italic; }
+
+u, .u { text-decoration: underline; }
+
+pre, code, .code { font-family: Courier, "Courier New", monospace; white-space: pre-wrap; line-height: 2rem; font-size: 1rem; }
+
+sub, sup { /* 1 */ font-size: 0.8em; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5rem; }
+
+sub { bottom: -0.25rem; }
+
+.copyright, .career-listing__details, small, .small { font-size: 0.8em; line-height: 1rem; }
+
+.heading--impact, .links-list--small-views, .member-bio__name, .uppercase { text-transform: uppercase; }
+
+.strike { text-decoration: line-through; }
+
+.truncated { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.member-bio__description, .text-l { text-align: left   !important; }
+
+.heading--impact, .global-nav, .global-footer__content-small-views, .site-title, .member-bio, .post-listing__author-container, .text-c { text-align: center !important; }
+
+.list-flex li.list-header, .text-r { text-align: right  !important; }
+
+.light { color: #d4d1cf; }
+
+.dark { color: #2b2927; }
+
+.links-list, .copyright, .thin { font-weight: 200; }
+
+.heading--impact, .member-bio__name, .thick { font-weight: 800; }
+
+.links-list__header, .normal { font-weight: 400 !important; }
+
+.line1 { line-height: 1rem !important; }
+
+/* 2 */
+.heading--impact, .line2 { line-height: 2rem !important; }
+
+.links-list--small-views > li > a, .line3 { line-height: 3rem !important; }
+
+.line4 { line-height: 4rem !important; }
+
+  /*doc --- title: "Responsive text" name: responsive-text category: base - typography ---
+ `f-xl` `f-lg` `h1` `h2` `h3` `h4` and `p` classes react responsively to change the font-size at breakpoints. This will scale down font sizes for smaller devices for better readability.
+
+ ```html_example <div class="f-xl">XL text</div> <div class="f-lg">LG text</div> <div class="h1">h1 text</div> <div class="h2">h2 text</div> <div class="h3">h3 text</div> <div class="h4">h4 text</div> <div class="h5">h5 text</div> <div class="h6">h6 text</div> <div class="p">p text</div> ``` */
+@media screen and (max-width: 992px) { .f-xl { font-size: 3.63522rem; /* 1 */ margin-bottom: 3rem; line-height: 4rem; /* 2 */ }
+  .f-lg { font-size: 2.36421rem; /* 1 */ margin-bottom: 2rem; line-height: 3rem; /* 2 */ }
+  .h1, .text-content h1 { font-size: 2.36421rem; /* 1 */ margin-bottom: 2rem; line-height: 3rem; /* 2 */ }
+  .h2, .text-content h2 { font-size: 1.90662rem; /* 1 */ margin-bottom: 2rem; line-height: 2rem; /* 2 */ }
+  .h3, .text-content h3 { font-size: 1.5376rem; /* 1 */ margin-bottom: 1rem; line-height: 2rem; /* 2 */ } }
+@media screen and (max-width: 768px) { .f-lg, .f-xl { font-size: 1.90662rem; /* 1 */ margin-bottom: 2rem; line-height: 2rem; /* 2 */ }
+  .h1, .text-content h1 { font-size: 1.90662rem; /* 1 */ margin-bottom: 2rem; line-height: 2rem; /* 2 */ }
+  .h2, .text-content h2 { font-size: 1.5376rem; /* 1 */ margin-bottom: 1rem; line-height: 2rem; /* 2 */ }
+  .h3, .text-content h3, .h4, .text-content h4 { font-size: 1.24rem; /* 1 */ margin-bottom: 1rem; line-height: 2rem; /* 2 */ }
+  .p, .h5 { font-size: 1rem; /* 1 */ margin-bottom: 0; line-height: 1rem; /* 2 */ } }
+  /*doc --- title: "Responsive text alignment" name: responsive-text-alignment category: base - typography ---
+ Some utility classes for forcing the alignment of text responsively.
+ Basic example: On larger screens, center some heading text for impact. On smaller viewports, you might want that text forced back to the left. In that case, we apply two classes: `.text-c` to center the text by default, and `.text-l-xs` to force left-aligned text on mobile viewports.
+
+ ```html_example <h1 class="h3 text-c text-l-xs"> This Heading will Align Center by Default, and Left on xs Screens </h1> ``` */
+@media screen and (max-width: 480px) { .text-l-xs { text-align: left   !important; float: none !important; }
+  .text-c-xs { text-align: center !important; float: none !important; }
+  .text-r-xs { text-align: right  !important; float: none !important; }
+  /* 1 */ }
+/* Elements - basic default styling for fundamental elements ========================================================================== */
+/*doc
+---
+title: "Customizing links"
+name: links-variables
+category: elements - links
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$link-color:               $base-blue !default;
+$link-hover-color:         $base-blue-soft !default;
+$link-active-color:        $base-blue !default;
+$link-visited-color:       $base-blue !default;
+$link-light-color:         $base-blue-soft !default;
+$link-light-hover-color:   $base-blue-light !default;
+$link-light-active-color:  $base-blue-soft !default;
+$link-light-visited-color: $base-blue-soft !default;
+
+$link-transition-speed:    $transition-speed-base !default;
+
+--- Optional customizations ---
+$link-underline-option:        false !default;
+$link-border-underline-option: false !default;
+$link-transition-option:       true !default;
+$link-underline-hover-option:  false !default;
+```
+
+*/
+/*doc
+---
+title: Links
+name: links
+category: elements - links
+---
+
+Links have basic styling for `:hover` `:active` and `:visited` by default. There's
+also a couple of classes you can use to make links more universally useful.
+
+```html_example
+<div class="p1"> <p> <a href="#">Standard link</a> </p> <p class="link"> Style something else to look like a link </p> <p> <a href="#" class="u">Use .u to force an underline</a> </p>
+</div>
+<div class="p1" style="background-color: #666;"> <p> <a href="#" class="light">"Light" link for dark backgrounds</a> </p> <p> <a href="#" class="link-white">Forced white text link</a> </p>
+</div>
+```
+*/
+.link, a { color: #ff5c61; text-decoration: none; -webkit-transition: color, 200ms; -moz-transition: color, 200ms; transition: color, 200ms; }
+.link:visited, a:visited { color: #ff5c61; }
+.link.light, a.light { color: #a9caea; }
+.link.light:visited, a.light:visited { color: #77abc9; }
+.link.light:hover, a.light:hover { color: #eeeff4; }
+.link.light:active, a.light:active { color: #77abc9; }
+.link.link-white, a.link-white { color: white; }
+.link.link-white:visited, .link.link-white:hover, .link.link-white:active, a.link-white:visited, a.link-white:hover, a.link-white:active { color: white; }
+.link:hover, a:hover { color: #4e4a47; text-decoration: underline; }
+.link:active, a:active { color: #ff5c61; }
+
+/*doc
+---
+title: "Customizing lists"
+name: lists-variables
+category: elements - lists
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$list-pad: 1.5rem !default;
+$list-inline-gutter: 1rem !default;
+```
+
+*/
+/*doc
+---
+title: Lists
+name: lists
+category: elements - lists
+---
+
+By default, `ul` `ol` and `dl` have some basic styling. There's also
+a couple of classes with which to extend these to make them more versatile.
+
+#####Default lists
+```html_example
+<ul> <li>List item 1</li> <li>List item 2</li> <li>List item 3</li>
+</ul>
+<hr>
+<ol> <li>List item 1</li> <li>List item 2</li> <li>List item 3</li>
+</ol>
+<hr>
+<dl> <dt>List item 1 title</dt> <dd>List item 1 definition</dd> <dt>List item 2 title</dt> <dd>List item 2 definition</dd>
+</dl>
+```
+
+#####Unstyled lists
+```html_example
+<ul class="list-unstyled"> <li>List item 1</li> <li>List item 2</li> <li>List item 3</li>
+</ul>
+```
+
+#####Condensed lists
+```html_example
+<ul class="list-condensed"> <li>List item 1</li> <li>List item 2</li> <li>List item 3</li>
+</ul>
+```
+
+#####Inline list
+```html_example
+<h2 class="h4">Inline list</h2>
+<ul class="list-inline"> <li>List item 1</li> <li>List item 2</li> <li>List item 3</li>
+</ul>
+```
+
+#####Nav List
+Used with `.list-inline`. Forces inline list items to become full-width blocks on XS viewports.
+This is typically useful in navigation bars to give a better mobile experience.
+
+```html_example
+<h2 class="h4">Nav list</h2>
+<p>Extend `.list-inline` with `.list-nav` to force inline list items to change to full-width blocks at the mobile breakpoint.</p>
+<ul class="list-inline list-nav"> <li>List item 1</li> <li>List item 2</li> <li>List item 3</li>
+</ul>
+```
+
+*/
+ul, ol { padding-left: 1.5rem; margin-top: 0; }
+ul ul, ul ol, ol ul, ol ol { margin-bottom: 0; }
+
+li { margin-bottom: 1rem; }
+li:last-of-type { margin-bottom: 0; }
+
+dl { margin-top: 0; margin-bottom: 1rem; }
+
+dt { font-weight: bold; }
+
+dd { margin-left: 0; margin-bottom: 1rem; }
+
+dl > dd:last-child { margin-bottom: 0; }
+
+.links-list, .links-list--small-views, .career-list, .blog-list, .list-unstyled { padding-left: 0; list-style: none; }
+
+.links-list--small-views, .career-list, .list-condensed { margin-bottom: 0; }
+.links-list--small-views > li, .career-list > li, .list-condensed > li { margin-bottom: 0; }
+
+.list-inline { padding-left: 0; }
+.list-inline > li { display: inline-block; padding-left: 0.5rem; padding-right: 0.5rem; vertical-align: middle; margin-bottom: 0; }
+@media screen and (max-width: 480px) { .list-inline.list-nav { /* 1 */ }
+  .list-inline.list-nav > li { display: block; width: 100%; text-align: left; padding-left: 0; padding-right: 0; } }
+.list-inline.list-nav .btn { vertical-align: middle; }
+
+/*doc
+---
+title: "Customizing tables"
+name: tables-variables
+category: elements - tables
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$table-cell-pad:           1rem 1rem !default;
+$table-cell-condensed-pad: 0.5rem 0.5rem !default;
+
+$table-bg:             transparent !default;
+$table-header-border:  rgba(0, 0, 0, 0.1) !default;
+$table-footer-border:  rgba(0, 0, 0, 0.1) !default;
+$table-header-bg:      transparent !default;
+$table-footer-bg:      transparent !default;
+$table-cell-border:    rgba(0, 0, 0, 0.1) !default;
+$table-stripe-color:   #F0F0F0 !default;
+$table-hover-color:    #E7E7E7 !default;
+$table-border-color:   rgba(0, 0, 0, 0.1) !default;
+$table-vertical-align: middle !default;
+
+$table-stripe-dark-color: rgba(255, 255, 255, 0.1) !default;
+$table-hover-dark-color:  rgba(255, 255, 255, 0.2) !default;
+```
+
+*/
+/*doc
+---
+title: Tables
+name: tables
+category: elements - tables
+---
+
+There's some basic styling applied to `table` tags and children to make it more
+browser-friendly, but there's also several classes to help define some basic
+UX-ready tables. Many of these classes can be combined or nested as needed.
+
+#####Default table
+```html_example
+<table> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Unstyled table
+```html_example
+<table class='table-unstyled'> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Condensed table
+```html_example
+<table class="table-condensed"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Zero padding table
+```html_example
+<h2 class="h4">No padding Table</h2>
+<table class="table-nopad"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Bordered table
+```html_example
+<h2 class="h4">Bordered Table</h2>
+<table class="table-bordered"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Striped table
+```html_example
+<h2 class="h4">Striped Table</h2>
+<table class="table-striped"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Hoverable table rows
+```html_example
+<h2 class="h4">Hoverable Table</h2>
+<table class="table-hover"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody>
+</table>
+```
+
+#####Striped and hoverable for dark backgrounds
+```html_example
+<div class="p1 skin-gray-dark"> <p> ProTip: use the "full-width" utility class to force a table to extend the width of its container. <table class="table-striped-dark full-width"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody> </table> <hr/>
+ <table class="table-hover-dark"> <thead> <tr> <th>Table Header 1</th> <th>Table Header 2</th> <th>Table Header 3</th> </tr> </thead> <tfoot> <tr> <td>Table Footer 1</td> <td>Table Footer 2</td> <td>Table Footer 3</td> </tr> </tfoot> <tbody> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> <tr> <td>Table Body 1</td> <td>Table Body 1</td> <td>Table Body 1</td> </tr> </tbody> </table>
+</div>
+```
+*/
+/*doc
+---
+title: "Customizing forms"
+name: forms-variables
+category: elements - forms
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$form-base-color: $text-light-color !default;
+$form-placeholder-color: #afa9af !default;
+
+$form-pad-v-base: 0.5rem !default;
+$form-pad-h-base: 0.25rem !default;
+
+$input-bg: #f0f0f0 !default;
+$input-border-width: 1px !default;
+$input-border-color: #afa9af !default;
+$input-focus-bg: white !default;
+$input-focus-color: $text-base-color !default;
+
+$input-disabled-bg: rgba($input-bg, 0.5) !default;
+$input-disabled-color: rgba($form-base-color, 0.5) !default;
+
+$labels-look-like-links-option: false !default;
+```
+
+*/
+/*doc
+---
+title: Forms
+name: forms
+category: elements - forms
+---
+
+Forms are inline by default and pretty much ready-to-go. There's a few
+ways to extend a `form` or `input` to make life easier.
+
+##### Default form
+```html_example
+<form> <fieldset> <input placeholder="Email" type="text" /><input placeholder="Password" type="password" /> <label class="line3"> <input type="checkbox" class="checkbox" />Remember me </label> <button class="btn btn-primary" type="submit">Sign in</button> </fieldset>
+</form>
+```
+
+##### Stacked form
+```html_example
+<form class="form-stacked"> <fieldset> <div class="mb1"> <label>E-Mail</label> <input required=true type="email"></input> <aside> <em class="light">This is a required field.</em> </aside> </div> <div class="mb1"> <label>State</label> <select> <option>Option Number 1</option> <option>2nd opt</option> <option>This is long option three</option> <option>Something 4</option> <option>five</option> </select> </div> <div class="mb1"> <label> <input type="checkbox" class="checkbox"></input> I've read the terms and conditions </label> </div> <div class="mb1"> <label> <input type="radio" class="radio"></input> I've read the terms and conditions </label> </div> <button class="btn btn-primary" type="submit">Submit</button> <button class="btn btn-link" type="reset">Reset</button> </fieldset>
+</form>
+```
+
+##### Disabled form
+```html_example
+<form class="form-stacked"> <fieldset class="disabled"> <div class="mb1"> <label>E-Mail</label> <input required=true type="email" disabled></input> <aside> <em class="light">This is a required field.</em> </aside> </div> <div class="mb1"> <label>State</label> <select disabled> <option>Option Number 1</option> <option>2nd opt</option> <option>This is long option three</option> <option>Something 4</option> <option>five</option> </select> </div> <div class="mb1"> <label> <input type="checkbox" class="checkbox" disabled></input> I've read the terms and conditions </label> </div> <div class="mb1"> <label> <input type="radio" class="radio" disabled></input> I've read the terms and conditions </label> </div> <button class="btn btn-primary" disabled type="submit">Submit</button> <button class="btn btn-link" disabled type="reset">Reset</button> </fieldset>
+</form>
+```
+*/
+  /*doc --- title: Flexbox name: flexbox category: elements - flexbox ---
+ Flexbox is a way to create a better set of fluid elements in modern browsers. The standard flexbox consists of a parent container and any number of child elements.
+ Use `.flex-container` as the parent and `.flex-item` as the child.
+ Flexbox styles are still being worked on and can be considered "experimental"
+ ```html_example <div class="flex-container"> <div class="flex-item flex-left f-lg bordered border-xs"> 1 </div> <div class="flex-item flex-left f-lg bordered border-xs"> 2 </div> <div class="flex-item flex-left f-lg bordered border-xs"> 3 </div> </div> ```
+ Use `.flex-N` where N is a number from 0 to 4 to control the relative width of a `flex-item`.
+ ```html_example <div class="flex-container"> <div class="flex-item flex-1 p1 bg-gray-lightest">Flex 1</div> <div class="flex-item flex-2 p1 bg-gray-light">Flex 2</div> <div class="flex-item flex-3 p1 bg-gray-lightest">Flex 3</div> <div class="flex-item flex-4 p1 bg-gray-light">Flex 4</div> </div> ```
+ */
+.list-flex, .flex-container { display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; }
+.list-flex li, .list-flex .flex-item, .flex-container .list-flex li, .list-flex .flex-container li, .flex-container .flex-item { margin-left: auto; margin-right: auto; -webkit-box-flex: 1; -moz-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1; }
+.list-flex .flex-left, .flex-container .flex-left { margin-left: 0; }
+.list-flex .flex-0, .flex-container .flex-0 { -webkit-box-flex: 0; -moz-box-flex: 0; -webkit-flex: 0; -ms-flex: 0; flex: 0; }
+.list-flex li, .list-flex .flex-2, .flex-container .list-flex li, .list-flex .flex-container li, .flex-container .flex-2 { -webkit-box-flex: 2; -moz-box-flex: 2; -webkit-flex: 2; -ms-flex: 2; flex: 2; }
+.list-flex .flex-3, .flex-container .flex-3 { -webkit-box-flex: 3; -moz-box-flex: 3; -webkit-flex: 3; -ms-flex: 3; flex: 3; }
+.list-flex li.list-header, .list-flex .flex-4, .flex-container .list-flex li.list-header, .list-flex .flex-container li.list-header, .flex-container .flex-4 { -webkit-box-flex: 4; -moz-box-flex: 4; -webkit-flex: 4; -ms-flex: 4; flex: 4; }
+
+  /*doc --- title: "Flex list" name: flexlist category: elements - flexbox ---
+ Use `.list-flex` on lists to create `li` children as flexible sections.
+ You can think of flex lists as a way to present list information like in a table, but that isn't necessarily tabular data.
+ Flexbox styles are still being worked on and can be considered "experimental"
+ ```html_example <ul class="list-flex"> <li class="list-header bg-gray-lightest"> List header </li> <li class="bg-gray-light"> List item </li> <li class="bg-gray-lightest"> List item </li> <li class="bg-gray-light"> List item </li> <li class="bg-gray-lightest"> List item </li> </ul> ```
+ */
+.list-flex { list-style: none; padding-left: 0; }
+
+/* Structure - Helpers that manage the layout and vertical rhythm of a site. ========================================================================== */
+/*doc
+---
+title: "Customizing layout"
+name: layout-variables
+category: structure - layout
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$hr-color:     rgba(0,0,0,0.1) !default;
+$margin-base:  1rem !default;
+$padding-base: $margin-base !default;
+```
+
+**Note:**
+*Margins and padding are defined in increments of rem by default*
+
+*/
+/*doc
+---
+title: "Margin helpers"
+name: margin-helpers
+category: structure - layout
+---
+
+Use margin and padding helpers to keep vertical rhythm. Micro classes like
+this help maintain the intended design, while keeping css bloat low.
+
+However, it's _sometimes_ easier for long-term maintenance to `@extend` these
+styles (as placeholders) in another class.
+
+Examples:
+
+#####Bad:
+
+`.my-module { margin-bottom: 30px; }`
+
+
+
+#####Decent:
+
+`.my-module { @extend %mb3, %p1; }`
+
+
+This will produce the compiled css:
+
+`.my-module { margin-bottom: 3rem; padding: 1rem; }`
+
+This adds some extra size to the compiled CSS, but is easy to read and understand in a shared
+development environment.
+
+
+#####Potentially better:
+
+```
+<div class="my-module mb4 p1"> This is called .my-module, has a margin-bottom of 4rem, and a padding of 1rem on all sides. It's obvious to anyone reading the code and it's smaller in file size. It's also easy to change later.
+</div>
+```
+
+```html_example
+<div class="m0 p1 bg-gray-lightest">margin 0 top and bottom</div>
+<div class="m1 p1 bg-gray-light">margin 1 top and bottom</div>
+<div class="m2 p1 bg-gray-lightest">margin 2 top and bottom</div>
+<div class="m3 p1 bg-gray-light">margin 3 top and bottom</div>
+<div class="m4 p1 bg-gray-lightest">margin 4 top and bottom</div>
+<div class="m5 p1 bg-gray-light">margin 5 top and bottom</div>
+<div class="m6 p1 bg-gray-lightest">margin 6 top and bottom</div>
+<div class="m7 p1 bg-gray-lightest">margin 7 top and bottom</div>
+<div class="m8 p1 bg-gray-lightest">margin 8 top and bottom</div>
+```
+
+```html_example
+<div class="ml0 p1 bg-gray-lightest">margin 0 left</div>
+<div class="ml1 p1 bg-gray-light">margin 1 left</div>
+<div class="ml2 p1 bg-gray-lightest">margin 2 left</div>
+<div class="ml3 p1 bg-gray-light">margin 3 left</div>
+<div class="ml4 p1 bg-gray-lightest">margin 4 left</div>
+<div class="ml5 p1 bg-gray-light">margin 5 left</div>
+<div class="ml6 p1 bg-gray-lightest">margin 6 left</div>
+<div class="ml7 p1 bg-gray-light">margin 7 left</div>
+<div class="ml8 p1 bg-gray-lightest">margin 8 left</div>
+```
+
+```html_example
+<div class="mr0 p1 bg-gray-lightest">margin 0 right</div>
+<div class="mr1 p1 bg-gray-light">margin 1 right</div>
+<div class="mr2 p1 bg-gray-lightest">margin 2 right</div>
+<div class="mr3 p1 bg-gray-light">margin 3 right</div>
+<div class="mr4 p1 bg-gray-lightest">margin 4 right</div>
+<div class="mr5 p1 bg-gray-light">margin 5 right</div>
+<div class="mr6 p1 bg-gray-lightest">margin 6 right</div>
+<div class="mr7 p1 bg-gray-light">margin 7 right</div>
+<div class="mr8 p1 bg-gray-lightest">margin 8 right</div>
+```
+
+```html_example
+<div class="mt0 p1 bg-gray-lightest">margin 0 top</div>
+<div class="mt1 p1 bg-gray-light">margin 1 top</div>
+<div class="mt2 p1 bg-gray-lightest">margin 2 top</div>
+<div class="mt3 p1 bg-gray-light">margin 3 top</div>
+<div class="mt4 p1 bg-gray-lightest">margin 4 top</div>
+<div class="mt5 p1 bg-gray-light">margin 5 top</div>
+<div class="mt6 p1 bg-gray-lightest">margin 6 top</div>
+<div class="mt7 p1 bg-gray-light">margin 7 top</div>
+<div class="mt8 p1 bg-gray-lightest">margin 8 top</div>
+```
+
+```html_example
+<div class="mb0 p1 bg-gray-lightest">margin 0 bottom</div>
+<div class="mb1 p1 bg-gray-light">margin 1 bottom</div>
+<div class="mb2 p1 bg-gray-lightest">margin 2 bottom</div>
+<div class="mb3 p1 bg-gray-light">margin 3 bottom</div>
+<div class="mb4 p1 bg-gray-lightest">margin 4 bottom</div>
+<div class="mb5 p1 bg-gray-light">margin 5 bottom</div>
+<div class="mb6 p1 bg-gray-lightest">margin 6 bottom</div>
+<div class="mb7 p1 bg-gray-light">margin 7 bottom</div>
+<div class="mb8 p1 bg-gray-lightest">margin 8 bottom</div>
+```
+
+```html_example
+<div class="m-xs p1 bg-gray-lightest">margin XS on all sides</div>
+<div class="m-sm p1 bg-gray-lightest">margin SM on all sides</div>
+<div class="m-md p1 bg-gray-lightest">margin MD on all sides</div>
+<div class="m-lg p1 bg-gray-lightest">margin LG on all sides</div>
+<div class="m-xl p1 bg-gray-lightest">margin XL on all sides</div>
+```
+*/
+.center { margin-left: auto; margin-right: auto; }
+
+.list-flex, .list-flex li, .site-title, .m0 { margin-top: 0rem !important; margin-bottom: 0rem !important; }
+
+.m1 { margin-top: 1rem; margin-bottom: 1rem; }
+
+.global-footer, .member-bio, .style-guide-article > section > section, .m2 { margin-top: 2rem; margin-bottom: 2rem; }
+
+.m3 { margin-top: 3rem; margin-bottom: 3rem; }
+
+.post-listing, .style-guide-article > section, .m4 { margin-top: 4rem; margin-bottom: 4rem; }
+
+.m5 { margin-top: 5rem; margin-bottom: 5rem; }
+
+.m6 { margin-top: 6rem; margin-bottom: 6rem; }
+
+.m7 { margin-top: 7rem; margin-bottom: 7rem; }
+
+.style-guide-article, .m8 { margin-top: 8rem; margin-bottom: 8rem; }
+
+.mt0 { margin-top: 0rem !important; }
+
+.mt1 { margin-top: 1rem; }
+
+.mt2 { margin-top: 2rem; }
+
+.mt3 { margin-top: 3rem; }
+
+.mt4 { margin-top: 4rem; }
+
+.mt5 { margin-top: 5rem; }
+
+.mt6 { margin-top: 6rem; }
+
+.mt7 { margin-top: 7rem; }
+
+.mt8 { margin-top: 8rem; }
+
+.mb0 { margin-bottom: 0rem !important; }
+
+.member-bio__image, .post-listing__author-image, .circleimage, .footer-logo, .member-bio__name, .member-bio__social, .mb1 { margin-bottom: 1rem; }
+
+.post-byline, .mb2 { margin-bottom: 2rem; }
+
+.mb3 { margin-bottom: 3rem; }
+
+.mb4 { margin-bottom: 4rem; }
+
+.mb5 { margin-bottom: 5rem; }
+
+.mb6 { margin-bottom: 6rem; }
+
+.mb7 { margin-bottom: 7rem; }
+
+.mb8 { margin-bottom: 8rem; }
+
+.ml0 { margin-left: 0rem !important; }
+
+.member-bio__image, .ml1 { margin-left: 1rem; }
+
+.ml2 { margin-left: 2rem; }
+
+.ml3 { margin-left: 3rem; }
+
+.ml4 { margin-left: 4rem; }
+
+.ml5 { margin-left: 5rem; }
+
+.ml6 { margin-left: 6rem; }
+
+.ml7 { margin-left: 7rem; }
+
+.ml8 { margin-left: 8rem; }
+
+.mr0 { margin-right: 0rem !important; }
+
+.member-bio__image, .mr1 { margin-right: 1rem; }
+
+.mr2 { margin-right: 2rem; }
+
+.mr3 { margin-right: 3rem; }
+
+.mr4 { margin-right: 4rem; }
+
+.mr5 { margin-right: 5rem; }
+
+.mr6 { margin-right: 6rem; }
+
+.mr7 { margin-right: 7rem; }
+
+.mr8 { margin-right: 8rem; }
+
+.m-xl { margin: 16px; }
+
+.m-lg { margin: 8px; }
+
+.m-md { margin: 4px; }
+
+.m-sm { margin: 2px; }
+
+.m-xs { margin: 1px; }
+
+  /*doc --- title: "Padding helpers" name: padding-helpers category: structure - layout ---
+ ```html_example <div class="p1 bg-gray-lightest">padding 1 on all sides</div> <div class="p2 bg-gray-light">padding 2 on all sides</div> <div class="p3 bg-gray-lightest">padding 3 on all sides</div> <div class="p4 bg-gray-light">padding 4 on all sides</div> <div class="p5 bg-gray-lightest">padding 5 on all sides</div> <div class="p6 bg-gray-light">padding 6 on all sides</div> <div class="p7 bg-gray-lightest">padding 7 on all sides</div> <div class="p8 bg-gray-light">padding 8 on all sides</div> ```
+ ```html_example <div class="pyhalf bg-gray-light">padding half y-axis</div> <div class="py1 bg-gray-lightest">padding 1 y-axis</div> <div class="py2 bg-gray-light">padding 2 y-axis</div> <div class="py3 bg-gray-lightest">padding 3 y-axis</div> <div class="py4 bg-gray-light">padding 4 y-axis</div> <div class="py5 bg-gray-lightest">padding 5 y-axis</div> <div class="py6 bg-gray-light">padding 6 y-axis</div> <div class="py7 bg-gray-lightest">padding 7 y-axis</div> <div class="py8 bg-gray-light">padding 8 y-axis</div> ```
+ ```html_example <div class="pxhalf bg-gray-light">padding half x-axis</div> <div class="px1 bg-gray-lightest">padding 1 x-axis</div> <div class="px2 bg-gray-light">padding 2 x-axis</div> <div class="px3 bg-gray-lightest">padding 3 x-axis</div> <div class="px4 bg-gray-light">padding 4 x-axis</div> <div class="px5 bg-gray-lightest">padding 5 x-axis</div> <div class="px6 bg-gray-light">padding 6 x-axis</div> <div class="px7 bg-gray-lightest">padding 7 x-axis</div> <div class="px8 bg-gray-light">padding 8 x-axis</div> ``` */
+.p1 { padding: 1rem; }
+
+@media screen and (max-width: 768px) { .p1 { padding-top: 0.5rem; padding-bottom: 0.5rem; } }
+.p2 { padding: 2rem; }
+
+@media screen and (max-width: 768px) { .p2 { padding-top: 1rem; padding-bottom: 1rem; } }
+.p3 { padding: 3rem; }
+
+@media screen and (max-width: 768px) { .p3 { padding-top: 1.5rem; padding-bottom: 1.5rem; } }
+.p4 { padding: 4rem; }
+
+@media screen and (max-width: 768px) { .p4 { padding-top: 2rem; padding-bottom: 2rem; } }
+.p5 { padding: 5rem; }
+
+@media screen and (max-width: 768px) { .p5 { padding-top: 2.5rem; padding-bottom: 2.5rem; } }
+.p6 { padding: 6rem; }
+
+@media screen and (max-width: 768px) { .p6 { padding-top: 3rem; padding-bottom: 3rem; } }
+.p7 { padding: 7rem; }
+
+@media screen and (max-width: 768px) { .p7 { padding-top: 3.5rem; padding-bottom: 3.5rem; } }
+.p8 { padding: 8rem; }
+
+@media screen and (max-width: 768px) { .p8 { padding-top: 4rem; padding-bottom: 4rem; } }
+.py1 { padding-top: 1rem; padding-bottom: 1rem; }
+
+@media screen and (max-width: 768px) { .py1 { padding-top: 0.5rem; padding-bottom: 0.5rem; } }
+.global-footer, .py2 { padding-top: 2rem; padding-bottom: 2rem; }
+
+@media screen and (max-width: 768px) { .global-footer, .py2 { padding-top: 1rem; padding-bottom: 1rem; } }
+.py3 { padding-top: 3rem; padding-bottom: 3rem; }
+
+@media screen and (max-width: 768px) { .py3 { padding-top: 1.5rem; padding-bottom: 1.5rem; } }
+.py4 { padding-top: 4rem; padding-bottom: 4rem; }
+
+@media screen and (max-width: 768px) { .py4 { padding-top: 2rem; padding-bottom: 2rem; } }
+.py5 { padding-top: 5rem; padding-bottom: 5rem; }
+
+@media screen and (max-width: 768px) { .py5 { padding-top: 2.5rem; padding-bottom: 2.5rem; } }
+.py6 { padding-top: 6rem; padding-bottom: 6rem; }
+
+@media screen and (max-width: 768px) { .py6 { padding-top: 3rem; padding-bottom: 3rem; } }
+.py7 { padding-top: 7rem; padding-bottom: 7rem; }
+
+@media screen and (max-width: 768px) { .py7 { padding-top: 3.5rem; padding-bottom: 3.5rem; } }
+.py8 { padding-top: 8rem; padding-bottom: 8rem; }
+
+@media screen and (max-width: 768px) { .py8 { padding-top: 4rem; padding-bottom: 4rem; } }
+.logo > img, .pyhalf { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+.list-flex li.list-header, .logo__tagline, .px1 { padding-left: 0.5rem; padding-right: 0.5rem; }
+
+.style-guide-article, .px2 { padding-left: 1rem; padding-right: 1rem; }
+
+.px3 { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.px4 { padding-left: 2rem; padding-right: 2rem; }
+
+.px5 { padding-left: 2.5rem; padding-right: 2.5rem; }
+
+.px6 { padding-left: 3rem; padding-right: 3rem; }
+
+.px7 { padding-left: 3.5rem; padding-right: 3.5rem; }
+
+.px8 { padding-left: 4rem; padding-right: 4rem; }
+
+.pxhalf { padding-right: 0.25rem; padding-left: 0.25rem; }
+
+  /*doc --- title: "Position helpers" name: position-helpers category: structure - layout ---
+ Position elements using micro classes for better control.
+
+ ```html_example <div class="pos-rel full-width bg-gray-lightest" style="height: 500px;"> <div class="pos-abs pos-l pos-t p1 m-xl bg-gray z-sm"> Absolutely positioned top left, z-index SM, margin XL </div> <div class="pos-abs pos-b pos-r p1 m-lg bg-gray-light"> Absolutely positioned bottom right, margin LG </div> <div class="pos-abs pos-t pos-l pos-b p1 py6 bg-gray-light"> Absolutely positioned left, top, bottom <br /> (to stretch from top to bottom) </div> <div class="pos-abs pos-center bg-gray-light p1"> Centered </div> </div> ``` */
+.site-title, .pos-abs { position: absolute; }
+
+.global-nav__item, .hero, .pos-rel { position: relative; }
+
+.global-nav, .pos-fix { position: fixed; }
+
+.global-nav, .pos-t { top: 0; }
+
+.pos-b { bottom: 0; }
+
+.global-nav, .pos-l { left: 0; }
+
+.global-nav, .pos-r { right: 0; }
+
+.pos-all { top: 0; left: 0; right: 0; bottom: 0; }
+
+.site-title, .pos-center { top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%); -moz-transform: translate(-50%, -50%); transform: translate(-50%, -50%); }
+
+.z1 { z-index: 1; }
+
+.z2 { z-index: 2; }
+
+.z5 { z-index: 5; }
+
+.global-nav, .z10 { z-index: 10; }
+
+/* Creates z index classes and placeholders using base sizes (xs, sm, etc.) */
+.z-xl { z-index: 16; }
+
+.z-lg { z-index: 8; }
+
+.z-md { z-index: 4; }
+
+.z-sm { z-index: 2; }
+
+.z-xs { z-index: 1; }
+
+  /*doc --- title: "Utility helpers" name: utility-helpers category: structure - layout ---
+
+#####Horizontal rule
+```html_example <hr />
+```
+
+#####Full width helper
+```html_example
+<span class="full-width p1 bg-gray-light ib">Full width</span>
+```
+
+#####Centered margins for block elements
+```html_example
+<div class="p1 bg-gray-light centered" style="width: 50%">Centered</div>
+```
+
+#####Clearfix & floats helpers
+```html_example
+<div class="clearfix p1 bg-gray-lightest"> <p>Clearfix: successfully clears floated child elements in a container</p> <div class="left p1 bg-gray-light">Float left</div> <div class="right p1 bg-gray-light">Float right</div>
+</div>
+```
+
+#####Inline blocks and vertical alignment
+```html_example
+<div class="bg-gray p1"> <div class="ib p1 bg-gray-light">inline block</div> <div class="ib px1 vertical-t bg-gray-light">vertical align top</div> <div class="ib px1 vertical-mid bg-gray-light">vertical align middle</div> <div class="ib px1 vertical-b bg-gray-light">vertical align bottom</div>
+</div>
+```
+*/
+/* Horizontal rule ========================================================================== */
+/**
+* 1. To keep vertical rhythm, hr uses font-size-base as a height (including
+*    1px for the border.
+*/
+hr, .hr { border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); height: 14px; /* 1 */ margin-top: 0; margin-bottom: 1rem; }
+
+/* Layout utility classes ========================================================================== */
+.full-width { width: 100%; }
+
+.container:before, .container:after, .clearfix:before, .clearfix:after { content: " "; display: table; }
+.container:after, .clearfix:after { clear: both; }
+
+.right { float: right; }
+
+.global-nav__item, .post-listing__author-container, .post-listing__no-author, .left { float: left; }
+
+.centered { margin-left: auto; margin-right: auto; }
+
+.ib { display: inline-block; }
+
+.vertical-t { vertical-align: top; }
+
+.vertical-b { vertical-align: bottom; }
+
+.logo > img, .vertical-mid { vertical-align: middle; }
+
+  /*doc --- title: "Responsive display" name: z-responsive-display category: structure - layout ---
+ `.hidden` will hide element in all conditions.
+ `.full-width-xs` is a helper class that forces an element to be the full width of its parent at XS breakpoints. This is useful on mobile viewports to give more touch-area and consistent layout.
+
+#####Responsive display classes:
+ `hidden-xl` `hidden-lg` `hidden-ltlg` `hidden-md` `hidden-ltmd` `hidden-sm` `hidden-ltsm` `hidden-xs` `hidden-gtxs` `hidden-gtsm`
+ These classes will hide content at defined breakpoints.
+ For example:
+ ``` <div class="hidden-xs"> Something worth hiding </div> ```
+ This div will not show at XS breakpoint. This content still LOADS, however, so be cognizant of the load impact and use *wisely*.
+ ```html_example <div class="hidden-xl   bg-gray-lightest">1 hidden-xl</div> <div class="hidden-lg   bg-gray-light">   2 hidden-lg</div> <div class="hidden-ltlg bg-gray-lightest">3 hidden-ltlg</div> <div class="hidden-md   bg-gray-light">   4 hidden-md</div> <div class="hidden-ltmd bg-gray-lightest">5 hidden-ltmd</div> <div class="hidden-sm   bg-gray-light">   6 hidden-sm</div> <div class="hidden-ltsm bg-gray-lightest">7 hidden-ltsm</div> <div class="hidden-xs   bg-gray-light">   8 hidden-xs</div> <div class="hidden-gtxs bg-gray-lightest">9 hidden-gtxs</div> <div class="hidden-gtsm bg-gray-light">   10 hidden-gtsm</div> ```
+ */
+.hidden { display: none !important; }
+
+@media screen and (min-width: 1201px) { .hidden-xl { display: none !important; } }
+@media screen and (max-width: 1200px) and (min-width: 993px) { .hidden-lg { display: none !important; } }
+@media screen and (max-width: 1200px) { .hidden-ltlg { display: none !important; } }
+@media screen and (max-width: 992px) and (min-width: 769px) { .hidden-md { display: none !important; } }
+@media screen and (max-width: 992px) { .hidden-ltmd { display: none !important; } }
+@media screen and (max-width: 768px) and (min-width: 481px) { .hidden-sm { display: none !important; } }
+@media screen and (max-width: 768px) { .hidden-ltsm, .global-footer__content, .post-listing__no-author { display: none !important; } }
+@media screen and (max-width: 480px) { .hidden-xs { display: none !important; }
+  /* 1 */ }
+@media screen and (min-width: 481px) { .hidden-gtxs { display: none !important; } }
+@media screen and (min-width: 769px) { .hidden-gtsm, .global-footer__content-small-views { display: none !important; } }
+@media screen and (max-width: 480px) { .full-width-xs { width: 100%; margin-left: 0 !important; margin-right: 0 !important; }
+  .full-width-xs:not([class^="px"]):not([class*="px"]):not([class^="py"]):not([class*="py"]) { padding-left: 0 !important; padding-right: 0 !important; }
+  /* 1 */ }
+/*doc
+---
+title: Container
+name: container
+category: structure - container
+---
+
+The `.container` class, when included, will constrain the width of its
+children and collapse based on defined media breakpoints.
+
+*/
+/*doc
+---
+title: Grids
+name: grid
+category: structure - grid
+---
+
+1. Use `.grid` on your parent container for *only* the area you want to grid
+2. Use `.g` and a fraction class (e.g. `._1-2`) on the child of the grid
+3. If you want responsive grids (different widths at different breakpoints), then suffix your fraction class with one of these: `xs` `sm` `md` `lg`. Any suffix you add will work for any breakpoint equal to or smaller (i.e. `_1-2-lg` will make a column that is 50% of its parent at large breakpoints and below)
+4. Responsive grids "overwrite" each other; that is, `._1-1-xs` will take effect at the smallest breakpoint, even if you also include `._1-2-sm`. This is how it is supposed to work. Examples to follow.
+
+```html_example
+<section class="grid"> <div class="g _1-2"> <p class="p1 bg-gray">_1-2 column width</p> </div> <div class="g _1-4"> <p class="p1 bg-gray">_1-4 column width</p> </div> <div class="g _1-4"> <p class="p1 bg-gray">_1-4 column width</p> </div>
+</section>
+```
+
+#####Responsive grids
+```html_example
+<section class="grid"> <div class="g _1-1-sm _1-2-lg _1-4"> <p class="p1 bg-gray">1/4 at XL, 1/2 at LG to MD, 1/1 at SM and below</p> </div> <div class="g _1-1-sm _1-2-lg _1-4"> <p class="p1 bg-gray">1/4 at XL, 1/2 at LG to MD, 1/1 at SM and below</p> </div> <div class="g _1-1-sm _1-2-lg _1-4"> <p class="p1 bg-gray">1/4 at XL, 1/2 at LG to MD, 1/1 at SM and below</p> </div> <div class="g _1-1-sm _1-2-lg _1-4"> <p class="p1 bg-gray">1/4 at XL, 1/2 at LG to MD, 1/1 at SM and below</p> </div>
+</section>
+```
+*/
+.container { padding: 0 20px; margin-left: auto; margin-right: auto; /**
+* @include at_breakpoints to collapse the container as it reaches
+* each breakpoint.
+*/ /*doc
+---
+title: "Container extensions"
+name: container-extensions
+category: structure - container
+---
+
+The `.container` class does two things:
+- gives a little bit of padding so that content never sits flush against the viewport
+- resizes itself at breakpoints so that site design is consistent and easier to design for at each breakpoint
+
+#####Basic Container:
+```html_example
+<div class="container"> <div class="bg-gray-lightest"> <p>Some content goes here</p> </div>
+</div>
+```
+
+#####Flex Container (always fits container, but leaves the padding):
+```html_example
+<div class="container flex"> <div class="bg-gray-lightest"> <p>Some content goes here</p> </div>
+</div>
+```
+
+Use `.contain-to-N to` along with `.container` to set a max width for a
+container. By default, the `.container` class contains to XL, but this can
+be set to xs, sm, md, lg, xl.
+
+#####Contain-to-N example:
+```html_example
+<div class="container contain-to-xs"> <div class="bg-gray-lightest"> <h5>Contain content to XS breakpoint:</h5> <p>Some content goes here</p> </div>
+</div>
+```
+
+#####With floats example:
+```html_example
+<div class="container contain-to-xs left"> <div class="bg-gray-lightest"> <h5>Contain content to XS breakpoint:</h5> <p>Some content goes here</p> </div>
+</div>
+<div class="container contain-to-sm right"> <div class="bg-gray-lightest"> <h5>Contain content to SM breakpoint:</h5> <p>Some content goes here</p> </div>
+</div>
+```
+
+*/ /** 1. Use .flex to extend the .container class and allow a fully flexible, 100% width container that still pads the sides appropriately. Totally works well with the grid classes, too.  2. Use .contain-to-N to extend the .container class to set a max width for a particular container. By default, the .container class contains to xl.  For example: Maybe a text-heavy section will read better when contained to a "md" size, but the header and footer can remain contained to "xl" size. */ /* 2 */ }
+.container > .container { padding: 0 !important; }
+@media screen and (min-width: 1201px) { .container { /* 4 */ width: 1360px; } }
+@media screen and (max-width: 1400px) { .container { width: 1160px; } }
+@media screen and (max-width: 1200px) { .container { width: 952px; } }
+@media screen and (max-width: 992px) { .container { width: 728px; } }
+@media screen and (max-width: 768px) { .container { width: 100%; } }
+.container.flex { /* 1 */ max-width: 100%; width: 100%; }
+.container.contain-to-lg { max-width: 1160px; }
+.container.contain-to-md { max-width: 952px; }
+.container.contain-to-sm { max-width: 728px; }
+.container.contain-to-xs { max-width: 440px; }
+
+.global-footer__content, .links-container, .grid { list-style: none; margin-left: -22.5px; padding: 0; font-size: 0; }
+
+.footer-column--brand, .footer-column--social, .footer-column--links, .links-list, .member-bio, .g { display: inline-block; padding-left: 22.5px; vertical-align: top; width: 100%; font-size: 15px; }
+
+._1-1 { width: 100%; }
+
+._1-2 { width: 50%; }
+
+.links-list, ._1-3 { width: 33.33333%; }
+
+.footer-column--brand, .footer-column--social, .member-bio, ._1-4 { width: 25%; }
+
+._1-5 { width: 20%; }
+
+._1-6 { width: 16.66667%; }
+
+._2-2 { width: 100%; }
+
+._2-3 { width: 66.66667%; }
+
+.footer-column--links, ._2-4 { width: 50%; }
+
+._2-5 { width: 40%; }
+
+._2-6 { width: 33.33333%; }
+
+._3-3 { width: 100%; }
+
+._3-4 { width: 75%; }
+
+._3-5 { width: 60%; }
+
+._3-6 { width: 50%; }
+
+._4-4 { width: 100%; }
+
+._4-5 { width: 80%; }
+
+._4-6 { width: 66.66667%; }
+
+._5-5 { width: 100%; }
+
+._5-6 { width: 83.33333%; }
+
+._6-6 { width: 100%; }
+
+@media screen and (max-width: 1400px) { ._1-1-xl { width: 100%; }
+  ._1-2-xl { width: 50%; }
+  ._1-3-xl { width: 33.33333%; }
+  ._1-4-xl { width: 25%; }
+  ._1-5-xl { width: 20%; }
+  ._1-6-xl { width: 16.66667%; }
+  ._2-2-xl { width: 100%; }
+  ._2-3-xl { width: 66.66667%; }
+  ._2-4-xl { width: 50%; }
+  ._2-5-xl { width: 40%; }
+  ._2-6-xl { width: 33.33333%; }
+  ._3-3-xl { width: 100%; }
+  ._3-4-xl { width: 75%; }
+  ._3-5-xl { width: 60%; }
+  ._3-6-xl { width: 50%; }
+  ._4-4-xl { width: 100%; }
+  ._4-5-xl { width: 80%; }
+  ._4-6-xl { width: 66.66667%; }
+  ._5-5-xl { width: 100%; }
+  ._5-6-xl { width: 83.33333%; }
+  ._6-6-xl { width: 100%; } }
+@media screen and (max-width: 1200px) { ._1-1-lg { width: 100%; }
+  ._1-2-lg { width: 50%; }
+  ._1-3-lg { width: 33.33333%; }
+  ._1-4-lg { width: 25%; }
+  ._1-5-lg { width: 20%; }
+  ._1-6-lg { width: 16.66667%; }
+  ._2-2-lg { width: 100%; }
+  ._2-3-lg { width: 66.66667%; }
+  ._2-4-lg { width: 50%; }
+  ._2-5-lg { width: 40%; }
+  ._2-6-lg { width: 33.33333%; }
+  ._3-3-lg { width: 100%; }
+  ._3-4-lg { width: 75%; }
+  ._3-5-lg { width: 60%; }
+  ._3-6-lg { width: 50%; }
+  ._4-4-lg { width: 100%; }
+  ._4-5-lg { width: 80%; }
+  ._4-6-lg { width: 66.66667%; }
+  ._5-5-lg { width: 100%; }
+  ._5-6-lg { width: 83.33333%; }
+  ._6-6-lg { width: 100%; } }
+@media screen and (max-width: 992px) { ._1-1-md { width: 100%; }
+  ._1-2-md { width: 50%; }
+  .footer-column--brand, .footer-column--social, .member-bio, ._1-3-md { width: 33.33333%; }
+  ._1-4-md { width: 25%; }
+  ._1-5-md { width: 20%; }
+  ._1-6-md { width: 16.66667%; }
+  ._2-2-md { width: 100%; }
+  .footer-column--links, ._2-3-md { width: 66.66667%; }
+  ._2-4-md { width: 50%; }
+  ._2-5-md { width: 40%; }
+  ._2-6-md { width: 33.33333%; }
+  ._3-3-md { width: 100%; }
+  ._3-4-md { width: 75%; }
+  ._3-5-md { width: 60%; }
+  ._3-6-md { width: 50%; }
+  ._4-4-md { width: 100%; }
+  ._4-5-md { width: 80%; }
+  ._4-6-md { width: 66.66667%; }
+  ._5-5-md { width: 100%; }
+  ._5-6-md { width: 83.33333%; }
+  ._6-6-md { width: 100%; } }
+@media screen and (max-width: 768px) { .footer-column--brand, .footer-column--social, .footer-column--links, ._1-1-sm { width: 100%; }
+  .member-bio, ._1-2-sm { width: 50%; }
+  ._1-3-sm { width: 33.33333%; }
+  ._1-4-sm { width: 25%; }
+  ._1-5-sm { width: 20%; }
+  ._1-6-sm { width: 16.66667%; }
+  ._2-2-sm { width: 100%; }
+  ._2-3-sm { width: 66.66667%; }
+  ._2-4-sm { width: 50%; }
+  ._2-5-sm { width: 40%; }
+  ._2-6-sm { width: 33.33333%; }
+  ._3-3-sm { width: 100%; }
+  ._3-4-sm { width: 75%; }
+  ._3-5-sm { width: 60%; }
+  ._3-6-sm { width: 50%; }
+  ._4-4-sm { width: 100%; }
+  ._4-5-sm { width: 80%; }
+  ._4-6-sm { width: 66.66667%; }
+  ._5-5-sm { width: 100%; }
+  ._5-6-sm { width: 83.33333%; }
+  ._6-6-sm { width: 100%; } }
+@media screen and (max-width: 480px) { .member-bio, ._1-1-xs { width: 100%; }
+  ._1-2-xs { width: 50%; }
+  ._1-3-xs { width: 33.33333%; }
+  ._1-4-xs { width: 25%; }
+  ._1-5-xs { width: 20%; }
+  ._1-6-xs { width: 16.66667%; }
+  ._2-2-xs { width: 100%; }
+  ._2-3-xs { width: 66.66667%; }
+  ._2-4-xs { width: 50%; }
+  ._2-5-xs { width: 40%; }
+  ._2-6-xs { width: 33.33333%; }
+  ._3-3-xs { width: 100%; }
+  ._3-4-xs { width: 75%; }
+  ._3-5-xs { width: 60%; }
+  ._3-6-xs { width: 50%; }
+  ._4-4-xs { width: 100%; }
+  ._4-5-xs { width: 80%; }
+  ._4-6-xs { width: 66.66667%; }
+  ._5-5-xs { width: 100%; }
+  ._5-6-xs { width: 83.33333%; }
+  ._6-6-xs { width: 100%; }
+  /* 1 */ }
+  /*doc --- title: "Grid utility classes" name: grid-utility-classes category: structure - grid ---
+ Grid utility classes are used along side `.grid`.
+
+#####Reverses grid direction from what is displayed in the markup
+```html_example
+<section class="grid grid-reverse"> <div class="g _1-2"> <p class="p1 bg-gray">Content #1</p> </div> <div class="g _1-4"> <p class="p1 bg-gray">Content #2</p> </div> <div class="g _1-4"> <p class="p1 bg-gray">Content #3</p> </div>
+</section>
+```
+
+#####Centered grids
+```hmtl_example
+<section class="grid grid-c"> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div> <div class="g _1-3"> <p class="p1 bg-gray">_1-3 column width</p> </div> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div>
+</section>
+```
+
+#####Right-align grids
+```hmtl_example
+<section class="grid grid-r"> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div> <div class="g _1-3"> <p class="p1 bg-gray">_1-3 column width</p> </div> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div>
+</section>
+```
+
+#####Zero-gutter grids
+```hmtl_example
+<section class="grid grid-nopad"> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div> <div class="g _1-3"> <p class="p1 bg-gray">_1-3 column width</p> </div> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div> <div class="g _1-6"> <p class="p1 bg-gray">_1-6 column width</p> </div>
+</section>
+```
+*/
+.grid-reverse { direction: rtl; text-align: left; }
+.grid-reverse > .footer-column--brand, .grid-reverse > .footer-column--social, .grid-reverse > .footer-column--links, .grid-reverse > .links-list, .grid-reverse > .member-bio, .grid-reverse > .g { direction: ltr; text-align: left; }
+
+.grid-c { text-align: center; }
+.grid-c > .footer-column--brand, .grid-c > .footer-column--social, .grid-c > .footer-column--links, .grid-c > .links-list, .grid-c > .member-bio, .grid-c > .g { text-align: left; }
+
+.grid-r { text-align: right; }
+.grid-r > .footer-column--brand, .grid-r > .footer-column--social, .grid-r > .footer-column--links, .grid-r > .links-list, .grid-r > .member-bio, .grid-r > .g { text-align: left; margin-right: 0; }
+
+.grid-nopad { margin-left: 0; }
+.grid-nopad > .footer-column--brand, .grid-nopad > .footer-column--social, .grid-nopad > .footer-column--links, .grid-nopad > .links-list, .grid-nopad > .member-bio, .grid-nopad > .g { padding-left: 0; }
+
+/* Modules - reusable patterns commonly found on most web apps ========================================================================== */
+/*doc
+---
+title: "Media object"
+name: media_object
+category: modules - media
+---
+Made famous here:
+<a href="http://www.stubbornella.org/content/2010/06/25/the-media-object-saves-hundreds-of-lines-of-code/">
+The media object saves hundreds of lines of code
+</a>
+
+The media object defines a section of content with an "object" (typically an image) to one side and content on the other.
+Use the classes `.left` and `.right` on the object to position it on the left or right.
+
+```html_example
+<div class="media"> <img src="http://fillmurray.com/100/100" class="media-object left mr1"> <p class="media-body"> The media object defines a section of content with an "object" (typically an image) to one side and content on the other.
+Use the classes `.left` and `.right` on the object to position it on the left or right. </p>
+</div>
+```
+
+```html_example
+<div class="media"> <img src="http://fillmurray.com/75/75" class="media-object right ml1"> <p class="media-body"> The media object defines a section of content with an "object" (typically an image) to one side and content on the other.
+Use the classes `.left` and `.right` on the object to position it on the left or right. </p>
+</div>
+```
+
+```html_example
+<div class="media"> <img src="http://fillmurray.com/125/125" class="media-object left mr1"> <img src="http://fillmurray.com/125/125" class="media-object right ml1"> <p class="media-body"> The media object defines a section of content with an "object" (typically an image) to one side and content on the other.
+Use the classes `.left` and `.right` on the object to position it on the left or right. </p>
+</div>
+```
+
+*/
+.post-listing, .media, .post-listing__body, .media-body { overflow: hidden; zoom: 1; }
+
+.post-listing:first-child, .media:first-child { margin-top: 0; }
+
+.post-listing__author-container, .post-listing__no-author, .media-object { display: block; }
+
+/*
+===================================================================
+What you need to know about this file:
+===================================================================
+
+Buttons are generated through the use of Sass variables and mixins.
+The mixins are available to extend (if you can make sense of them)
+if you want to add more button styles or sizes.
+
+All of the basic button sizes and styles are generated by calling
+the respective mixins with parameters defined as Sass lists (arrays).
+For odd situations (like default buttons or link buttons) it was
+easier to code separately instead of complicating the mixins.
+
+TODO: Can this be DRYer?
+
+*/
+/*doc
+---
+title: "Customizing buttons"
+name: buttons-variables
+category: modules - buttons
+---
+
+*Overwrite these variables in `_custom_variables.scss` to change these defaults.*
+
+```
+$btn-class-prefix:     "btn" !default;
+
+$btn-font-weight:      $font-weight-base !default;
+$btn-border-radius:    0.25rem !default;
+$btn-shadow:           inset 0 2px 6px rgba(0,0,0,0.3) !default;
+$btn-darken-amount:    20% !default;
+
+$btn-bg-default:       $base-whale-gray !default;
+$btn-color-default:    white !default;
+$btn-border-default:   darken($btn-bg-default, $btn-darken-amount) !default;
+
+$btn-bg-primary:       $base-blue !default;
+$btn-color-primary:    white !default;
+$btn-border-primary:   darken($btn-bg-primary, $btn-darken-amount) !default;
+
+$btn-bg-secondary:     $base-blue-soft !default;
+$btn-color-secondary:  white !default;
+$btn-border-secondary: darken($btn-bg-secondary, $btn-darken-amount) !default;
+
+$btn-bg-tertiary:      $base-violet !default;
+$btn-color-tertiary:   white !default;
+$btn-border-tertiary:  darken($btn-bg-tertiary, $btn-darken-amount) !default;
+
+$btn-bg-link:          $base-blue-light !default;
+$btn-bg-link-dark:     rgba(255,255,255,0.15) !default;
+$btn-border-link:      rgba($base-blue-light,0.0) !default;
+$btn-border-link-dark: rgba($base-blue-light,0.0) !default;
+
+$btn-hover-adjustment:     8% !default;
+$btn-border-width:         1px !default;
+$btn-outline-border-width: 2px !default;
+$btn-transition-speed:     0.2s !default;
+$btn-vertical-align:       middle !default;
+
+--- Optional customizations ---
+$btn-inset-option:       false !default;
+$btn-border-option:      true !default;
+$btn-radius-option:      true !default;
+$btn-text-shadow-option: false !default;
+$btn-transition-option:  true !default;
+$btn-hover-bg-option:    true !default;
+$btn-mobile-full-width:  true !default;
+```
+*/
+/* Button Options */
+/*doc
+---
+title: Buttons
+name: buttons
+category: modules - buttons
+---
+
+#####Button sizes
+```html_example
+<a href="#" class="btn btn-xl">xl Button</a>
+<a href="#" class="btn btn-lg">lg Button</a>
+<a href="#" class="btn">md Button</a>
+<a href="#" class="btn btn-sm">sm Button</a>
+<a href="#" class="btn btn-xs">xs Button</a>
+```
+
+#####Button colors
+```html_example
+<a href="#" class="btn btn-primary">Primary</a>
+<a href="#" class="btn btn-secondary">Secondary</a>
+<a href="#" class="btn btn-tertiary">Tertiary</a>
+<a href="#" class="btn btn-link">Link Button</a>
+```
+
+#####Outline buttons
+```html_example
+<div class="p1"> <a href="#" class="btn btn-outline">Default</a> <a href="#" class="btn btn-primary btn-outline">Primary</a> <a href="#" class="btn btn-secondary btn-outline">Secondary</a> <a href="#" class="btn btn-tertiary btn-outline">Tertiary</a>
+</div>
+<div class="p1 bg-gray"> <a href="#" class="btn btn-outline-dark">Default</a> <a href="#" class="btn btn-primary btn-outline-dark">Primary</a> <a href="#" class="btn btn-secondary btn-outline-dark">Secondary</a> <a href="#" class="btn btn-tertiary btn-outline-dark">Tertiary</a>
+</div>
+```
+
+#####Button active/current state
+*Note: `.active` and `.current` are the same visually, but may mean different things
+semantically. Use at your own discretion.*
+
+```html_example
+<div class="p1"> <a href="#" class="btn btn-primary current">Primary</a> <a href="#" class="btn btn-secondary active">Secondary</a> <a href="#" class="btn btn-tertiary current">Tertiary</a> <a href="#" class="btn btn-link active">Link Button</a>
+</div>
+<div class="p1 bg-gray"> <a href="#" class="btn btn-link btn-link-dark light">Dark Link Button</a> <a href="#" class="btn btn-link btn-link-dark light active">Dark Link Button</a>
+</div>
+```
+
+#####Form inputs using the same classes
+```html_example
+<button class="btn btn-sm btn-primary">button</button>
+<input type="button" value="input button" class="btn btn-sm btn-secondary">
+<input type="submit" value="submit" class="btn btn-sm btn-link">
+```
+*/
+/*doc
+---
+title: Buttons mixins
+name: buttons-mixins
+category: modules - buttons
+---
+
+##### btn_style($style, $bg, $color: white, $border: darken($bg, $btn-darken-amount))
+Creates a custom button style in the same way as `.btn-primary`, `.btn-secondary`, etc.
+
+- `$style` is a string that describes the style and uniquely identifies the class
+- `$bg` is a color value or variable name that refers to the background color of the button
+- `$color` (OPTIONAL) is a color value or variable name that refers to the default text color of the module
+- `$border` (OPTIONAL) is a color value or variable name that refers to the border color of the module
+
+***Input***
+
+```
+@include btn_style("alert", $alert);
+```
+
+***Output***
+
+``` %btn-alert, .btn-alert { background-color: $alert; color: white; border-color: darken($alert, $btn-darken-amount);
+ &:hover { @if $btn-hover-bg-option { background-color: lighten($alert, $btn-hover-adjustment); } border-color: lighten($alert, $btn-hover-adjustment); }
+ &:active, &.current, &.active { color: white; background-color: darken($alert, $btn-darken-amount) !important; }
+ &:hover, &:visited { color: white; } }
+```
+
+##### btn_size($size, $longname, $lh)
+Creates a custom button size in the same way as `.btn-xl`, `.btn-md`, etc.
+
+- `$size` is a string suffix that describes the size name and uniquely identifies the class
+- `$longname` is a string used to describe the size name in a longer format (e.g. "large"); mostly just used internally
+- `$lh` is the line-height of the button used to determine the appropriate vertical height of the button (e.g. "$lh: 3")
+
+***Input***
+
+```
+@include btn_size("xxl", "extra-extra-large", 8rem);
+```
+
+***Output***
+
+``` %btn-xxl, .btn-xxl { @if $btn-border-option { line-height: calc(8rem - (2 * 1px)); } @else { line-height: 8rem; }
+ &.btn-outline, &.btn-outline-dark{ line-height: calc(8rem - (2 * 2px)); }
+ height: auto; margin-bottom: 0;
+ &:not([class^="px"]):not([class*="px"]) { padding-left:  (8rem / 2); padding-right: (8rem / 2); } }
+```
+
+*/
+.btn-cta, .btn-pagination, .btn { display: inline-block; font-weight: 400; text-align: center; background-color: #ababbb; color: white; border-style: solid; border-color: #73738d; text-decoration: none; box-sizing: border-box; cursor: pointer; border-width: 1px; border-radius: 2rem; transition: all 0.2s; }
+.btn-cta:not([class^="vertical"]):not([class*="vertical"]), .btn-pagination:not([class^="vertical"]):not([class*="vertical"]), .btn:not([class^="vertical"]):not([class*="vertical"]) { vertical-align: middle; }
+.btn-cta:hover, .btn-pagination:hover, .btn:hover { background-color: #c2c2cd; border-color: #8989a0; color: white; text-decoration: none; }
+.btn-cta:active, .btn-pagination:active, .current.btn-cta, .current.btn-pagination, .active.btn-cta, .active.btn-pagination, .btn:active, .btn.current, .btn.active { background-color: #73738d !important; border-color: transparent; }
+.btn-cta:active, .btn-pagination:active, .btn-cta:visited, .btn-pagination:visited, .btn:active, .btn:visited { color: white; }
+.disabled.btn-cta, .disabled.btn-pagination, [disabled].btn-cta, [disabled].btn-pagination, .btn.disabled, .btn[disabled] { cursor: not-allowed; pointer-events: none; opacity: 0.45; box-shadow: none; }
+.btn-cta:focus, .btn-pagination:focus, .btn:focus { outline: 0; }
+
+input.btn, button.btn { padding-top: 0; padding-bottom: 0; }
+
+.btn-cta, .btn-pagination, .btn.btn { line-height: calc(3rem - (2 * 1px)); height: auto; margin-bottom: 0; }
+.btn-cta, .btn-pagination, .btn-outline.btn-cta, .btn-outline.btn-pagination, .btn-outline-dark.btn-cta, .btn-outline-dark.btn-pagination, .btn.btn.btn-cta, .btn.btn.btn-pagination, .btn.btn.btn-outline, .btn.btn.btn-outline-dark { line-height: calc(3rem - (2 * 2px)); }
+.btn-cta:not([class^="px"]):not([class*="px"]), .btn-pagination:not([class^="px"]):not([class*="px"]), .btn.btn:not([class^="px"]):not([class*="px"]) { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.btn.btn-xs { line-height: calc(1.3rem - (2 * 1px)); height: auto; margin-bottom: 0; margin-top: 0.35rem; margin-bottom: 0.35rem; }
+.btn.btn-xs.btn-cta, .btn.btn-xs.btn-pagination, .btn.btn-xs.btn-outline, .btn.btn-xs.btn-outline-dark { line-height: calc(1.3rem - (2 * 2px)); }
+.btn.btn-xs:not([class^="px"]):not([class*="px"]) { padding-left: 0.65rem; padding-right: 0.65rem; }
+
+.btn-pagination, .btn.btn-sm { line-height: calc(2rem - (2 * 1px)); height: auto; margin-bottom: 0; }
+.btn-pagination, .btn-outline.btn-pagination, .btn-outline-dark.btn-pagination, .btn.btn-sm.btn-cta, .btn.btn-sm.btn-pagination, .btn.btn-sm.btn-outline, .btn.btn-sm.btn-outline-dark { line-height: calc(2rem - (2 * 2px)); }
+.btn-pagination:not([class^="px"]):not([class*="px"]), .btn.btn-sm:not([class^="px"]):not([class*="px"]) { padding-left: 1rem; padding-right: 1rem; }
+
+.btn-cta, .btn.btn-md { line-height: calc(3rem - (2 * 1px)); height: auto; margin-bottom: 0; }
+.btn-cta, .btn-outline.btn-cta, .btn-outline-dark.btn-cta, .btn.btn-md.btn-cta, .btn.btn-md.btn-pagination, .btn.btn-md.btn-outline, .btn.btn-md.btn-outline-dark { line-height: calc(3rem - (2 * 2px)); }
+.btn-cta:not([class^="px"]):not([class*="px"]), .btn.btn-md:not([class^="px"]):not([class*="px"]) { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.btn.btn-lg { line-height: calc(4rem - (2 * 1px)); height: auto; margin-bottom: 0; }
+.btn.btn-lg.btn-cta, .btn.btn-lg.btn-pagination, .btn.btn-lg.btn-outline, .btn.btn-lg.btn-outline-dark { line-height: calc(4rem - (2 * 2px)); }
+.btn.btn-lg:not([class^="px"]):not([class*="px"]) { padding-left: 2rem; padding-right: 2rem; }
+
+.btn.btn-xl { line-height: calc(5rem - (2 * 1px)); height: auto; margin-bottom: 0; }
+.btn.btn-xl.btn-cta, .btn.btn-xl.btn-pagination, .btn.btn-xl.btn-outline, .btn.btn-xl.btn-outline-dark { line-height: calc(5rem - (2 * 2px)); }
+.btn.btn-xl:not([class^="px"]):not([class*="px"]) { padding-left: 2.5rem; padding-right: 2.5rem; }
+
+.btn-cta, .btn-pagination, .btn-primary { background-color: #ff5c61; color: white; border-color: #ff5c61; }
+.btn-cta:hover, .btn-pagination:hover, .btn-primary:hover { background-color: #ff8589; border-color: #ff8589; }
+.btn-cta:active, .btn-pagination:active, .current.btn-cta, .current.btn-pagination, .active.btn-cta, .active.btn-pagination, .btn-primary:active, .btn-primary.current, .btn-primary.active { color: white; background-color: #f50008 !important; }
+.btn-cta:hover, .btn-pagination:hover, .btn-cta:visited, .btn-pagination:visited, .btn-primary:hover, .btn-primary:visited { color: white; }
+
+.btn-secondary { background-color: #77abc9; color: white; border-color: #3e7a9c; }
+.btn-secondary:hover { background-color: #94bdd5; border-color: #94bdd5; }
+.btn-secondary:active, .btn-secondary.current, .btn-secondary.active { color: white; background-color: #3e7a9c !important; }
+.btn-secondary:hover, .btn-secondary:visited { color: white; }
+
+.btn-tertiary { background-color: #cd95f0; color: white; border-color: #a33ce3; }
+.btn-tertiary:hover { background-color: #deb9f5; border-color: #deb9f5; }
+.btn-tertiary:active, .btn-tertiary.current, .btn-tertiary.active { color: white; background-color: #a33ce3 !important; }
+.btn-tertiary:hover, .btn-tertiary:visited { color: white; }
+
+.btn-link { background-color: transparent; color: #ff5c61; border-color: rgba(169, 202, 234, 0); }
+.btn-link:visited { color: #ff5c61; }
+.btn-link:hover { background-color: rgba(0, 0, 0, 0.15); color: #4e4a47; border-color: rgba(202, 222, 242, 0); }
+.btn-link:active { color: #ff5c61; }
+.btn-link.btn-link-dark:hover { background-color: rgba(255, 255, 255, 0.15); }
+.btn-link.current, .btn-link.active { background-color: rgba(0, 0, 0, 0.15); }
+
+.btn-outline-dark { border-width: 2px; border-color: rgba(255, 255, 255, 0.5); color: rgba(255, 255, 255, 0.5); font-weight: 400; background-color: transparent; }
+.btn-outline-dark.btn-cta:hover, .btn-outline-dark.btn-pagination:hover, .btn-outline-dark.btn-primary:hover { color: #ff5c61; }
+.btn-outline-darkbtn-secondary .btn-outline-dark.btn-secondary:hover { color: #77abc9; }
+.btn-outline-darkbtn-tertiary .btn-outline-dark.btn-tertiary:hover { color: #cd95f0; }
+.btn-outline-dark:hover { border-color: transparent; background-color: white; color: #ababbb; }
+
+.btn-cta, .btn-pagination, .btn-outline { border-width: 2px; font-weight: 400; background-color: transparent; border-color: #ababbb; }
+.btn-cta, .btn-pagination, .btn-cta:link, .btn-pagination:link, .btn-cta:visited, .btn-pagination:visited, .btn-outline, .btn-outline:link, .btn-outline:visited { color: #ababbb; }
+.btn-cta, .btn-pagination, .btn-primary.btn-cta, .btn-primary.btn-pagination, .btn-outline.btn-cta, .btn-outline.btn-pagination, .btn-outline.btn-primary { border-color: #ff5c61; }
+.btn-cta, .btn-pagination, .btn-cta:link, .btn-pagination:link, .btn-cta:visited, .btn-pagination:visited, .btn-primary.btn-cta, .btn-primary.btn-pagination, .btn-primary.btn-cta:link, .btn-primary.btn-pagination:link, .btn-primary.btn-cta:visited, .btn-primary.btn-pagination:visited, .btn-outline.btn-cta, .btn-outline.btn-pagination, .btn-outline.btn-cta:link, .btn-outline.btn-pagination:link, .btn-outline.btn-cta:visited, .btn-outline.btn-pagination:visited, .btn-outline.btn-primary, .btn-outline.btn-primary:link, .btn-outline.btn-primary:visited { color: #ff5c61; }
+.btn-cta:hover, .btn-pagination:hover, .btn-primary.btn-cta:hover, .btn-primary.btn-pagination:hover, .btn-outline.btn-cta:hover, .btn-outline.btn-pagination:hover, .btn-outline.btn-primary:hover { background-color: #ff5c61; }
+.btn-secondary.btn-cta, .btn-secondary.btn-pagination, .btn-outline.btn-secondary { border-color: #77abc9; }
+.btn-secondary.btn-cta, .btn-secondary.btn-pagination, .btn-secondary.btn-cta:link, .btn-secondary.btn-pagination:link, .btn-secondary.btn-cta:visited, .btn-secondary.btn-pagination:visited, .btn-outline.btn-secondary, .btn-outline.btn-secondary:link, .btn-outline.btn-secondary:visited { color: #77abc9; }
+.btn-secondary.btn-cta:hover, .btn-secondary.btn-pagination:hover, .btn-outline.btn-secondary:hover { background-color: #77abc9; }
+.btn-tertiary.btn-cta, .btn-tertiary.btn-pagination, .btn-outline.btn-tertiary { border-color: #cd95f0; }
+.btn-tertiary.btn-cta, .btn-tertiary.btn-pagination, .btn-tertiary.btn-cta:link, .btn-tertiary.btn-pagination:link, .btn-tertiary.btn-cta:visited, .btn-tertiary.btn-pagination:visited, .btn-outline.btn-tertiary, .btn-outline.btn-tertiary:link, .btn-outline.btn-tertiary:visited { color: #cd95f0; }
+.btn-tertiary.btn-cta:hover, .btn-tertiary.btn-pagination:hover, .btn-outline.btn-tertiary:hover { background-color: #cd95f0; }
+.btn-cta:hover, .btn-pagination:hover, .btn-outline:hover { border-color: transparent; color: white; }
+
+  /*doc --- title: "Button groups" name: buttons_groups category: modules - buttons --- ```html_example <div class="btn-group mr1"> <a href="#" class="btn btn-sm">Button</a> <a href="#" class="btn btn-sm current">Button</a> <a href="#" class="btn btn-sm">Button</a> </div>
+ <div class="btn-group"> <a href="#" class="btn btn-tertiary">Button</a> <a href="#" class="btn btn-tertiary">Button</a> </div> ``` */
+.btn-group-flex, .btn-group { display: flex; flex-direction: row; -webkit-flex-direction: row; }
+@media screen and (min-width: 481px) { .btn-group-flex > .btn:not(:first-child):not(:last-child), .btn-group > .btn:not(:first-child):not(:last-child) { margin-left: -1px; margin-right: -1px; border-radius: 0; }
+  .btn-group-flex > .btn:first-child, .btn-group > .btn:first-child { border-bottom-right-radius: 0; border-top-right-radius: 0; margin: 0; }
+  .btn-group-flex > .btn:last-child, .btn-group > .btn:last-child { border-bottom-left-radius: 0; border-top-left-radius: 0; margin: 0; } }
+@media screen and (max-width: 480px) { .btn-group-flex, .btn-group { flex-direction: column; -webkit-flex-direction: column; /* 1 */ }
+  .btn-group-flex > .btn:not(:first-child):not(:last-child), .btn-group > .btn:not(:first-child):not(:last-child) { margin-top: -1px; margin-bottom: -1px; border-radius: 0; }
+  .btn-group-flex > .btn:last-child, .btn-group > .btn:last-child { border-top-left-radius: 0; border-top-right-radius: 0; margin: 0; }
+  .btn-group-flex > .btn:first-child, .btn-group > .btn:first-child { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin: 0; } }
+
+.btn-group-flex-vertical, .btn-group-vertical { display: inline-flex; flex-direction: column; -webkit-flex-direction: column; }
+@media screen and (max-width: 480px) { .btn-group-flex-vertical, .btn-group-vertical { display: flex; /* 1 */ } }
+.btn-group-flex-vertical > .btn:not(:first-child):not(:last-child), .btn-group-vertical > .btn:not(:first-child):not(:last-child) { margin-top: -1px; margin-bottom: -1px; border-radius: 0; }
+.btn-group-flex-vertical > .btn:last-child, .btn-group-vertical > .btn:last-child { border-top-left-radius: 0; border-top-right-radius: 0; }
+.btn-group-flex-vertical > .btn:first-child, .btn-group-vertical > .btn:first-child { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+/* Theme - optional decorative and thematic ui creation classes ========================================================================== */
+/* ========================================================================== What you need to know about this file: ==========================================================================
+ These thematic styles that I refer to as "decoration" are useful for rapidly spinning up distinct, yet consistent UI elements.
+ Dimensions and variations are constrained by discrete variable lists. These lists help keep consistent visual design.
+
+*/
+/*doc
+---
+title: Borders
+name: borders
+category: theme - decorations
+---
+
+```
+$border-colors: ( "gray-lightest":    $base-gray-lightest, "gray-light":       $base-gray-light , "gray":             $base-gray, "gray-dark":        $base-gray-dark, "gray-darkest":     $base-gray-darkest, "link":             $link-color, "ghost-black-base": $ghost-black-base, "ghost-white-base": $ghost-white-base
+);
+```
+
+```html_example
+<p class="bordered border-xs"> xs border </p>
+<p class="bordered border-sm"> sm border </p>
+<p class="bordered border-md"> md border </p>
+<p class="bordered border-lg"> lg border </p>
+<p class="bordered border-xl"> xl border </p>
+```
+
+```html_example
+<p class="bordered"> all borders </p>
+<p class="border-b"> border bottom </p>
+<p class="border-t"> border top </p>
+<p class="border-l border-r"> border left and right </p>
+<p class="border-none"> no border </p>
+```
+
+```html_example
+<p class="bordered border-md border-gray-lightest"> lightest gray border </p>
+<p class="bordered border-md border-gray-light"> light gray border </p>
+<p class="bordered border-md border-gray"> gray border </p>
+<p class="bordered border-md border-gray-dark"> dark gray border </p>
+<p class="bordered border-md border-gray-darkest"> darkest gray border </p>
+<p class="bordered border-md border-link"> link border </p>
+<p class="bordered border-md border-ghost-black-base"> ghost black base border </p>
+<div class="p1 bg-gray"> <p class="bordered border-md border-ghost-white-base"> ghost white base border </p>
+</div>
+```
+*/
+/*doc
+---
+title: Radius rounding
+name: radius
+category: theme - decorations
+---
+
+```html_example
+<p class="bg-gray-light round-xs"> xs radius </p>
+<p class="bg-gray-light round-sm"> sm radius </p>
+<p class="bg-gray-light round-md"> md radius </p>
+<p class="bg-gray-light round-lg"> lg radius </p>
+<p class="bg-gray-light round-xl"> xl radius </p>
+```
+
+```html_example
+<p class="bg-gray-light round-md round-t"> top radius </p>
+<p class="bg-gray-light round-md round-b"> bottom radius </p>
+<p class="bg-gray-light round-md round-l"> left radius </p>
+<p class="bg-gray-light round-md round-r"> right radius </p>
+<p class="bg-gray-light round-md round-none"> no radius </p>
+```
+*/
+/*doc
+---
+title: Shadows
+name: shadows
+category: theme - decorations
+---
+
+```html_example
+<p class="shadowed"> shadow </p>
+<p class="shadowed-light"> light shadow </p>
+<div class="p1 bg-gray"> <p class="shadowed-white"> white shadow </p> <p class="shadowed-white-light"> light white shadow </p>
+</div>
+<p class="shadowed-link-border"> link border using shadow </p>
+<p class="shadowed-link-light-border"> light link border using shadow </p>
+```
+*/
+/*doc
+---
+title: "Background colors"
+name: bg-colors
+category: theme - decorations
+---
+
+Color classes that can be applied to most elements (or extended) at will
+
+```html_example
+<div class="p1"> <div class="bg-gray-lightest ib" style="width: 50px; height: 50px;"></div> <div class="bg-gray-light ib" style="width: 50px; height: 50px;"></div> <div class="bg-gray ib" style="width: 50px; height: 50px;"></div> <div class="bg-gray-dark ib" style="width: 50px; height: 50px;"></div> <div class="bg-gray-darkest ib" style="width: 50px; height: 50px;"></div>
+</div>
+```
+
+#####"Ghost" colors (semi-transparencies)
+```html_example
+<div class="p1 bg-gray"> <div class="bg-ghost-white-light ib" style="width: 50px; height: 50px;"></div> <div class="bg-ghost-white-base ib" style="width: 50px; height: 50px;"></div> <div class="bg-ghost-white-dark ib" style="width: 50px; height: 50px;"></div> <div class="bg-ghost-black-light ib" style="width: 50px; height: 50px;"></div> <div class="bg-ghost-black-base ib" style="width: 50px; height: 50px;"></div> <div class="bg-ghost-black-dark ib" style="width: 50px; height: 50px;"></div>
+</div>
+```
+
+#####"Context" background colors (alert, info, success, warning)
+```html_example
+<div class="p1"> <div class="bg-alert ib" style="width: 50px; height: 50px;"></div> <div class="bg-info ib" style="width: 50px; height: 50px;"></div> <div class="bg-success ib" style="width: 50px; height: 50px;"></div> <div class="bg-warning ib" style="width: 50px; height: 50px;"></div>
+</div>
+```
+
+*/
+/*doc
+---
+title: "Text colors"
+name: text-colors
+category: theme - decorations
+---
+
+######Text color classes
+```html_example
+<div class="p1 bg-gray-light"> <p class="color-gray-lightest">Here's some text</p> <p class="color-gray-light">Here's some text</p> <p class="color-gray">Here's some text</p> <p class="color-gray-dark">Here's some text</p> <p class="color-gray-darkest">Here's some text</p> <p class="color-ghost-white-light">Here's some text</p> <p class="color-ghost-white-base">Here's some text</p> <p class="color-ghost-white-dark">Here's some text</p> <p class="color-ghost-black-light">Here's some text</p> <p class="color-ghost-black-base">Here's some text</p> <p class="color-ghost-black-dark">Here's some text</p> <p class="color-alert">Here's some text</p> <p class="color-info">Here's some text</p> <p class="color-success">Here's some text</p> <p class="color-warning">Here's some text</p>
+</div>
+```
+
+*/
+/*doc
+---
+title: "Skins"
+name: skins
+category: theme - decorations
+---
+
+##### Grays skin colors
+```html_example
+<div class="p1"> <div class="skin-gray-lightest bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-gray-light bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-gray bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-gray-dark bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-gray-darkest bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div>
+</div>
+```
+
+##### "Context" skin colors (alert, info, success, warning)
+```html_example
+<div class="p1"> <div class="skin-alert bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-info bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-success bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div> <div class="skin-warning bordered p1"> <span>default text</span> <span class="light">.light text</span> <span class="dark">.dark text</span> </div>
+</div>
+```
+*/
+/*doc
+---
+title: "Skins Mixins"
+name: skins-mixins
+category: theme - decorations
+---
+
+Creating your own skins mixins:
+There are three different mixins used to rapidly generate decorative skin styles.
+1. @mixin bg_color()
+2. @mixin color()
+3. @mixin skin()
+
+##### bg_color($bg, $name)
+- `$bg` is a color value or variable name that refers to the color you want (hex, rgb, rgba).
+- `$name` is a string to uniquely identify the class
+
+***Input***
+
+```
+@include bg_color(#ff3a5c, "watermelon");
+```
+
+***Output***
+
+```
+%bg-watermelon,
+.bg-watermelon { background-color: #ff3a5c;
+}
+```
+
+
+##### color($color, $name)
+- `$color` is a color value or variable name that refers to the color you want (hex, rgb, rgba).
+- `$name` is a string to uniquely identify the class
+
+***Input***
+
+```
+@include color(rgb(133, 231, 182), "mint");
+```
+
+***Output***
+
+```
+%color-mint,
+.color-mint { color: rgb(133, 231, 182);
+}
+```
+
+
+##### skin($bg, $name, $border: darken($bg, 17.5%), $color: "white", $color_dark: $border)
+- `$bg` is a color value or variable name that refers to the color you want (hex, rgb, rgba).
+- `$name` is a string to uniquely identify the class
+- `$border` (OPTIONAL) is a color value or variable name that refers to the border color of the module
+- `$color` (OPTIONAL) is a color value or variable name that refers to the default text color of the module
+- `$color_dark` (OPTIONAL) is a color value or variable name that refers to the `.dark` text color of the module
+
+***Input***
+
+```
+@include skin(rgb(133, 231, 182), "mint", $color_dark: darken(rgb(133, 231, 182), 33%);
+```
+
+***Output***
+
+```
+%skin-mint,
+.skin-mint { background-color: rgb(133, 231, 182); border-color: darken(rgb(133, 231, 182), 17.5%); color: white; .p, p  { color: white; } .light { color: white; } .dark  { color: darken(rgb(133, 231, 182), 33%); } }
+}
+```
+
+There are several pre-defined background, color, and skin classes available by default.
+Please see the examples for classes and placeholders for color decorations.
+
+*/
+/*doc
+---
+title: "Ghost classes (opacity)"
+name: ghosts
+category: theme - decorations
+---
+
+```html_example
+<div class="bg-gray-light ghost-lightest">Content</div>
+<div class="bg-gray-light ghost-light">Content</div>
+<div class="bg-gray-light ghost-base">Content</div>
+<div class="bg-gray-light ghost-dark">Content</div>
+<div class="bg-gray-light ghost-darkest">Content</div>
+<div class="bg-gray-light ghost-none">No opacity</div>
+```
+
+*/
+.bg-gray-lightest { background-color: #eeeff4 !important; }
+
+.color-gray-lightest { color: #eeeff4 !important; }
+
+.bg-gray-light { background-color: #ccd2de !important; }
+
+.color-gray-light { color: #ccd2de !important; }
+
+.bg-gray { background-color: #7d869b !important; }
+
+.color-gray { color: #7d869b !important; }
+
+.bg-gray-dark { background-color: #505a69 !important; }
+
+.color-gray-dark { color: #505a69 !important; }
+
+.bg-gray-darkest { background-color: #2a313d !important; }
+
+.color-gray-darkest { color: #2a313d !important; }
+
+.bg-ghost-white-light { background-color: rgba(255, 255, 255, 0.25) !important; }
+
+.color-ghost-white-light { color: rgba(255, 255, 255, 0.25) !important; }
+
+.bg-ghost-white-base { background-color: rgba(255, 255, 255, 0.5) !important; }
+
+.color-ghost-white-base { color: rgba(255, 255, 255, 0.5) !important; }
+
+.bg-ghost-white-dark { background-color: rgba(255, 255, 255, 0.75) !important; }
+
+.color-ghost-white-dark { color: rgba(255, 255, 255, 0.75) !important; }
+
+.bg-ghost-black-light { background-color: rgba(0, 0, 0, 0.1) !important; }
+
+.color-ghost-black-light { color: rgba(0, 0, 0, 0.1) !important; }
+
+.bg-ghost-black-base { background-color: rgba(0, 0, 0, 0.25) !important; }
+
+.color-ghost-black-base { color: rgba(0, 0, 0, 0.25) !important; }
+
+.bg-ghost-black-dark { background-color: rgba(0, 0, 0, 0.5) !important; }
+
+.color-ghost-black-dark { color: rgba(0, 0, 0, 0.5) !important; }
+
+.bg-alert { background-color: #d53e22 !important; }
+
+.color-alert { color: #d53e22 !important; }
+
+.bg-info { background-color: #2ca8e4 !important; }
+
+.color-info { color: #2ca8e4 !important; }
+
+.bg-success { background-color: #0fa359 !important; }
+
+.color-success { color: #0fa359 !important; }
+
+.bg-warning { background-color: #ffbd09 !important; }
+
+.color-warning { color: #ffbd09 !important; }
+
+.ghost-none { opacity: 1; }
+
+.ghost-lightest { opacity: 0.15; }
+
+.ghost-light { opacity: 0.33; }
+
+.ghost-base { opacity: 0.5; }
+
+.ghost-dark { opacity: 0.66; }
+
+.ghost-darkest { opacity: 0.85; }
+
+.skin-alert { background-color: #d53e22; border-color: #932b17; color: #f3c0b6; }
+.skin-alert .p, .skin-alert p { color: #f3c0b6; }
+.skin-alert .light { color: white; }
+.skin-alert .dark { color: #932b17; }
+
+.skin-info { background-color: #2ca8e4; border-color: #167cad; color: #cae9f8; }
+.skin-info .p, .skin-info p { color: #cae9f8; }
+.skin-info .light { color: white; }
+.skin-info .dark { color: #167cad; }
+
+.skin-success { background-color: #0fa359; border-color: #095d33; color: #72f2b2; }
+.skin-success .p, .skin-success p { color: #72f2b2; }
+.skin-success .light { color: white; }
+.skin-success .dark { color: #095d33; }
+
+.skin-warning { background-color: #ffbd09; border-color: #bc8900; color: #ffedbc; }
+.skin-warning .p, .skin-warning p { color: #ffedbc; }
+.skin-warning .light { color: white; }
+.skin-warning .dark { color: #bc8900; }
+
+.skin-gray-lightest { background-color: #eeeff4; border-color: #b8bcd1; color: #b8bcd1; }
+.skin-gray-lightest .p, .skin-gray-lightest p { color: #b8bcd1; }
+.skin-gray-lightest .light { color: white; }
+.skin-gray-lightest .dark { color: #7d869b; }
+
+.skin-gray-light { background-color: #ccd2de; border-color: #96a2bb; color: #7d869b; }
+.skin-gray-light .p, .skin-gray-light p { color: #7d869b; }
+.skin-gray-light .light { color: white; }
+.skin-gray-light .dark { color: #505a69; }
+
+.skin-gray { background-color: #7d869b; border-color: #535a6c; color: #ccd2de; }
+.skin-gray .p, .skin-gray p { color: #ccd2de; }
+.skin-gray .light { color: white; }
+.skin-gray .dark { color: #535a6c; }
+
+.skin-gray-dark { background-color: #505a69; border-color: #292f36; color: #ccd2de; }
+.skin-gray-dark .p, .skin-gray-dark p { color: #ccd2de; }
+.skin-gray-dark .light { color: white; }
+.skin-gray-dark .dark { color: #292f36; }
+
+.skin-gray-darkest { background-color: #2a313d; border-color: #060708; color: #7d869b; }
+.skin-gray-darkest .p, .skin-gray-darkest p { color: #7d869b; }
+.skin-gray-darkest .light { color: white; }
+.skin-gray-darkest .dark { color: #060708; }
+
+/*doc
+---
+title: Humble Kit
+name: Humble Kit
+category: home
+---
+
+## A flexible CSS tool kit for internal applications
+-----
+
+### SASS file structure
+
+```
+stylesheets
+└── base
+|   |
+|   ├── _mixins.scss
+|   ├── _reset.scss
+|   ├── _typography.scss
+|   └── _variables.scss
+└── elements
+|   |
+|   ├── _flex.scss
+|   ├── _forms.scss
+|   ├── _links.scss
+|   ├── _lists.scss
+|   └── _tables.scss
+└── modules
+|   |
+|   ├── _buttons.scss
+|   └── _media.scss
+└── structure
+|   |
+|   ├── _containers.scss
+|   ├── _grid.scss
+|   └── _layout.scss
+└── theme | ├── _decorations.scss └── _skins.scss
+
+```
+
+***Humble Kit*** is an ongoing css tool kit project that is steeped in Agile-mindedness, scalable and modular Sass, with the ultimate goal of providing a quick, flexible, and responsible way to style in a team environment. Consistency and maintainability are at the core of the project and rapid-iterations are the driving cause.
+
+***Humble Kit*** plays well with Bootstrap, most notably the javascript components. It's also fairly easy (once you get in there) to modify and extend the tool kit by extending `@mixins` and modifying default variables.
+
+***Humble Kit*** has been thoughtfully crafted to be used when developing and maintaining internal web applications for Stitch Fix.
+
+*/
+/** Syntax highlighting styles */
+.highlighter-rouge pre, .highlighter-rouge code, .highlighter-rouge .code { white-space: pre; overflow: auto; font-size: 0.85rem; line-height: 1.25rem; }
+.highlighter-rouge pre .p, .highlighter-rouge code .p, .highlighter-rouge .code .p { line-height: inherit; font-size: inherit; margin-bottom: inherit; }
+
+.highlight { background: #F3EFEC; border-radius: 3px; padding: 0.25rem 1rem; overflow: auto; }
+.highlight .c { color: #998; font-style: italic; }
+.highlight .err { color: #a61717; background-color: #e3d2d2; }
+.highlight .k { font-weight: bold; }
+.highlight .o { font-weight: bold; }
+.highlight .cm { color: #998; font-style: italic; }
+.highlight .cp { color: #999; font-weight: bold; }
+.highlight .c1 { color: #998; font-style: italic; }
+.highlight .cs { color: #999; font-weight: bold; font-style: italic; }
+.highlight .gd { color: #000; background-color: #fdd; }
+.highlight .gd .x { color: #000; background-color: #faa; }
+.highlight .ge { font-style: italic; }
+.highlight .gr { color: #a00; }
+.highlight .gh { color: #999; }
+.highlight .gi { color: #000; background-color: #dfd; }
+.highlight .gi .x { color: #000; background-color: #afa; }
+.highlight .go { color: #888; }
+.highlight .gp { color: #555; }
+.highlight .gs { font-weight: bold; }
+.highlight .gu { color: #aaa; }
+.highlight .gt { color: #a00; }
+.highlight .kc { font-weight: bold; }
+.highlight .kd { font-weight: bold; }
+.highlight .kp { font-weight: bold; }
+.highlight .kr { font-weight: bold; }
+.highlight .kt { color: #458; font-weight: bold; }
+.highlight .m { color: #099; }
+.highlight .s { color: #d14; }
+.highlight .na { color: #008080; }
+.highlight .nb { color: #0086B3; }
+.highlight .nc { color: #458; font-weight: bold; }
+.highlight .no { color: #008080; }
+.highlight .ni { color: #800080; }
+.highlight .ne { color: #900; font-weight: bold; }
+.highlight .nf { color: #900; font-weight: bold; }
+.highlight .nn { color: #555; }
+.highlight .nt { color: #000080; }
+.highlight .nv { color: #008080; }
+.highlight .ow { font-weight: bold; }
+.highlight .w { color: #bbb; }
+.highlight .mf { color: #099; }
+.highlight .mh { color: #099; }
+.highlight .mi { color: #099; }
+.highlight .mo { color: #099; }
+.highlight .sb { color: #d14; }
+.highlight .sc { color: #d14; }
+.highlight .sd { color: #d14; }
+.highlight .s2 { color: #d14; }
+.highlight .se { color: #d14; }
+.highlight .sh { color: #d14; }
+.highlight .si { color: #d14; }
+.highlight .sx { color: #d14; }
+.highlight .sr { color: #009926; }
+.highlight .s1 { color: #d14; }
+.highlight .ss { color: #990073; }
+.highlight .bp { color: #999; }
+.highlight .vc { color: #008080; }
+.highlight .vg { color: #008080; }
+.highlight .vi { color: #008080; }
+.highlight .il { color: #099; }
+
+@font-face { font-family: 'brandontext'; src: url("/assets/fonts/HVD Fonts - BrandonText-Light.otf") format("opentype"); font-weight: 200; font-style: normal; }
+@font-face { font-family: 'brandontext'; src: url("/assets/fonts/HVD Fonts - BrandonText-Regular.otf") format("opentype"); font-weight: 400; font-style: normal; }
+@font-face { font-family: 'brandontext'; src: url("/assets/fonts/HVD Fonts - BrandonText-Bold.otf") format("opentype"); font-weight: 800; font-style: normal; }
+.bg-white { background-color: white !important; }
+
+.bg-warm-gray-20 { background-color: #E6E5E4 !important; }
+
+.bg-sand { background-color: #F3EFEC !important; }
+
+.bg-light-sand { background-color: #f7f5f2 !important; }
+
+.bg-dark-sand { background-color: #e9e2dc !important; }
+
+.heading--impact, .color-red { color: #ff5c61 !important; }
+
+.sectionslash { background-image: url("/assets/images/svgs/angle3.svg"); background-position: 100% 100%; background-size: cover; background-repeat: no-repeat; }
+
+.arrow { position: absolute; width: 20px; bottom: -10px; left: 50%; margin-left: -10px; }
+
+.oh { overflow: hidden; }
+
+blockquote { border-left: 3px solid #CECBC9; }
+@media screen and (max-width: 480px) { blockquote { margin-left: 0; margin-right: 0; /* 1 */ } }
+blockquote p { margin-left: 1rem; }
+blockquote ul { padding-left: 2.5rem; }
+blockquote ul li { margin-bottom: 0.75rem; }
+
+@font-face { font-family: 'icomoon'; src: url("/assets/fonts/icons/icomoon.eot"); src: url("/assets/fonts/icons/icomoon.eot?#iefix") format("embedded-opentype"), url("/assets/fonts/icons/icomoon.svg#icomoon") format("svg"), url("/assets/fonts/icons/icomoon.woff") format("woff"), url("/assets/fonts/icons/icomoon.ttf") format("truetype"); font-weight: normal; font-style: normal; }
+.icon { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; font-size: 20px; padding: 0.4rem; /* Better Font Rendering =========== */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.icon span { display: none; }
+.icon:hover, .icon:focus { color: #4e4a47; text-decoration: none; }
+.icon:after { content: "\e600"; }
+.icon.dribbble:after { content: "\e601"; }
+.icon.flickr:after { content: "\e602"; }
+.icon.github:after { content: "\e603"; }
+.icon.instagram:after { content: "\e604"; }
+.icon.linkedin:after { content: "\e605"; }
+.icon.pinterest:after { content: "\e606"; }
+.icon.twitter:after { content: "\e607"; }
+
+.sectionicon { width: 60px; margin-top: 30px; }
+
+.flex-centered { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-align: center; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; }
+
+.flex-reverse { flex-direction: row-reverse; }
+
+@media screen and (max-width: 768px) { .flex-container--stackable { display: block; } }
+.h1, .text-content h1, .h2, .text-content h2, .h3, .text-content h3, .h4, .text-content h4, h1, h2, h3, h4 { letter-spacing: 0.03em; }
+
+.text-content h1 { margin-top: 4rem; }
+.text-content h2 { margin-top: 4rem; }
+.text-content h3 { margin-top: 3rem; }
+.text-content h4 { margin-top: 2rem; }
+
+.global-nav { background-color: #ede7e3; }
+.global-nav li:first-child { min-width: 52px; }
+.global-nav__item { font-size: 1rem; line-height: 3rem; color: #847c77 !important; padding-left: 1rem; padding-right: 1rem; }
+@media screen and (max-width: 768px) and (min-width: 481px) { .global-nav__item { font-size: 0.9rem; } }
+@media screen and (max-width: 480px) { .global-nav__item { padding-left: 0.5rem; padding-right: 0.5rem; font-size: 0.8rem; width: 100%; /* 1 */ } }
+.global-nav__item:hover { background-color: #e9e2dc; text-decoration: none; }
+.global-nav__item.current { background-color: #ff5c61; color: white !important; }
+
+.no-flexbox .list-flex li { float: left !important; display: block !important; width: 20% !important; }
+
+.p-limited, .h-limited { margin-right: auto; margin-left: auto; }
+
+.p-limited { max-width: 45rem; }
+@media screen and (max-width: 768px) { .p-limited { max-width: 24rem; } }
+
+.h-limited { max-width: 45rem; }
+
+.member-bio__image, .post-listing__author-image, .circleimage { display: block; margin-left: auto; margin-right: auto; max-width: 100%; width: 100%; height: auto; -webkit-border-radius: 50%; -moz-border-radius: 50%; border-radius: 50%; }
+@media screen and (max-width: 992px) { .member-bio__image, .post-listing__author-image, .circleimage { max-width: 20rem; } }
+.member-bio .member-bio__image, .member-bio .post-listing__author-image, .member-bio .circleimage { max-width: 14rem; }
+
+.global-footer { border-top: 1px solid #e9e2dc; }
+.global-footer a:link, .global-footer a:visited, .global-footer a { color: #847c77; }
+
+.links-list--small-views { border-top: 1px solid #e9e2dc; }
+.links-list--small-views > li { border-bottom: 1px dashed #e9e2dc; }
+.links-list--small-views > li:last-child { border-bottom-style: solid; }
+.links-list--small-views > li > a { display: block; }
+.links-list--small-views > li > a:hover { background-color: #FFDEDF; }
+
+.footer-logo { max-width: 180px; max-height: 40px; display: block; }
+
+.copyright { display: block; }
+
+.footnotes ol { list-style: none; }
+
+.logo { line-height: 1rem; height: 3rem; }
+.logo > img { height: 3rem; min-width: 36px; }
+.logo:hover { text-decoration: none; }
+
+.site-title { border: 6px solid white; color: white; font-size: 100px; line-height: 80px; font-weight: 400; text-transform: none; letter-spacing: -0.03em; padding: 1rem 6rem; }
+@media screen and (max-width: 1200px) { .site-title { font-size: 80px; } }
+@media screen and (max-width: 992px) { .site-title { font-size: 64px; line-height: 64px; } }
+@media screen and (max-width: 768px) { .site-title { font-size: 42px; line-height: 42px; } }
+@media screen and (max-width: 480px) { .site-title { top: 29%; padding: 1rem; /* 1 */ } }
+.site-title__tagline { color: white; font-size: 26px; line-height: 26px; font-weight: 400; text-align: center; letter-spacing: 2px; display: block; clear: both; line-height: 40px; }
+@media screen and (max-width: 992px) { .site-title__tagline { font-size: 20px; line-height: 20px; } }
+@media screen and (max-width: 768px) { .site-title__tagline { font-size: 16px; line-height: 16px; } }
+
+.hero-image { display: block; width: 100%; height: auto; border: 0px; }
+
+.socialicon { display: inline-block; width: 40px; height: 40px; margin-right: 2px; margin-left: 2px; }
+
+.socialicon.mobileshow { display: none; }
+
+.career-list a { display: block; padding: 0.5rem 1rem; border-bottom: 1px dashed #e9e2dc; }
+.career-list a:hover { text-decoration: none; background-color: #FFDEDF; }
+
+.career-listing__details { color: #847c77; padding-bottom: 0.5rem; }
+
+.blog-listing .authors-row { margin: 0 0.3rem 0 0; }
+.blog-listing__author-image { width: 40px; margin-bottom: 0; display: inline-block; }
+
+.member-bio__name { color: #ff5c61; line-height: 1.5rem; }
+.member-bio__description { line-height: 1.5rem; }
+
+.authors-row { text-align: center; }
+.authors-row .blog-post__author-image { width: 4rem; margin-bottom: 0; display: inline-block; }
+
+.post-listing__author-container { padding-right: 2rem; width: 20%; min-height: 1px; }
+@media screen and (max-width: 480px) { .post-listing__author-container { float: none; width: 100%; /* 1 */ } }
+.post-listing__author { position: relative; width: 6rem; border-radius: 50%; border: 5px solid #f7f5f2; top: -3rem; margin-bottom: -2rem; }
+@media screen and (max-width: 992px) and (min-width: 769px) { .post-listing__author { width: 5rem; top: -2.5rem; margin-bottom: -1.66667rem; } }
+@media screen and (max-width: 768px) and (min-width: 481px) { .post-listing__author { width: 4rem; top: -2rem; margin-bottom: -1.33333rem; } }
+@media screen and (max-width: 480px) { .post-listing__author { border: none; position: static; top: 0; margin-bottom: 0 !important; max-width: 5rem; /* 1 */ } }
+.post-listing__author:only-child { width: 100%; }
+.post-listing__author:first-child { top: 0; margin-bottom: 1rem; }
+@media screen and (max-width: 768px) and (min-width: 481px) { .post-listing__author:first-child { margin-bottom: 0.5rem; } }
+.post-listing__author:nth-child(even) { left: 2rem; }
+@media screen and (max-width: 992px) and (min-width: 769px) { .post-listing__author:nth-child(even) { left: 2.5rem; } }
+@media screen and (max-width: 768px) and (min-width: 481px) { .post-listing__author:nth-child(even) { left: 2rem; } }
+.post-listing__no-author { width: 20% !important; height: 1px; }
+
+.style-guide-article > h1 { border-bottom: 1px solid #e9e2dc; }

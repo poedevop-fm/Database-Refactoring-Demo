@@ -1,0 +1,30 @@
+References
+==========
+
+Principles and Practices at Etsy
+http://www.slideshare.net/mikebrittain/principles-and-practices-in-continuous-deployment-at-etsy/34-Dev_Team_Version_ControlBuild_UnitTestsAutomatedAcceptance
+
+Continuous Deployment at Etsy: A Tale of Two Approaches
+http://www.slideshare.net/beamrider9/continuous-deployment-at-etsy-a-tale-of-two-approaches
+
+Continuous Delivery and the Database
+https://www.simple-talk.com/sql/database-administration/continuous-delivery-and-the-database/
+
+Evolutionary Database Design: http://martinfowler.com/articles/evodb.html 
+
+Expand/Contract pattern: http://martinfowler.com/bliki/ParallelChange.html 
+
+Refactoring Databases book:
+http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dstripbooks&field-keywords=refactoring+databases
+
+Etsy 50 deployments/day:
+http://www.infoq.com/news/2014/03/etsy-deploy-50-times-a-day
+
+Etsy: a tale of two approaches:
+http://www.slideshare.net/beamrider9/continuous-deployment-at-etsy-a-tale-of-two-approaches
+
+SQL Server database refactoring - a blog entry from "Phil Factor":
+https://www.simple-talk.com/sql/database-administration/continuous-delivery-and-the-database/
+
+Unsharing a database (i.e., converting a shared database into a collection of service calls):
+http://multithreaded.stitchfix.com/blog/2016/05/03/un-sharing-the-database/
