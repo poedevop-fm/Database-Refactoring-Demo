@@ -206,6 +206,29 @@ BEGIN
 END;
 GO
 --
+IF OBJECT_ID ('SynchronizeShippingAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeShippingAddress;
+GO
+CREATE TRIGGER SynchronizeShippingAddress ON ShippingAddress FOR INSERT, UPDATE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
+   BEGIN;
+    IF UPDATE(CustomerID) 
+    BEGIN;
+       UPDATE ShippingAddress
+          SET BillingAddressID = ba.BillingAddressID
+       FROM inserted ins
+       INNER JOIN BillingAddress ba
+       ON ins.CustomerId = ba.CustomerId
+       WHERE ShippingAddress.CustomerID = ins.customerId;
+    END;
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
 --    Run conversion to make old and new tables contain the same data
 --
 INSERT INTO BillingAddress
