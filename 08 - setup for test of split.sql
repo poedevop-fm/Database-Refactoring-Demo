@@ -91,6 +91,7 @@ CREATE TABLE BillingAddress
                                    CONSTRAINT DF_BillingAddress_CountryCode DEFAULT 'us', -- ISO 3166
  CONSTRAINT FK_BillingAddress_Customer 
    FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId)
+   ON DELETE CASCADE  -- Can't be used for logical records, but that feature is going away
 );
 GO
 --
@@ -128,19 +129,6 @@ VALUES
 GO
 --
 --
-DECLARE @fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
-DECLARE @jhw int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
-DECLARE @bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
-
-INSERT INTO BillingAddress
-   (CustomerId, Address1, Address2, City, [State], Postal1, Postal2)
-VALUES
-   (@fpr, '123 Main Street','',       'Fairview',  'XX', '', '12345'),
-   (@jhw, 'Apt. B','221 Baker Street','Gotham',    'ZZ', '', '22222'),
-   (@bb,  '456 Second Street','',     'Metropolis','YY', '', '98765-4321');
-GO
---
---
 DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
 DECLARE @c_jhw int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
 DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
@@ -158,6 +146,89 @@ VALUES
  ('Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', @ba_bb),
  ('Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      @ba_bb);
 --
+-- TODO: add trigger code here
+--
 --    Create trigger for Customer table
 --
--- TODO: add trigger code here
+IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeCustomerAddress;
+GO
+CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
+   BEGIN;
+   IF UPDATE(BillingAddress1) OR 
+      UPDATE(BillingAddress1) OR
+      UPDATE(BillingAddress2) OR
+      UPDATE(BillingCity)     OR
+      UPDATE(BillingState)    OR
+      UPDATE(BillingPostal1)  OR
+      UPDATE(BillingPostal2)  OR
+      UPDATE(BillingCountry)  OR
+      UPDATE(BillingCountryCode)
+   BEGIN;
+      -- Check for INSERT
+      INSERT INTO BillingAddress
+      (CustomerId, Address1, Address2, City,
+       [State], Postal1, Postal2, Country,
+       CountryCode)
+      SELECT ins.CustomerId,   ins.BillingAddress1, ins.BillingAddress2, ins.BillingCity,
+             ins.BillingState, ins.BillingPostal1,  ins.BillingPostal2,  ins.BillingCountry,
+             ins.BillingCountryCode
+      FROM inserted ins
+      LEFT OUTER JOIN deleted del
+      ON ins.CustomerId = del.CustomerId
+      WHERE del.CustomerId IS NULL;
+      --
+      -- TODO: add update logic to trigger
+      -- old columns updated: update new columns
+      --UPDATE BillingAddress
+      --   SET Name1 = inserted.Name
+      --FROM inserted LEFT OUTER JOIN deleted
+      --ON inserted.CustomerID = deleted.CustomerID
+      --WHERE Customer.CustomerId = inserted.CustomerId
+      --  AND inserted.Name <> ISNULL(deleted.Name,'')
+      --  AND inserted.Name1 <> inserted.Name;
+      ---- new columns updated: update old columns
+      --UPDATE Customer
+      --   SET Name = inserted.Name1
+      --FROM inserted LEFT OUTER JOIN deleted
+      --ON inserted.CustomerID = deleted.CustomerID
+      --WHERE Customer.CustomerId = inserted.CustomerId
+      --  AND inserted.Name1 <> ISNULL(deleted.Name1,'')
+      --  AND inserted.Name1 <> inserted.Name;
+   END;
+
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
+--    Run conversion to make old and new tables contain the same data
+--
+INSERT INTO BillingAddress
+(CustomerId, Address1, Address2, City, [State], Postal1, Postal2, Country, CountryCode)
+SELECT CustomerId,   BillingAddress1, BillingAddress2, BillingCity,
+       BillingState, BillingPostal1,  BillingPostal2,  BillingCountry,
+       BillingCountryCode
+FROM Customer;
+GO
+--
+--   Run conversion to link shipping address to the new business address table
+--   We assume that 1 billing address per customer will remain true while conversion occurs
+--
+UPDATE ShippingAddress
+   SET BillingAddressID = ba.BillingAddressID
+FROM BillingAddress ba
+WHERE ShippingAddress.CustomerID = ba.CustomerId;
+--
+--   Display results to verify conversion worked
+--
+SELECT c.*, ba.*
+FROM BillingAddress ba
+INNER JOIN Customer c
+ON ba.CustomerId = c.CustomerId;
+--
+SELECT * FROM ShippingAddress;
