@@ -185,14 +185,29 @@ BEGIN
       --
       -- TODO: add update logic to trigger
       -- old columns updated: update new columns
-      --UPDATE BillingAddress
-      --   SET Name1 = inserted.Name
-      --FROM inserted LEFT OUTER JOIN deleted
-      --ON inserted.CustomerID = deleted.CustomerID
-      --WHERE Customer.CustomerId = inserted.CustomerId
-      --  AND inserted.Name <> ISNULL(deleted.Name,'')
-      --  AND inserted.Name1 <> inserted.Name;
-      ---- new columns updated: update old columns
+      UPDATE BillingAddress
+         SET Address1 = inserted.BillingAddress1,
+             Address2 = inserted.BillingAddress2,
+             City     = inserted.BillingCity,
+             State    = inserted.BillingState,
+             Postal1  = inserted.BillingPostal1,
+             Postal2  = inserted.BillingPostal2,
+             Country  = inserted.BillingCountry,
+             CountryCode = inserted.BillingCountryCode
+      FROM inserted LEFT OUTER JOIN deleted
+      ON inserted.CustomerID = deleted.CustomerID
+      WHERE BillingAddress.CustomerId = inserted.CustomerId
+        -- was any part of the address changed?
+        AND (inserted.BillingAddress1 <> ISNULL(deleted.BillingAddress1,'') OR
+             inserted.BillingAddress2 <> ISNULL(deleted.BillingAddress2,'') OR
+             inserted.BillingCity     <> ISNULL(deleted.BillingCity,'')     OR
+             inserted.BillingState    <> ISNULL(deleted.BillingState,'')    OR
+             inserted.BillingPostal1  <> ISNULL(deleted.BillingPostal1,'')  OR
+             inserted.BillingPostal2  <> ISNULL(deleted.BillingPostal2,'')  OR
+             inserted.BillingCountry  <> ISNULL(deleted.BillingCountry,'')  OR
+             inserted.BillingCountryCode <> ISNULL(deleted.BillingCountryCode,''));
+        --AND does any of part of the new address differ from what's in BillingAddress?  (TODO: needed?)
+      -- new columns updated: update old columns
       --UPDATE Customer
       --   SET Name = inserted.Name1
       --FROM inserted LEFT OUTER JOIN deleted
@@ -224,7 +239,7 @@ BEGIN
        INNER JOIN BillingAddress ba
        ON ins.CustomerId = ba.CustomerId
        WHERE ShippingAddress.CustomerID = ins.customerId;
-    END;
+    END; -- of IF row INSERTed
    END;  -- of IF @cnt > 0
 END;
 GO
