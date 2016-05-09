@@ -244,6 +244,14 @@ BEGIN
 END;
 GO
 --
+--    Add DEFAULT constraints so that columns going away won't block new code.
+--
+ALTER TABLE Customer 
+   ADD CONSTRAINT DF_Customer_BillingAddress1 DEFAULT '' FOR BillingAddress1,
+       CONSTRAINT DF_Customer_BillingAddress2 DEFAULT '' FOR BillingAddress2,
+       CONSTRAINT DF_Customer_City            DEFAULT '' FOR BillingCity,
+       CONSTRAINT DF_Customer_State           DEFAULT '' FOR BillingState;
+--
 --    Run conversion to make old and new tables contain the same data
 --
 INSERT INTO BillingAddress
