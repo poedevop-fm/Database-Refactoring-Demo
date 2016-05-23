@@ -1662,24 +1662,30 @@ END;
 GO
 --
 --
-IF OBJECT_ID(N'testSplitTableTriggers.[test adding a new billing address for an existing customer]','P') IS NOT NULL
-   DROP PROCEDURE testSplitTableTriggers.[test adding a new billing address for an existing customer];
+IF OBJECT_ID(N'testSplitTableTriggers.[test INSERT Shipping Address using new columns]','P') IS NOT NULL
+   DROP PROCEDURE testSplitTableTriggers.[test INSERT Shipping Address using new columns];
 GO
-CREATE PROCEDURE testSplitTableTriggers.[test adding a new billing address for an existing customer]
+CREATE PROCEDURE testSplitTableTriggers.[test INSERT Shipping Address using new columns]
 AS
 BEGIN
     --Arrange
-    IF OBJECT_ID('expected_customer') IS NOT NULL DROP TABLE expected_customer;
+    IF OBJECT_ID('expected_customer')         IS NOT NULL DROP TABLE expected_customer;
     IF OBJECT_ID('expected_billing_address')  IS NOT NULL DROP TABLE expected_billing_address;
     IF OBJECT_ID('expected_shipping_address') IS NOT NULL DROP TABLE expected_shipping_address;
     
     --Act
-   DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
+    DECLARE @ba int = (SELECT  ba.BillingAddressID
+                       FROM Customer c
+                       INNER JOIN BillingAddress ba
+                       ON c.CustomerID = ba.CustomerId
+                       WHERE c.Name1 = 'Big Business');
 
-   INSERT INTO BillingAddress 
-   (CustomerId, Address1, Address2, City, [State], Postal1, Postal2)
-   VALUES
-   (@c_bb, '325 S. Santa Claus Lane', '', 'North Pole', 'AK', '', '99705');
+    INSERT INTO dbo.ShippingAddress
+    (ShippingAddressID, BillingAddressID, Address1, Address2, City, [State],
+     Postal1, Postal2, Country, CountryCode)
+    VALUES
+    ('Store #222', @ba, '6543 Park Street', '', 'Bear Wallow', 'NC',
+     '', '28792', '', 'us')
 
     --Assert
     CREATE TABLE expected_customer (
@@ -1698,6 +1704,7 @@ BEGIN
 
    DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
    DECLARE @c_jhw int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
+   DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
 
     INSERT INTO expected_customer
     (CustomerID, Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, 
@@ -1727,22 +1734,14 @@ BEGIN
 
    DECLARE @ba_fpr int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_fpr);
    DECLARE @ba_jhw int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_jhw);
-   DECLARE @ba_bb1 int = (SELECT BillingAddressID
-                          FROM BillingAddress 
-                          WHERE CustomerId = @c_bb
-                            AND [State] = 'YY');
-   DECLARE @ba_bb2 int = (SELECT BillingAddressID
-                          FROM BillingAddress 
-                          WHERE CustomerId = @c_bb
-                            AND [State] = 'AK');
+   DECLARE @ba_bb  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_bb);
 
    INSERT INTO expected_billing_address
       (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
    VALUES
       (@ba_fpr, @c_fpr, '123 Main Street','',       'Fairview',  'XX', '', '12345',      '', 'us'),
       (@ba_jhw, @c_jhw, 'Apt. B','221 Baker Street','Gotham',    'ZZ', '', '22222',      '', 'us'),
-      (@ba_bb1, @c_bb,  '456 Second Street','',     'Metropolis','YY', '', '98765-4321', '', 'us'),
-      (@ba_bb2, @c_bb,  '325 S. Santa Claus Lane','','North Pole','AK','', '99705',      '', 'us');
+      (@ba_bb,  @c_bb,  '456 Second Street','',     'Metropolis','YY', '', '98765-4321', '', 'us');
 
 	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
 
@@ -1785,6 +1784,10 @@ BEGIN
                           FROM ShippingAddress 
                           WHERE CustomerId = @c_bb
                             AND ShippingAddressID = 'Store #103');
+   DECLARE @sa_bb04 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #222');
 
    INSERT INTO expected_shipping_address
    (ShippingAddressInternalId,ShippingAddressID,CustomerID,Address1,Address2,City,[State],Postal1,Postal2,Country,CountryCode,BillingAddressID)
@@ -1792,9 +1795,10 @@ BEGIN
     (@sa_fpr1, 'Main Office', @c_fpr, '123 Main Street',   '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
     (@sa_fpr2, 'Satellite 1', @c_fpr, '9901 First Street', '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
     (@sa_jhw1, '',            @c_jhw, 'Apt. B', '221 Baker Street', 'Gotham',     'ZZ', '', '22222',      '', 'us', @ba_jhw),
-    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb1),
-    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb1),
-    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb1);
+    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb),
+    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb),
+    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb),
+    (@sa_bb04, 'Store #222',  @c_bb,  '6543 Park Street',  '',      'Bear Wallow', 'NC','', '28792',      '', 'us', @ba_bb);
 
 	EXEC tSQLt.AssertEqualsTable 'expected_shipping_address', 'ShippingAddress';
 END;
@@ -1802,8 +1806,6 @@ GO
 --
 --
 -- TODO: Add these tests
---       INSERT via new definitions, a new shipping address
---       UPDATE via new definitions, a customer's billing address
 --       UPDATE via new definitions, a customer's other data
 --       UPDATE multiple billing addresses using new data?
 --       UPDATE, via new definitions, a billing address affecting only the letter case
@@ -1831,4 +1833,12 @@ GO
 --  Run all tests for application
 --
 --EXEC tSQLt.Run 'testSplitTableTriggers';
-EXEC tsqlt.Run N'testSplitTableTriggers.[test adding a new billing address for an existing customer]';
+--      TODO: The test below fails when executing the line:
+--            DECLARE @ba_sc  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_sc);
+--     with the error message
+--            Subquery returned more than 1 value. This is not permitted when the subquery follows =, !=, <, <= , >, >= or when the subquery is used as an expression.[16,1]{test that trigger handles INSERT Customer using new columns,75}
+EXEC tsqlt.Run N'testSplitTableTriggers.[test that trigger handles INSERT Customer using new columns]';
+--
+--   (CANNOT add a second billing address to an existing customer until after the database is fully refactored:
+--    otherwise, triggers will not know how to synchronize old address columns in Customer.)
+--

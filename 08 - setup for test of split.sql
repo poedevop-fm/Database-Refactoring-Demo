@@ -171,6 +171,7 @@ BEGIN
       UPDATE(BillingCountryCode)
    BEGIN;
       -- Check for INSERT
+      --    TODO: if we UPDATE a BillingAddress, does the command below create a duplicate???
       INSERT INTO BillingAddress
       (CustomerId, Address1, Address2, City,
        [State], Postal1, Postal2, Country,
@@ -183,7 +184,6 @@ BEGIN
       ON ins.CustomerId = del.CustomerId
       WHERE del.CustomerId IS NULL;
       --
-      -- TODO: add update logic to trigger
       -- old columns updated: update new columns
       UPDATE BillingAddress
          SET Address1 = inserted.BillingAddress1,
@@ -206,15 +206,44 @@ BEGIN
              inserted.BillingPostal2  <> ISNULL(deleted.BillingPostal2,'')  OR
              inserted.BillingCountry  <> ISNULL(deleted.BillingCountry,'')  OR
              inserted.BillingCountryCode <> ISNULL(deleted.BillingCountryCode,''));
-        --AND does any of part of the new address differ from what's in BillingAddress?  (TODO: needed?)
-      -- new columns updated: update old columns
-      --UPDATE Customer
-      --   SET Name = inserted.Name1
-      --FROM inserted LEFT OUTER JOIN deleted
-      --ON inserted.CustomerID = deleted.CustomerID
-      --WHERE Customer.CustomerId = inserted.CustomerId
-      --  AND inserted.Name1 <> ISNULL(deleted.Name1,'')
-      --  AND inserted.Name1 <> inserted.Name;
+   END;
+
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
+IF OBJECT_ID ('SynchronizeBillingAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeBillingAddress;
+GO
+CREATE TRIGGER SynchronizeBillingAddress ON BillingAddress FOR INSERT, UPDATE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
+   BEGIN;
+   IF UPDATE(Address1) OR 
+      UPDATE(Address1) OR
+      UPDATE(Address2) OR
+      UPDATE(City)     OR
+      UPDATE(State)    OR
+      UPDATE(Postal1)  OR
+      UPDATE(Postal2)  OR
+      UPDATE(Country)  OR
+      UPDATE(CountryCode)
+   BEGIN;
+      -- [new] table updated: update corresponding [old] columns in Customer table
+      UPDATE Customer
+         SET BillingAddress1 = inserted.Address1,
+             BillingAddress2 = inserted.Address2,
+             BillingCity     = inserted.City,
+             BillingState    = inserted.[State],
+             BillingPostal1  = inserted.Postal1,
+             BillingPostal2  = inserted.Postal2,
+             BillingCountry  = inserted.Country,
+             BillingCountryCode = inserted.CountryCode
+      FROM inserted
+      WHERE inserted.CustomerId = Customer.CustomerId 
    END;
 
    END;  -- of IF @cnt > 0
@@ -238,7 +267,23 @@ BEGIN
        FROM inserted ins
        INNER JOIN BillingAddress ba
        ON ins.CustomerId = ba.CustomerId
-       WHERE ShippingAddress.CustomerID = ins.customerId;
+       WHERE ShippingAddress.CustomerID = ins.customerId
+         --  Clause below needed to avoid to avoid infinite recursion
+         --  -1 is assumed to be a integer value that will never match
+         AND ba.BillingAddressID <> COALESCE(ins.BillingAddressID, -1);
+    END; -- of IF row INSERTed
+
+    IF UPDATE(BillingAddressID) 
+    BEGIN;
+       UPDATE ShippingAddress
+          SET CustomerID = ba.CustomerId
+       FROM inserted ins
+       INNER JOIN BillingAddress ba
+       ON ins.BillingAddressID = ba.BillingAddressID
+       WHERE ShippingAddress.BillingAddressID = ins.BillingAddressID 
+         --  Clause below needed to avoid to avoid infinite recursion
+         --  -1 is assumed to be a integer value that will never match
+         AND ba.CustomerId <> COALESCE(ins.CustomerID, -1);
     END; -- of IF row INSERTed
    END;  -- of IF @cnt > 0
 END;
