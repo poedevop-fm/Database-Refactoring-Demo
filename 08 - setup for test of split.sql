@@ -264,6 +264,33 @@ BEGIN
 END;
 GO
 --
+--
+IF OBJECT_ID ('SynchronizeBillingAddressDelete','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeBillingAddressDelete;
+GO
+CREATE TRIGGER SynchronizeBillingAddressDelete ON BillingAddress FOR DELETE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM deleted);
+   IF @cnt > 0 
+   BEGIN;
+      -- [new] table updated: update corresponding [old] columns in Customer table
+      UPDATE Customer
+         SET BillingAddress1 = '',
+             BillingAddress2 = '',
+             BillingCity     = '',
+             BillingState    = '',
+             BillingPostal1  = '',
+             BillingPostal2  = '',
+             BillingCountry  = ''
+      FROM deleted
+      WHERE deleted.CustomerId = Customer.CustomerId;
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
+--
 IF OBJECT_ID ('SynchronizeShippingAddress','TR') IS NOT NULL
    DROP TRIGGER SynchronizeShippingAddress;
 GO

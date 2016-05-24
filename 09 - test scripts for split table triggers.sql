@@ -13,10 +13,8 @@
 --       INSERT (via new definitions) a new billing address for an existing customer
 --       INSERT via new definitions, a new shipping address
 --       UPDATE via new definitions, a customer's billing address
---       UPDATE via new definitions, a customer's other data
 --       DELETE (new)(after deleting the shipping addresses), a billing address
 --       DELETE (new)(after deleting all addresses), a customer
---   TODO: what to do about "ON DELETE CASCADE" on BillingAddress? Eventually it needs to be removed!
 --
 --   FYI: on failed tests, the _m_ column is < for expected, and > for actual
 --
@@ -941,9 +939,9 @@ BEGIN
    INSERT INTO expected_billing_address
       (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
    VALUES
-     (@c_fpr, @ba_fpr, 'Weberstr. 2', 'Postfach 260', 'BONN',       '',   '53113', '1',        'GERMANY', 'de'),
-     (@c_jhw, @ba_jhw, 'Weberstr. 2', 'Postfach 260', 'BONN',       '',   '53113', '1',        'GERMANY', 'de'),
-     (@c_bb,  @ba_bb,  '456 Second Street',       '', 'Metropolis', 'YY', '',      '98765-4321','',       'us');
+     (@ba_fpr, @c_fpr, 'Weberstr. 2', 'Postfach 260', 'BONN',       '',   '53113', '1',        'GERMANY', 'de'),
+     (@ba_jhw, @c_jhw, 'Weberstr. 2', 'Postfach 260', 'BONN',       '',   '53113', '1',        'GERMANY', 'de'),
+     (@ba_bb,  @c_bb,  '456 Second Street',       '', 'Metropolis', 'YY', '',      '98765-4321','',       'us');
 
 	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
 
@@ -1805,15 +1803,679 @@ END;
 GO
 --
 --
--- TODO: Add these tests
---       UPDATE via new definitions, a customer's other data
---       UPDATE multiple billing addresses using new data?
---       UPDATE, via new definitions, a billing address affecting only the letter case
---       DELETE (new)(after deleting the shipping addresses), a billing address
---       DELETE (new)(after deleting all addresses), a customer
+IF OBJECT_ID(N'testSplitTableTriggers.[test changing a customer billing address using new columns]','P') IS NOT NULL
+   DROP PROCEDURE testSplitTableTriggers.[test changing a customer billing address using new columns];
+GO
+CREATE PROCEDURE testSplitTableTriggers.[test changing a customer billing address using new columns]
+AS
+BEGIN
+    --Arrange
+    IF OBJECT_ID('expected_customer') IS NOT NULL DROP TABLE expected_customer;
+    IF OBJECT_ID('expected_billing_address')  IS NOT NULL DROP TABLE expected_billing_address;
+    IF OBJECT_ID('expected_shipping_address') IS NOT NULL DROP TABLE expected_shipping_address;
+
+    --Act
+    DECLARE @ba int = (SELECT  ba.BillingAddressID
+                       FROM Customer c
+                       INNER JOIN BillingAddress ba
+                       ON c.CustomerID = ba.CustomerId
+                       WHERE c.Name1 = 'Big Business');
+
+    --   According to https://personal.help.royalmail.com/app/answers/detail/a_id/112
+    --   this is a valid German mailing address    
+    UPDATE BillingAddress
+         SET Address1 = 'Weberstr. 2',
+          Address2 = 'Postfach 260',
+          City     = 'BONN',
+          [State]    = '',
+          Postal1  = '53113',
+          Postal2  = '1',
+          Country  = 'GERMANY',
+          CountryCode = 'de'
+    WHERE BillingAddressID = @ba;
+
+    --Assert
+    CREATE TABLE expected_customer (
+      CustomerID       int,
+      Name1            varchar(30),
+      Name2            varchar(30),
+      BillingAddress1  nvarchar(64),
+      BillingAddress2  nvarchar(64),
+      BillingCity      nvarchar(64),
+      BillingState     nchar(2),
+      BillingPostal1   nvarchar(11),
+      BillingPostal2   nvarchar(11),
+      BillingCountry   nvarchar(64),
+      BillingCountryCode nchar(2)
+    );
+
+   DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
+   DECLARE @c_jhw int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
+   DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
+
+    INSERT INTO expected_customer
+    (CustomerID, Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, 
+     BillingState, BillingPostal1,BillingPostal2,BillingCountry,BillingCountryCode)
+    VALUES
+    (@c_fpr, 'Fidgett, Panneck, and Runn', '', '123 Main Street',       '', 'Fairview', 
+     'XX', '', '12345',     '','us'),
+    (@c_jhw, 'Dr. John H. Watson',         '', 'Apt. B','221 Baker Street', 'Gotham',
+     'ZZ', '', '22222',     '','us'),
+    (@c_bb,  'Big Business',               '', 'Weberstr. 2', 'Postfach 260', 'BONN',
+     '', '53113', '1', 'GERMANY', 'de');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_customer', 'Customer';
+
+   CREATE TABLE expected_billing_address  (
+      BillingAddressID int,
+      CustomerId       int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2)
+   );
+
+   DECLARE @ba_fpr int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_fpr);
+   DECLARE @ba_jhw int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_jhw);
+   DECLARE @ba_bb  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_bb);
+
+   INSERT INTO expected_billing_address
+      (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
+   VALUES
+      (@ba_fpr, @c_fpr, '123 Main Street','',       'Fairview',  'XX', '', '12345',      '', 'us'),
+      (@ba_jhw, @c_jhw, 'Apt. B','221 Baker Street','Gotham',    'ZZ', '', '22222',      '', 'us'),
+      (@ba_bb,  @c_bb,  'Weberstr. 2', 'Postfach 260', 'BONN',   '', '53113', '1', 'GERMANY', 'de');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
+
+   CREATE TABLE expected_shipping_address  (
+      ShippingAddressInternalId int,
+      ShippingAddressID nvarchar(20),
+      CustomerID  int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2),
+      BillingAddressID  int
+   );
+
+   DECLARE @sa_fpr1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Main Office');
+   DECLARE @sa_fpr2 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Satellite 1');
+   DECLARE @sa_jhw1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_jhw
+                            AND ShippingAddressID = '');
+   DECLARE @sa_bb01 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #101');
+   DECLARE @sa_bb02 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #102');
+   DECLARE @sa_bb03 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #103');
+
+   INSERT INTO expected_shipping_address
+   (ShippingAddressInternalId,ShippingAddressID,CustomerID,Address1,Address2,City,[State],Postal1,Postal2,Country,CountryCode,BillingAddressID)
+   VALUES
+    (@sa_fpr1, 'Main Office', @c_fpr, '123 Main Street',   '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_fpr2, 'Satellite 1', @c_fpr, '9901 First Street', '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_jhw1, '',            @c_jhw, 'Apt. B', '221 Baker Street', 'Gotham',     'ZZ', '', '22222',      '', 'us', @ba_jhw),
+    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb),
+    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb),
+    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb);
+
+	EXEC tSQLt.AssertEqualsTable 'expected_shipping_address', 'ShippingAddress';
+END;
+GO
 --
---IF OBJECT_ID(N'testSplitTableTriggers.[test that trigger handles INSERT using new columns]','P') IS NOT NULL
---IF OBJECT_ID(N'testSplitTableTriggers.[test that trigger handles INSERT using new Name1 column]','P') IS NOT NULL
+--
+IF OBJECT_ID(N'testSplitTableTriggers.[test changing multiple customer billing addresses using new columns]','P') IS NOT NULL
+   DROP PROCEDURE testSplitTableTriggers.[test changing multiple customer billing addresses using new columns];
+GO
+CREATE PROCEDURE testSplitTableTriggers.[test changing multiple customer billing addresses using new columns]
+AS
+BEGIN
+    --Arrange
+    IF OBJECT_ID('expected_customer') IS NOT NULL DROP TABLE expected_customer;
+    IF OBJECT_ID('expected_billing_address')  IS NOT NULL DROP TABLE expected_billing_address;
+    IF OBJECT_ID('expected_shipping_address') IS NOT NULL DROP TABLE expected_shipping_address;
+
+    --Act
+    DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
+
+    UPDATE BillingAddress
+         SET Address1 = 'Weberstr. 2',
+          Address2 = 'Postfach 260',
+          City     = 'BONN',
+          [State]    = '',
+          Postal1  = '53113',
+          Postal2  = '1',
+          Country  = 'GERMANY',
+          CountryCode = 'de'
+    WHERE BillingAddressID > @c_fpr;
+
+    --Assert
+    CREATE TABLE expected_customer (
+      CustomerID       int,
+      Name1            varchar(30),
+      Name2            varchar(30),
+      BillingAddress1  nvarchar(64),
+      BillingAddress2  nvarchar(64),
+      BillingCity      nvarchar(64),
+      BillingState     nchar(2),
+      BillingPostal1   nvarchar(11),
+      BillingPostal2   nvarchar(11),
+      BillingCountry   nvarchar(64),
+      BillingCountryCode nchar(2)
+    );
+
+   DECLARE @c_jhw int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
+   DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
+
+    INSERT INTO expected_customer
+    (CustomerID, Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, 
+     BillingState, BillingPostal1,BillingPostal2,BillingCountry,BillingCountryCode)
+    VALUES
+    (@c_fpr, 'Fidgett, Panneck, and Runn', '', '123 Main Street','',          'Fairview',
+     'XX', '',      '12345', '',       'us'),
+    (@c_jhw, 'Dr. John H. Watson',         '', 'Weberstr. 2', 'Postfach 260', 'BONN',
+     '',   '53113', '1',    'GERMANY', 'de'),
+    (@c_bb,  'Big Business',               '', 'Weberstr. 2', 'Postfach 260', 'BONN',
+     '',   '53113', '1',    'GERMANY', 'de');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_customer', 'Customer';
+
+   CREATE TABLE expected_billing_address  (
+      BillingAddressID int,
+      CustomerId       int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2)
+   );
+
+   DECLARE @ba_fpr int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_fpr);
+   DECLARE @ba_jhw int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_jhw);
+   DECLARE @ba_bb  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_bb);
+
+   INSERT INTO expected_billing_address
+      (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
+   VALUES
+      (@ba_fpr, @c_fpr, '123 Main Street','',          'Fairview',  'XX', '',      '12345',      '',  'us'),
+      (@ba_jhw, @c_jhw, 'Weberstr. 2', 'Postfach 260', 'BONN',      '',   '53113', '1',    'GERMANY', 'de'),
+      (@ba_bb,  @c_bb,  'Weberstr. 2', 'Postfach 260', 'BONN',      '',   '53113', '1',    'GERMANY', 'de');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
+
+   CREATE TABLE expected_shipping_address  (
+      ShippingAddressInternalId int,
+      ShippingAddressID nvarchar(20),
+      CustomerID  int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2),
+      BillingAddressID  int
+   );
+
+   DECLARE @sa_fpr1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Main Office');
+   DECLARE @sa_fpr2 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Satellite 1');
+   DECLARE @sa_jhw1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_jhw
+                            AND ShippingAddressID = '');
+   DECLARE @sa_bb01 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #101');
+   DECLARE @sa_bb02 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #102');
+   DECLARE @sa_bb03 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #103');
+
+   INSERT INTO expected_shipping_address
+   (ShippingAddressInternalId,ShippingAddressID,CustomerID,Address1,Address2,City,[State],Postal1,Postal2,Country,CountryCode,BillingAddressID)
+   VALUES
+    (@sa_fpr1, 'Main Office', @c_fpr, '123 Main Street',   '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_fpr2, 'Satellite 1', @c_fpr, '9901 First Street', '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_jhw1, '',            @c_jhw, 'Apt. B', '221 Baker Street', 'Gotham',     'ZZ', '', '22222',      '', 'us', @ba_jhw),
+    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb),
+    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb),
+    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb);
+
+	EXEC tSQLt.AssertEqualsTable 'expected_shipping_address', 'ShippingAddress';
+END;
+GO
+--
+--
+IF OBJECT_ID(N'testSplitTableTriggers.[test UPDATE of new address that only changes case]','P') IS NOT NULL
+   DROP PROCEDURE testSplitTableTriggers.[test UPDATE of new address that only changes case];
+GO
+CREATE PROCEDURE testSplitTableTriggers.[test UPDATE of new address that only changes case]
+AS
+BEGIN
+    --Arrange
+    IF OBJECT_ID('expected_customer') IS NOT NULL DROP TABLE expected_customer;
+    IF OBJECT_ID('expected_billing_address')  IS NOT NULL DROP TABLE expected_billing_address;
+    IF OBJECT_ID('expected_shipping_address') IS NOT NULL DROP TABLE expected_shipping_address;
+    
+    --Act
+   DECLARE @c_jhw  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
+   DECLARE @ba_jhw int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_jhw);
+    
+    UPDATE BillingAddress
+       SET Address1 = 'APT. B'
+    WHERE BillingAddressID = @ba_jhw;
+
+    --Assert
+    CREATE TABLE expected_customer (
+      CustomerID       int,
+      Name1            varchar(30),
+      Name2            varchar(30),
+      BillingAddress1  nvarchar(64),
+      BillingAddress2  nvarchar(64),
+      BillingCity      nvarchar(64),
+      BillingState     nchar(2),
+      BillingPostal1   nvarchar(11),
+      BillingPostal2   nvarchar(11),
+      BillingCountry   nvarchar(64),
+      BillingCountryCode nchar(2)
+    );
+
+    DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
+    DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
+
+    INSERT INTO expected_customer
+    (CustomerID, Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, 
+     BillingState, BillingPostal1,BillingPostal2,BillingCountry,BillingCountryCode)
+    VALUES
+    (@c_fpr, 'Fidgett, Panneck, and Runn', '', '123 Main Street',       '', 'Fairview', 
+     'XX', '', '12345',     '','us'),
+    (@c_jhw, 'Dr. John H. Watson',         '', 'APT. B','221 Baker Street', 'Gotham',
+     'ZZ', '', '22222',     '','us'),
+    (@c_bb,  'Big Business',               '', '456 Second Street',     '', 'Metropolis',
+     'YY', '', '98765-4321','','us');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_customer', 'Customer';
+
+   CREATE TABLE expected_billing_address  (
+      BillingAddressID int,
+      CustomerId       int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2)
+   );
+
+   DECLARE @ba_fpr int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_fpr);
+   DECLARE @ba_bb  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_bb);
+
+   INSERT INTO expected_billing_address
+      (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
+   VALUES
+      (@ba_fpr, @c_fpr, '123 Main Street','',       'Fairview',  'XX', '', '12345',      '', 'us'),
+      (@ba_jhw, @c_jhw, 'APT. B','221 Baker Street','Gotham',    'ZZ', '', '22222',      '', 'us'),
+      (@ba_bb,  @c_bb,  '456 Second Street','',     'Metropolis','YY', '', '98765-4321', '', 'us');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
+
+   CREATE TABLE expected_shipping_address  (
+      ShippingAddressInternalId int,
+      ShippingAddressID nvarchar(20),
+      CustomerID  int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2),
+      BillingAddressID  int
+   );
+
+   DECLARE @sa_fpr1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Main Office');
+   DECLARE @sa_fpr2 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Satellite 1');
+   DECLARE @sa_jhw1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_jhw
+                            AND ShippingAddressID = '');
+   DECLARE @sa_bb01 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #101');
+   DECLARE @sa_bb02 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #102');
+   DECLARE @sa_bb03 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #103');
+
+   INSERT INTO expected_shipping_address
+   (ShippingAddressInternalId,ShippingAddressID,CustomerID,Address1,Address2,City,[State],Postal1,Postal2,Country,CountryCode,BillingAddressID)
+   VALUES
+    (@sa_fpr1, 'Main Office', @c_fpr, '123 Main Street',   '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_fpr2, 'Satellite 1', @c_fpr, '9901 First Street', '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_jhw1, '',            @c_jhw, 'Apt. B', '221 Baker Street', 'Gotham',     'ZZ', '', '22222',      '', 'us', @ba_jhw),
+    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb),
+    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb),
+    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb);
+
+	EXEC tSQLt.AssertEqualsTable 'expected_shipping_address', 'ShippingAddress';
+END;
+GO
+--
+--
+IF OBJECT_ID(N'testSplitTableTriggers.[test deleting a billing address row]','P') IS NOT NULL
+   DROP PROCEDURE testSplitTableTriggers.[test deleting a billing address row];
+GO
+CREATE PROCEDURE testSplitTableTriggers.[test deleting a billing address row]
+AS
+BEGIN
+    --Arrange
+    IF OBJECT_ID('expected_customer') IS NOT NULL DROP TABLE expected_customer;
+    IF OBJECT_ID('expected_billing_address')  IS NOT NULL DROP TABLE expected_billing_address;
+    IF OBJECT_ID('expected_shipping_address') IS NOT NULL DROP TABLE expected_shipping_address;
+    
+    --Act
+    --   (ShippingAddress has a foreign key on Customer, so we delete that record first.)
+    DELETE FROM ShippingAddress 
+    WHERE Address1 = 'Apt. B';
+
+    DECLARE @c_jhw  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
+    DECLARE @ba_jhw int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_jhw);
+    
+    DELETE FROM BillingAddress
+    WHERE BillingAddressID = @ba_jhw;
+
+    --Assert
+    CREATE TABLE expected_customer (
+      CustomerID       int,
+      Name1            varchar(30),
+      Name2            varchar(30),
+      BillingAddress1  nvarchar(64),
+      BillingAddress2  nvarchar(64),
+      BillingCity      nvarchar(64),
+      BillingState     nchar(2),
+      BillingPostal1   nvarchar(11),
+      BillingPostal2   nvarchar(11),
+      BillingCountry   nvarchar(64),
+      BillingCountryCode nchar(2)
+    );
+
+   DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
+   DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
+
+    INSERT INTO expected_customer
+    (CustomerID, Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, 
+     BillingState, BillingPostal1,BillingPostal2,BillingCountry,BillingCountryCode)
+    VALUES
+    (@c_fpr, 'Fidgett, Panneck, and Runn', '', '123 Main Street',   '', 'Fairview', 
+     'XX', '', '12345',     '','us'),
+    (@c_jhw, 'Dr. John H. Watson',         '', '',                  '', '',
+     '',   '', '',          '', 'us'),
+    (@c_bb,  'Big Business',               '', '456 Second Street', '', 'Metropolis',
+     'YY', '', '98765-4321','','us');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_customer', 'Customer';
+
+   CREATE TABLE expected_billing_address  (
+      BillingAddressID int,
+      CustomerId       int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2)
+   );
+
+   DECLARE @ba_fpr int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_fpr);
+   DECLARE @ba_bb  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_bb);
+
+   INSERT INTO expected_billing_address
+      (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
+   VALUES
+      (@ba_fpr, @c_fpr, '123 Main Street','',       'Fairview',  'XX', '', '12345',      '', 'us'),
+      (@ba_bb,  @c_bb,  '456 Second Street','',     'Metropolis','YY', '', '98765-4321', '', 'us');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
+
+   CREATE TABLE expected_shipping_address  (
+      ShippingAddressInternalId int,
+      ShippingAddressID nvarchar(20),
+      CustomerID  int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2),
+      BillingAddressID  int
+   );
+
+   DECLARE @sa_fpr1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Main Office');
+   DECLARE @sa_fpr2 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Satellite 1');
+   DECLARE @sa_jhw1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_jhw
+                            AND ShippingAddressID = '');
+   DECLARE @sa_bb01 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #101');
+   DECLARE @sa_bb02 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #102');
+   DECLARE @sa_bb03 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #103');
+
+   INSERT INTO expected_shipping_address
+   (ShippingAddressInternalId,ShippingAddressID,CustomerID,Address1,Address2,City,[State],Postal1,Postal2,Country,CountryCode,BillingAddressID)
+   VALUES
+    (@sa_fpr1, 'Main Office', @c_fpr, '123 Main Street',   '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_fpr2, 'Satellite 1', @c_fpr, '9901 First Street', '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb),
+    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb),
+    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb);
+
+	EXEC tSQLt.AssertEqualsTable 'expected_shipping_address', 'ShippingAddress';
+END;
+GO
+--
+--
+IF OBJECT_ID(N'testSplitTableTriggers.[test deleting customer after deleting addresses]','P') IS NOT NULL
+   DROP PROCEDURE testSplitTableTriggers.[test deleting customer after deleting addresses];
+GO
+CREATE PROCEDURE testSplitTableTriggers.[test deleting customer after deleting addresses]
+AS
+BEGIN
+    --Arrange
+    IF OBJECT_ID('expected_customer') IS NOT NULL DROP TABLE expected_customer;
+    IF OBJECT_ID('expected_billing_address')  IS NOT NULL DROP TABLE expected_billing_address;
+    IF OBJECT_ID('expected_shipping_address') IS NOT NULL DROP TABLE expected_shipping_address;
+    
+    --Act
+    --   (ShippingAddress has a foreign key on Customer, so we delete that record first.)
+    DELETE FROM ShippingAddress 
+    WHERE Address1 = 'Apt. B';
+
+    DECLARE @c_jhw  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Dr. John H. Watson');
+    DECLARE @ba_jhw int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_jhw);
+    
+    DELETE FROM BillingAddress
+    WHERE BillingAddressID = @ba_jhw;
+
+    DELETE FROM Customer
+    WHERE CustomerId = @c_jhw;
+
+    --Assert
+    CREATE TABLE expected_customer (
+      CustomerID       int,
+      Name1            varchar(30),
+      Name2            varchar(30),
+      BillingAddress1  nvarchar(64),
+      BillingAddress2  nvarchar(64),
+      BillingCity      nvarchar(64),
+      BillingState     nchar(2),
+      BillingPostal1   nvarchar(11),
+      BillingPostal2   nvarchar(11),
+      BillingCountry   nvarchar(64),
+      BillingCountryCode nchar(2)
+    );
+
+   DECLARE @c_fpr int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Fidgett, Panneck, and Runn');
+   DECLARE @c_bb  int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Big Business');
+
+    INSERT INTO expected_customer
+    (CustomerID, Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, 
+     BillingState, BillingPostal1,BillingPostal2,BillingCountry,BillingCountryCode)
+    VALUES
+    (@c_fpr, 'Fidgett, Panneck, and Runn', '', '123 Main Street',   '', 'Fairview', 
+     'XX', '', '12345',     '','us'),
+    (@c_bb,  'Big Business',               '', '456 Second Street', '', 'Metropolis',
+     'YY', '', '98765-4321','','us');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_customer', 'Customer';
+
+   CREATE TABLE expected_billing_address  (
+      BillingAddressID int,
+      CustomerId       int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2)
+   );
+
+   DECLARE @ba_fpr int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_fpr);
+   DECLARE @ba_bb  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_bb);
+
+   INSERT INTO expected_billing_address
+      (BillingAddressID, CustomerId, Address1, Address2, City, [State], Postal1, Postal2,Country,CountryCode)
+   VALUES
+      (@ba_fpr, @c_fpr, '123 Main Street','',       'Fairview',  'XX', '', '12345',      '', 'us'),
+      (@ba_bb,  @c_bb,  '456 Second Street','',     'Metropolis','YY', '', '98765-4321', '', 'us');
+
+	EXEC tSQLt.AssertEqualsTable 'expected_billing_address', 'BillingAddress';
+
+   CREATE TABLE expected_shipping_address  (
+      ShippingAddressInternalId int,
+      ShippingAddressID nvarchar(20),
+      CustomerID  int,
+      Address1  nvarchar(64),
+      Address2  nvarchar(64),
+      City      nvarchar(64),
+      [State]   char(2),
+      Postal1   nvarchar(11),
+      Postal2   nvarchar(11),
+      Country   nvarchar(64),
+      CountryCode nchar(2),
+      BillingAddressID  int
+   );
+
+   DECLARE @sa_fpr1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Main Office');
+   DECLARE @sa_fpr2 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_fpr
+                            AND ShippingAddressID = 'Satellite 1');
+   DECLARE @sa_jhw1 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_jhw
+                            AND ShippingAddressID = '');
+   DECLARE @sa_bb01 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #101');
+   DECLARE @sa_bb02 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #102');
+   DECLARE @sa_bb03 int = (SELECT ShippingAddressInternalId 
+                          FROM ShippingAddress 
+                          WHERE CustomerId = @c_bb
+                            AND ShippingAddressID = 'Store #103');
+
+   INSERT INTO expected_shipping_address
+   (ShippingAddressInternalId,ShippingAddressID,CustomerID,Address1,Address2,City,[State],Postal1,Postal2,Country,CountryCode,BillingAddressID)
+   VALUES
+    (@sa_fpr1, 'Main Office', @c_fpr, '123 Main Street',   '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_fpr2, 'Satellite 1', @c_fpr, '9901 First Street', '',      'Fairview',   'XX', '', '12345',      '', 'us', @ba_fpr),
+    (@sa_bb01, 'Store #101',  @c_bb,  '456 Second Street', '',      'Metropolis', 'YY', '', '98765-4321', '', 'us', @ba_bb),
+    (@sa_bb02, 'Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', '', 'us', @ba_bb),
+    (@sa_bb03, 'Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      '', 'us', @ba_bb);
+
+	EXEC tSQLt.AssertEqualsTable 'expected_shipping_address', 'ShippingAddress';
+END;
+GO
+--
 --
 --   When I gave the 10 minute presentation, someone in the audience asked if
 --   I had tried an update where only the case of the value was changed - many
@@ -1823,17 +2485,8 @@ GO
 --     BTW, the database collation is SQL_Latin1_General_CP1_CI_AS,
 --   which is case-insensitive (CI) and accent-sensitive (AS).
 --
---IF    OBJECT_ID(N'testSplitTableTriggers.[test that trigger handles UPDATE old with only a case difference]','P') IS NOT NULL
---IF    OBJECT_ID(N'testSplitTableTriggers.[test that trigger handles UPDATE new with only a case difference]','P') IS NOT NULL
---IF    OBJECT_ID(N'testSplitTableTriggers.[test that trigger handles INSERT old that differs only by case]','P') IS NOT NULL
---       ...differs from an existing row only by case
---IF    OBJECT_ID(N'testSplitTableTriggers.[test that trigger handles multi-row UPDATEs to new correctly]','P') IS NOT NULL
-   
 --
 --  Run all tests for application
 --
 EXEC tSQLt.Run 'testSplitTableTriggers';
---
---   (CANNOT add a second billing address to an existing customer until after the database is fully refactored:
---    otherwise, triggers will not know how to synchronize old address columns in Customer.)
---
+--EXEC tsqlt.Run N'testSplitTableTriggers.[test that trigger handles INSERT Customer using new columns]';

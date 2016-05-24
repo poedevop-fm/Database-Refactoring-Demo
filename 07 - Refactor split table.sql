@@ -45,124 +45,267 @@ ALTER TABLE ShippingAddress
 GO
 --
 --   Step 2: create triggers to keep everything in sync.
-IF OBJECT_ID ('SynchronizeCustomerWithBillingAddress','TR') IS NOT NULL
-   DROP TRIGGER SynchronizeCustomerWithBillingAddress;
+--
+--    Create triggers for Customer table
+--
+IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeCustomerAddress;
 GO
-CREATE TRIGGER SynchronizeCustomerWithBillingAddress ON Customer FOR INSERT, UPDATE
+CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
-   --SET NOCOUNT ON;    -- Normally present.
-   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
-   --DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
-   --IF @cnt > 0 
-   --BEGIN;
-   --
-   --  STOP!  Write test cases first!
-   --
-   IF deleted.CustomerID IS NULL
-   BEGIN
-      -- Inserting a customer: add a billing address to match
-   END;
-   ELSE
-   BEGIN
-      -- Updating a customer: look for a matching billing address.
-      -- If not found, add one.
-   END;
-   
-   IF UPDATE(Name) OR UPDATE(Name1)
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
    BEGIN;
+   IF UPDATE(BillingAddress1) OR 
+      UPDATE(BillingAddress1) OR
+      UPDATE(BillingAddress2) OR
+      UPDATE(BillingCity)     OR
+      UPDATE(BillingState)    OR
+      UPDATE(BillingPostal1)  OR
+      UPDATE(BillingPostal2)  OR
+      UPDATE(BillingCountry)  OR
+      UPDATE(BillingCountryCode)
+   BEGIN;
+      -- Check for INSERT
+      --   If we add a customer via new columns, should NOT add an address
+      --   if the address is empty.  This tripped me up.
+      INSERT INTO BillingAddress
+      (CustomerId, Address1, Address2, City,
+       [State], Postal1, Postal2, Country,
+       CountryCode)
+      SELECT ins.CustomerId,   ins.BillingAddress1, ins.BillingAddress2, ins.BillingCity,
+             ins.BillingState, ins.BillingPostal1,  ins.BillingPostal2,  ins.BillingCountry,
+             ins.BillingCountryCode
+      FROM inserted ins
+      LEFT OUTER JOIN deleted del
+      ON ins.CustomerId = del.CustomerId
+      WHERE del.CustomerId IS NULL
+        AND (ins.BillingAddress1 <> ''  OR
+             ins.BillingAddress2 <> ''  OR
+             ins.BillingCity <> ''      OR
+             ins.BillingState <> ''     OR
+             ins.BillingPostal1 <> ''   OR
+             ins.BillingPostal2 <> ''   OR
+             ins.BillingCountryCode <> 'us');
+      --
       -- old columns updated: update new columns
-      UPDATE Customer
-         SET Name1 = inserted.Name
-      FROM inserted LEFT OUTER JOIN deleted
+      UPDATE BillingAddress
+         SET Address1 = inserted.BillingAddress1,
+             Address2 = inserted.BillingAddress2,
+             City     = inserted.BillingCity,
+             State    = inserted.BillingState,
+             Postal1  = inserted.BillingPostal1,
+             Postal2  = inserted.BillingPostal2,
+             Country  = inserted.BillingCountry,
+             CountryCode = inserted.BillingCountryCode
+      FROM inserted INNER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.Name <> ISNULL(deleted.Name,'')
-        AND inserted.Name1 <> inserted.Name;
-      -- new columns updated: update old columns
-      UPDATE Customer
-         SET Name = inserted.Name1
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.Name1 <> ISNULL(deleted.Name1,'')
-        AND inserted.Name1 <> inserted.Name;
+      WHERE BillingAddress.CustomerId = inserted.CustomerId
+        -- was any part of the address changed?
+        AND (inserted.BillingAddress1 <> ISNULL(deleted.BillingAddress1,'') OR
+             inserted.BillingAddress2 <> ISNULL(deleted.BillingAddress2,'') OR
+             inserted.BillingCity     <> ISNULL(deleted.BillingCity,'')     OR
+             inserted.BillingState    <> ISNULL(deleted.BillingState,'')    OR
+             inserted.BillingPostal1  <> ISNULL(deleted.BillingPostal1,'')  OR
+             inserted.BillingPostal2  <> ISNULL(deleted.BillingPostal2,'')  OR
+             inserted.BillingCountry  <> ISNULL(deleted.BillingCountry,'')  OR
+             inserted.BillingCountryCode <> ISNULL(deleted.BillingCountryCode,''));
    END;
 
-   IF UPDATE(BillingZIP) OR UPDATE(BillingPostal2)
-   BEGIN;
-      -- old columns updated: update new columns
-      UPDATE Customer
-         SET BillingPostal2 = 
-         CASE WHEN inserted.BillingZIP IS NULL THEN ''
-              WHEN SUBSTRING(inserted.BillingZIP,6,4) > '' THEN SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
-              ELSE inserted.BillingZIP END
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingZIP <> ISNULL(deleted.BillingZIP, '')
-        AND inserted.BillingPostal2 <>
-              CASE WHEN inserted.BillingZIP IS NULL THEN ''
-                   WHEN LEN(inserted.BillingZIP) > 5 AND SUBSTRING(inserted.BillingZIP,6,4) > '' THEN SUBSTRING(inserted.BillingZIP,1,5) + '-' + SUBSTRING(inserted.BillingZIP,6,4)
-                   ELSE inserted.BillingZIP END
-        AND inserted.BillingZIP >= '0';
-      -- new columns updated: update old columns
-      UPDATE Customer
-         SET BillingZIP = SUBSTRING(inserted.BillingPostal2,1,5) + SUBSTRING(inserted.BillingPostal2,7,4)
-      FROM inserted LEFT OUTER JOIN deleted
-      ON inserted.CustomerID = deleted.CustomerID
-      WHERE Customer.CustomerId = inserted.CustomerId
-        AND inserted.BillingPostal2 <> ISNULL(deleted.BillingPostal2, '')
-        AND inserted.BillingCountryCode = 'us'
-        AND ISNULL(inserted.BillingZIP,'') <> 
-            SUBSTRING(inserted.BillingPostal2,1,5) + SUBSTRING(inserted.BillingPostal2,7,4);
-   --END;
-   END;
+   END;  -- of IF @cnt > 0
 END;
 GO
+--
+IF OBJECT_ID ('SynchronizeBillingAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeBillingAddress;
+GO
+CREATE TRIGGER SynchronizeBillingAddress ON BillingAddress FOR INSERT, UPDATE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
+   BEGIN;
+   IF UPDATE(Address1) OR 
+      UPDATE(Address1) OR
+      UPDATE(Address2) OR
+      UPDATE(City)     OR
+      UPDATE(State)    OR
+      UPDATE(Postal1)  OR
+      UPDATE(Postal2)  OR
+      UPDATE(Country)  OR
+      UPDATE(CountryCode)
+   BEGIN;
+      -- [new] table updated: update corresponding [old] columns in Customer table
+      UPDATE Customer
+         SET BillingAddress1 = inserted.Address1,
+             BillingAddress2 = inserted.Address2,
+             BillingCity     = inserted.City,
+             BillingState    = inserted.[State],
+             BillingPostal1  = inserted.Postal1,
+             BillingPostal2  = inserted.Postal2,
+             BillingCountry  = inserted.Country,
+             BillingCountryCode = inserted.CountryCode
+      FROM inserted
+      WHERE inserted.CustomerId = Customer.CustomerId 
+        AND (inserted.Address1 <> BillingAddress1 OR
+             inserted.Address2 <> BillingAddress2 OR
+             inserted.City     <> BillingCity     OR
+             inserted.[State]  <> BillingState    OR
+             inserted.Postal1  <> BillingPostal1  OR
+             inserted.Postal2  <> BillingPostal2  OR
+             inserted.Country  <> BillingCountry  OR
+             inserted.CountryCode <> BillingCountryCode);
+   END;
+
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
+--
+IF OBJECT_ID ('SynchronizeBillingAddressDelete','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeBillingAddressDelete;
+GO
+CREATE TRIGGER SynchronizeBillingAddressDelete ON BillingAddress FOR DELETE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM deleted);
+   IF @cnt > 0 
+   BEGIN;
+      -- [new] table updated: update corresponding [old] columns in Customer table
+      UPDATE Customer
+         SET BillingAddress1 = '',
+             BillingAddress2 = '',
+             BillingCity     = '',
+             BillingState    = '',
+             BillingPostal1  = '',
+             BillingPostal2  = '',
+             BillingCountry  = ''
+      FROM deleted
+      WHERE deleted.CustomerId = Customer.CustomerId;
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
+--
+IF OBJECT_ID ('SynchronizeShippingAddress','TR') IS NOT NULL
+   DROP TRIGGER SynchronizeShippingAddress;
+GO
+CREATE TRIGGER SynchronizeShippingAddress ON ShippingAddress FOR INSERT, UPDATE
+AS
+BEGIN
+  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
+   IF @cnt > 0 
+   BEGIN;
+    IF UPDATE(CustomerID) 
+    BEGIN;
+       UPDATE ShippingAddress
+          SET BillingAddressID = ba.BillingAddressID
+       FROM inserted ins
+       INNER JOIN BillingAddress ba
+       ON ins.CustomerId = ba.CustomerId
+       WHERE ShippingAddress.CustomerID = ins.customerId
+         --  Clause below needed to avoid to avoid infinite recursion
+         --  -1 is assumed to be a integer value that will never match
+         AND ba.BillingAddressID <> COALESCE(ins.BillingAddressID, -1);
+    END; -- of IF row INSERTed
+
+    IF UPDATE(BillingAddressID) 
+    BEGIN;
+       UPDATE ShippingAddress
+          SET CustomerID = ba.CustomerId
+       FROM inserted ins
+       INNER JOIN BillingAddress ba
+       ON ins.BillingAddressID = ba.BillingAddressID
+       WHERE ShippingAddress.BillingAddressID = ins.BillingAddressID 
+         --  Clause below needed to avoid to avoid infinite recursion
+         --  -1 is assumed to be a integer value that will never match
+         AND ba.CustomerId <> COALESCE(ins.CustomerID, -1);
+    END; -- of IF row INSERTed
+   END;  -- of IF @cnt > 0
+END;
+GO
+--
+--    Add DEFAULT constraints so that columns going away won't block new code.
+--
+ALTER TABLE Customer 
+   ADD CONSTRAINT DF_Customer_BillingAddress1 DEFAULT '' FOR BillingAddress1,
+       CONSTRAINT DF_Customer_BillingAddress2 DEFAULT '' FOR BillingAddress2,
+       CONSTRAINT DF_Customer_City            DEFAULT '' FOR BillingCity,
+       CONSTRAINT DF_Customer_State           DEFAULT '' FOR BillingState;
 --
 --   Step 3: Convert. That is, add data to new columns
 --   WHERE clauses cover case where updates occur before conversion finishes
 --
-UPDATE Customer
-  SET Name1 = Name
-WHERE Name1 = '' AND Name <> '';
 --
-UPDATE Customer  
-  SET BillingPostal2 = CASE WHEN SUBSTRING(BillingZIP,6,4) <= '' THEN BillingZIP
-                            ELSE SUBSTRING(BillingZIP,1,5) + '-' + SUBSTRING(BillingZIP,6,4)
-                       END
-WHERE BillingPostal2 = ''  AND BillingZIP > '';
+--    Run conversion to make old and new tables contain the same data
+--
+INSERT INTO BillingAddress
+(CustomerId, Address1, Address2, City, [State], Postal1, Postal2, Country, CountryCode)
+SELECT CustomerId,   BillingAddress1, BillingAddress2, BillingCity,
+       BillingState, BillingPostal1,  BillingPostal2,  BillingCountry,
+       BillingCountryCode
+FROM Customer;
 GO
-SELECT * FROM Customer;
+--
+--   Run conversion to link shipping address to the new business address table
+--   We assume that 1 billing address per customer will remain true while conversion occurs
+--
+UPDATE ShippingAddress
+   SET BillingAddressID = ba.BillingAddressID
+FROM BillingAddress ba
+WHERE ShippingAddress.CustomerID = ba.CustomerId;
 GO
+--
+--   Display results to verify conversion worked
+--
+SELECT c.*, ba.*
+FROM BillingAddress ba
+INNER JOIN Customer c
+ON ba.CustomerId = c.CustomerId;
+--
+SELECT * FROM ShippingAddress;
+GO
+--
 --   Step 4: notify everyone of changes coming: old columns will be deleted
 --   Step 5: Migrate: developers / DBAs change programs and stored procedures
 --
 --   Add a customer using old columns
 --
 INSERT INTO Customer
-(Name,BillingAddress1,BillingAddress2,BillingCity,BillingState,BillingZIP)
+(Name1, Name2, BillingAddress1, BillingAddress2, BillingCity, BillingState, BillingPostal1, BillingPostal2)
 VALUES
-('Santa Claus','325 S. Santa Claus Lane','','North Pole', 'AK','99705');
+('Santa Claus', '', '325 S. Santa Claus Lane','','North Pole', 'AK', '', '99705');
 GO
 SELECT * FROM Customer;
+SELECT * FROM BillingAddress;
 GO
 --
 --  Add a customer using new columns
 --
-INSERT INTO Customer
-(Name1,BillingAddress1,BillingAddress2, BillingCity, BillingState,BillingPostal2)
+DECLARE @output TABLE ( CustomerId  int NOT NULL );
+--
+INSERT INTO Customer (Name1,Name2)
+   OUTPUT (inserted.CustomerId) INTO @output
+  VALUES ('Bullwinke J. Moose', '');
+
+DECLARE @id int = (SELECT TOP 1 CustomerId FROM @output);
+
+INSERT INTO BillingAddress
+(CustomerId, Address1, Address2, City, [State], Postal1, Postal2)
 VALUES
-('Bullwinke J. Moose', '1 Veronica Lake', '', 'Frostbite Falls','MN','56649-1111');
+(@id, '1 Veronica Lake','','Frostbite Falls', 'MN', '', '99705');
 GO
-INSERT INTO Customer
-(Name1,Name2,BillingAddress1,BillingAddress2,BillingCity,BillingState,BillingPostal2,BillingCountry,BillingCountryCode)
-VALUES
-('Dudley Doright','RCMP', '1 Headquarters Road','','Toronto','ON','M3C 0C1','CANADA','ca');
-GO
+
 SELECT * FROM Customer;
+SELECT * FROM BillingAddress;
 GO
+-- TODO: create sample UPDATE, and DELETE statements for 
+--       for customer and billing address
 --
 --  Update using old columns
 --            (Old value of Address1 was "456 Second Street" - trigger does nothing)
