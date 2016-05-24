@@ -146,8 +146,6 @@ VALUES
  ('Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', @ba_bb),
  ('Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      @ba_bb);
 --
--- TODO: add trigger code here
---
 --    Create trigger for Customer table
 --
 IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
@@ -171,7 +169,8 @@ BEGIN
       UPDATE(BillingCountryCode)
    BEGIN;
       -- Check for INSERT
-      --    TODO: if we UPDATE a BillingAddress, does the command below create a duplicate???
+      --   If we add a customer via new columns, should NOT add an address
+      --   if the address is empty.  This tripped me up.
       INSERT INTO BillingAddress
       (CustomerId, Address1, Address2, City,
        [State], Postal1, Postal2, Country,
@@ -182,7 +181,14 @@ BEGIN
       FROM inserted ins
       LEFT OUTER JOIN deleted del
       ON ins.CustomerId = del.CustomerId
-      WHERE del.CustomerId IS NULL;
+      WHERE del.CustomerId IS NULL
+        AND (ins.BillingAddress1 <> ''  OR
+             ins.BillingAddress2 <> ''  OR
+             ins.BillingCity <> ''      OR
+             ins.BillingState <> ''     OR
+             ins.BillingPostal1 <> ''   OR
+             ins.BillingPostal2 <> ''   OR
+             ins.BillingCountryCode <> 'us');
       --
       -- old columns updated: update new columns
       UPDATE BillingAddress
@@ -194,7 +200,7 @@ BEGIN
              Postal2  = inserted.BillingPostal2,
              Country  = inserted.BillingCountry,
              CountryCode = inserted.BillingCountryCode
-      FROM inserted LEFT OUTER JOIN deleted
+      FROM inserted INNER JOIN deleted
       ON inserted.CustomerID = deleted.CustomerID
       WHERE BillingAddress.CustomerId = inserted.CustomerId
         -- was any part of the address changed?
@@ -244,6 +250,14 @@ BEGIN
              BillingCountryCode = inserted.CountryCode
       FROM inserted
       WHERE inserted.CustomerId = Customer.CustomerId 
+        AND (inserted.Address1 <> BillingAddress1 OR
+             inserted.Address2 <> BillingAddress2 OR
+             inserted.City     <> BillingCity     OR
+             inserted.[State]  <> BillingState    OR
+             inserted.Postal1  <> BillingPostal1  OR
+             inserted.Postal2  <> BillingPostal2  OR
+             inserted.Country  <> BillingCountry  OR
+             inserted.CountryCode <> BillingCountryCode);
    END;
 
    END;  -- of IF @cnt > 0

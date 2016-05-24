@@ -1535,7 +1535,7 @@ BEGIN
 
    INSERT INTO Customer (Name1,Name2)
    OUTPUT (inserted.CustomerId) INTO @output
-   VALUES ('Santa Claus','')
+   VALUES ('Santa Claus','');
 
    DECLARE @id int = (SELECT TOP 1 CustomerId FROM @output);
 
@@ -1832,12 +1832,7 @@ GO
 --
 --  Run all tests for application
 --
---EXEC tSQLt.Run 'testSplitTableTriggers';
---      TODO: The test below fails when executing the line:
---            DECLARE @ba_sc  int = (SELECT BillingAddressID FROM BillingAddress WHERE CustomerId = @c_sc);
---     with the error message
---            Subquery returned more than 1 value. This is not permitted when the subquery follows =, !=, <, <= , >, >= or when the subquery is used as an expression.[16,1]{test that trigger handles INSERT Customer using new columns,75}
-EXEC tsqlt.Run N'testSplitTableTriggers.[test that trigger handles INSERT Customer using new columns]';
+EXEC tSQLt.Run 'testSplitTableTriggers';
 --
 --   (CANNOT add a second billing address to an existing customer until after the database is fully refactored:
 --    otherwise, triggers will not know how to synchronize old address columns in Customer.)
