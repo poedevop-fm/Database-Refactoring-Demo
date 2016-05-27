@@ -54,6 +54,8 @@ GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
+  --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+  SET XACT_ABORT ON;
   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
@@ -124,7 +126,9 @@ GO
 CREATE TRIGGER SynchronizeBillingAddress ON BillingAddress FOR INSERT, UPDATE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+   SET XACT_ABORT ON;
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
@@ -171,6 +175,8 @@ GO
 CREATE TRIGGER SynchronizeBillingAddressDelete ON BillingAddress FOR DELETE
 AS
 BEGIN
+  --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+  SET XACT_ABORT ON;
   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM deleted);
    IF @cnt > 0 
@@ -197,7 +203,9 @@ GO
 CREATE TRIGGER SynchronizeShippingAddress ON ShippingAddress FOR INSERT, UPDATE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+   SET XACT_ABORT ON;
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
@@ -285,7 +293,7 @@ SELECT * FROM Customer;
 SELECT * FROM BillingAddress;
 GO
 --
---  Add a customer using new columns
+--  Add a customer using new table
 --
 DECLARE @output TABLE ( CustomerId  int NOT NULL );
 --
@@ -304,63 +312,89 @@ GO
 SELECT * FROM Customer;
 SELECT * FROM BillingAddress;
 GO
--- TODO: create sample UPDATE, and DELETE statements for 
---       for customer and billing address
 --
 --  Update using old columns
 --            (Old value of Address1 was "456 Second Street" - trigger does nothing)
---            (Old ZIP was 22222)
 --
 UPDATE Customer
    SET BillingAddress1 = '2 Second Street'
-WHERE Name = 'BigBusiness';
-GO
-UPDATE Customer
-   SET BillingZIP = '222223333'
-WHERE Name = 'Dr. John H. Watson';
-GO
---
-SELECT * FROM Customer;
-GO
---
---   Update using new columns
---                  (Old address was '1 Veronica Lake' - trigger does nothing)
---                  (Old PostalCode2 was 12345)
---
-UPDATE Customer
-   SET BillingAddress1 = '222 Veronica Lake'
-WHERE Name1 = 'Bullwinke J. Moose';
-GO
---
-UPDATE Customer
-   SET BillingPostal2 = '12345-9876'
-WHERE Name1 = 'Fidgett, Panneck, and Runn';
+WHERE Name1 = 'BigBusiness';
 GO
 SELECT * FROM Customer;
+SELECT * FROM BillingAddress;
+GO
+--
+--  Update using new table
+--
+DECLARE @c_id int = (SELECT CustomerID FROM Customer WHERE Name1 = 'BigBusiness');
+UPDATE BillingAddress
+   SET Address1 = '3 Third Street'
+WHERE CustomerId = @c_id;
+GO
+SELECT * FROM Customer;
+SELECT * FROM BillingAddress;
+GO
+--
+--   DELETE from Customer
+--
+DELETE FROM Customer WHERE Name1 = 'Santa Claus';
+GO
+SELECT * FROM Customer;
+SELECT * FROM BillingAddress;
+GO
+--
+--  DELETE using BillingAddress
+--
+DECLARE @moose_id int = (SELECT CustomerID FROM Customer WHERE Name1 = 'Bullwinke J. Moose');
+
+DELETE FROM BillingAddress
+WHERE CustomerId = @moose_id;
+
+DELETE FROM Customer WHERE CustomerId = @moose_id;
+GO
+SELECT * FROM Customer;
+SELECT * FROM BillingAddress;
 GO
 --
 --   Step 6: Drop trigger, old columns, and defaults
 --
 DROP TRIGGER SynchronizeCustomerAddress;
+DROP TRIGGER SynchronizeBillingAddress;
+DROP TRIGGER SynchronizeBillingAddressDelete;
+DROP TRIGGER SynchronizeShippingAddress;
 GO
-ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name;
+--           Make the BillingAddressID NOT NULL
+SELECT ShippingAddressID, CustomerID
+FROM ShippingAddress 
+WHERE BillingAddressID IS NULL;
 GO
-ALTER TABLE Customer  DROP COLUMN Name, BillingZIP;
-GO
---
---          Now remove the default for the new column (page 189)
---
-SELECT CustomerID, Name1
-FROM Customer 
-WHERE Name1 < '!';
-GO
-ALTER TABLE Customer DROP CONSTRAINT DF_Customer_Name1;
-GO
-SELECT * FROM Customer;
+ALTER TABLE ShippingAddress
+  ALTER COLUMN BillingAddressID int NOT NULL;
 GO
 --
+ALTER TABLE ShippingAddress DROP CONSTRAINT FK_ShippingAddress_Customer;
+GO
+ALTER TABLE ShippingAddress DROP COLUMN CustomerID;
+GO
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingPostal1;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingPostal2;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingCountry;
+ALTER TABLE Customer  DROP CONSTRAINT DF_Customer_BillingCountryCode;
+ALTER TABLE Customer  DROP COLUMN BillingAddress1;
+ALTER TABLE Customer  DROP COLUMN BillingAddress2;
+ALTER TABLE Customer  DROP COLUMN BillingCity;
+ALTER TABLE Customer  DROP COLUMN BillingState;
+ALTER TABLE Customer  DROP COLUMN BillingPostal1;
+ALTER TABLE Customer  DROP COLUMN BillingPostal2;
+ALTER TABLE Customer  DROP COLUMN BillingCountry;
+ALTER TABLE Customer  DROP COLUMN BillingCountryCode;
 --
+--   Step 7: Decide about ON DELETE CASCADE on foreign key from billing address
+--           to customer.  Dropping the constraint, if appropriate, might
+--           expose coding errors.
 --
+--   Step 8: Notify developers that they can now change business logic and
+--           presentation to support multiple billing addresses.
 --
 -------------------------------------------------------------------------------
 -- Making a column longer is always allowed. Making it shorter requires you to
@@ -468,7 +502,7 @@ FROM ChangeLog
 --   Lessons learned:
 --   1. Automated unit tests is a good idea: you back up and start all over a lot
 --      You need to cover all cases: INSERT/UPDATE; old/new.
---   2. Because of lesson #1, version control is probably a good idea
+--   2. Because of lesson #1, version control is probably a good idea.
 --   3. Changelog table was a good debugging tool
 --   4. Need "WHERE Customer.CustomerId = inserted.CustomerId" clause to keep from
 --      from changing every row.  Tests probably need to verify all rows.

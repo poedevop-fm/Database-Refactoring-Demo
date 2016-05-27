@@ -146,7 +146,7 @@ VALUES
  ('Store #102',  @c_bb,  '9 Ninth Street',    '',      'Metropolis', 'YY', '', '98765-9999', @ba_bb),
  ('Store #103',  @c_bb,  '101 Main Street',   '',      'Little Town','YY', '', '88888',      @ba_bb);
 --
---    Create trigger for Customer table
+--    Create triggers for Customer table
 --
 IF OBJECT_ID ('SynchronizeCustomerAddress','TR') IS NOT NULL
    DROP TRIGGER SynchronizeCustomerAddress;
@@ -154,7 +154,9 @@ GO
 CREATE TRIGGER SynchronizeCustomerAddress ON Customer FOR INSERT, UPDATE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+   SET XACT_ABORT ON;
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
@@ -224,7 +226,9 @@ GO
 CREATE TRIGGER SynchronizeBillingAddress ON BillingAddress FOR INSERT, UPDATE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+   SET XACT_ABORT ON;
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
@@ -271,7 +275,9 @@ GO
 CREATE TRIGGER SynchronizeBillingAddressDelete ON BillingAddress FOR DELETE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+   SET XACT_ABORT ON;
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM deleted);
    IF @cnt > 0 
    BEGIN;
@@ -297,7 +303,9 @@ GO
 CREATE TRIGGER SynchronizeShippingAddress ON ShippingAddress FOR INSERT, UPDATE
 AS
 BEGIN
-  --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
+   --SET XACT_ABORT, NOCOUNT ON;  -- Normally this would be on. NOCOUNT off for demo.
+   SET XACT_ABORT ON;
+   --  The next 3 lines are needed only if database option RECURSIVE_TRIGGERS is ON
    DECLARE @cnt int = (SELECT COUNT(*) FROM inserted);
    IF @cnt > 0 
    BEGIN;
